@@ -26,20 +26,32 @@
 		</div>
 	</nav>
 
-
-
-
-	<div>
-		<span><a href="/dms_board/dms_0010_list">목록</a></span>
-		<span>
-			<c:if test="${member != null }"><a href="/logout">로그아웃</a></c:if>
-			<c:if test="${member == null }"><a href="/main">로그인</a></c:if>
-		</span>
-		<span>
-			<c:if test="${member != null }">
-				<p>${member.mms_userid }님 안녕하세요.</p>
-			</c:if>
-		</span>
-	</div>
+	<div id="sub_menu" >
+		<div class="container-fluid" onmouseover='mouse_show();' onmouseout='mouse_hide();' style="width:100%;">
+			<table>
+				<tr>
+					<td width=10%>&nbsp;</td>
+					<td width=10%>&nbsp;</td>
+					<td width=10%>&nbsp;</td>
+					<td width=10%><a class="dropdown-item" href="/dms/jsp/board.jsp?bo_table=notice">수강과목 공지</a></td>
+					<td width=10%>		
+						<span>
+						<c:if test="${member != null }"><a href="/logout">로그아웃</a></c:if>
+						<c:if test="${member == null }"><a href="/main">로그인</a></c:if>
+						</span>
+						<span>
+						<c:if test="${member != null }">
+						<p>${member.mms_userid }님 안녕하세요.</p>
+						</c:if>
+						</span>
+					</td> 
+					<!-- login.jsp 삽입 필요 (기능, 백엔드) -->
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</div>
+	</div>	
 </body>
 </html>
