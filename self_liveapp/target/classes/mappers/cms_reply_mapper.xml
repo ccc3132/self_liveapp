@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cms_reply">
+
+	<!-- 댓글 조회 -->
+	<select id="read_reply" resultType="kr.co.vo.cms_reply_vo">
+		SELECT cms_rno
+			 , cms_content
+			 , cms_regdate
+		FROM CMS_REPLY
+		WHERE cms_bno = #{cms_bno}
+	</select>
+	
+	<!-- 답변등록 -->
+	<insert id="write_reply">
+		INSERT INTO CMS_REPLY (
+			cms_bno
+			, cms_content
+			, cms_writer
+		) VALUES (
+			#{cms_bno}
+			, #{cms_content}
+			, #{cms_writer}
+		)
+	</insert>
+	
+</mapper>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cms_board">
+
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 't'.toString()">
+				AND cms_title LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="searchType == 'c'.toString()">
+				AND cms_content LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="searchType == 'w'.toString()">
+				AND cms_writer LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="searchType == 'tc'.toString()">
+				AND (cms_title LIKE CONCAT('%', #{keyword}, '%')
+				OR cms_content LIKE CONCAT('%', #{keyword}, '%'))
+			</if>
+		</if>
+	</sql>
+	
+	<!-- 게시판 글쓰기 -->
+	<insert id="write" parameterType="kr.co.vo.cms_board_vo"
+			useGeneratedKeys="true" keyProperty="cms_bno">
+		INSERT INTO CMS_BOARD (
+			cms_title
+			, cms_content
+			, cms_writer
+		) VALUES (
+			#{cms_title}
+			, #{cms_content}
+			, #{cms_writer}
+		)
+	</insert>
+	
+	<!-- 게시판 목록 -->
+	<select id="list" resultType="kr.co.vo.cms_board_vo" parameterType="kr.co.vo.SearchCriteria">
+		SELECT cms_bno
+			 , cms_title
+			 , cms_writer
+			 , cms_regdate
+			 , cms_hit
+		FROM CMS_BOARD
+		WHERE cms_bno > 0
+		<include refid="search"></include>
+		ORDER BY cms_bno DESC
+		LIMIT #{pageStart}, #{perPageNum}
+	</select>
+	
+	<!-- 게시글 조회 -->
+	<select id="read" parameterType="int" resultType="kr.co.vo.cms_board_vo">
+		SELECT cms_bno
+			 , cms_title
+			 , cms_content
+			 , cms_writer
+			 , cms_regdate
+		FROM CMS_BOARD
+		WHERE cms_bno = #{cms_bno}
+	</select>
+	
+	<!-- 게시글 수정 -->
+	<update id="update" parameterType="kr.co.vo.cms_board_vo">
+		UPDATE CMS_BOARD SET
+			cms_title = #{cms_title}
+			, cms_content = #{cms_content}
+		WHERE cms_bno = #{cms_bno}
+	</update>
+	
+	<!-- 게시글 삭제 -->
+	<delete id="delete" parameterType="int">
+		DELETE
+		FROM CMS_BOARD
+		WHERE cms_bno = #{cms_bno}
+	</delete>
+	
+	<!-- 게시글 총 갯수 -->
+	<select id="list_count" resultType="int" parameterType="kr.co.vo.SearchCriteria">
+		SELECT COUNT(cms_bno)
+		FROM CMS_BOARD
+		WHERE cms_bno > 0
+		<include refid="search"></include>
+	</select>
+	
+	<!-- 파일등록 -->
+	<insert id="insert_file" parameterType="hashMap">
+		INSERT INTO CMS_FILE (
+			cms_bno
+			, cms_org_file_name
+			, cms_stored_file_name
+			, cms_file_size
+		) VALUE (
+			#{cms_bno}
+			, #{cms_org_file_name}
+			, #{cms_stored_file_name}
+			, #{cms_file_size}
+		)
+	</insert>
+	
+	<!-- 파일조회 -->
+	<select id="select_file_list" parameterType="int" resultType="hashMap">
+		SELECT cms_file_no
+			 , cms_org_file_name
+			 , ROUND(cms_file_size/1024, 1) as cms_file_size
+		FROM CMS_FILE
+		WHERE cms_bno = #{cms_bno}
+		AND cms_del_gb = 'N'
+		ORDER BY cms_file_no ASC
+	</select>
+	
+	<!-- 파일다운 -->
+	<select id="select_file_info" parameterType="hashMap" resultType="hashMap">
+		SELECT cms_stored_file_name
+			 , cms_org_file_name
+		FROM CMS_FILE
+		WHERE cms_file_no = #{cms_file_no}
+	</select>
+	
+	<!-- 파일수정 -->
+	<update id="update_file" parameterType="hashMap">
+		UPDATE CMS_FILE SET
+			cms_del_gb = 'Y'
+		WHERE cms_file_no = #{cms_file_no}
+	</update>
+	
+	<!-- 조회수 -->
+	<update id="board_hit" parameterType="int">
+		UPDATE CMS_BOARD SET
+			cms_hit = cms_hit + 1
+		WHERE cms_bno = #{cms_bno}
+	</update>
+	
+</mapper>
