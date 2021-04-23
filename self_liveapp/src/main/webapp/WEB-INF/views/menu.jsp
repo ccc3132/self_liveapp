@@ -52,6 +52,23 @@
 				</tr>
 			</table>
 		</div>
-	</div>	
+	</div>
+	
+	<!-- 마우스 메뉴 보이기 -->
+		<script>
+		
+		mouse_hide();
+		
+		function mouse_show() {
+			document.all.sub_menu.style="display:block;";
+		}
+		
+		function mouse_hide() {
+			document.all.sub_menu.style="display:none;";
+		}
+		document
+		</script>
+<!-- head 종료 -->
+		
 </body>
 </html>
