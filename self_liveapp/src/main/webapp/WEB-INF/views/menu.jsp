@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>메인화면</title>
+<title>메인화면 테스트</title>
 </head>
 <body>
 	<nav id=mainNav onmouseover='mouse_show();' onmouseout='mouse_hide();'>
