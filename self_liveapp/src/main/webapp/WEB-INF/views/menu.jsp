@@ -30,7 +30,7 @@
 
 
 	<div>
-		<span><a href="/dms_board/dms_0010_list">목록</a></span>
+		<span><a href="/dms_board/dms_0010_list">목록adasdadsad</a></span>
 		<span>
 			<c:if test="${member != null }"><a href="/logout">로그아웃</a></c:if>
 			<c:if test="${member == null }"><a href="/main">로그인</a></c:if>
