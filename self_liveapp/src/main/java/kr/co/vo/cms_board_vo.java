@@ -2,7 +2,7 @@ package kr.co.vo;
 
 import java.util.Date;
 
-public class cms_board_vo {
+public class cms_board_vo extends cms_reply_vo {
 	
 	private int cms_bno;
 	private int cms_hit;

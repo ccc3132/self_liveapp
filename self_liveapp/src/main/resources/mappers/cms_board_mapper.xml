@@ -39,14 +39,31 @@
 	<!-- 게시판 목록 -->
 	<select id="list" resultType="kr.co.vo.cms_board_vo" parameterType="kr.co.vo.SearchCriteria">
 		SELECT cms_bno
+			 , cms_rno
 			 , cms_title
 			 , cms_writer
 			 , cms_regdate
 			 , cms_hit
-		FROM CMS_BOARD
+		FROM (
+			SELECT cms_bno
+				 , cms_rno
+				 , cms_title
+				 , cms_writer
+				 , cms_regdate
+				 , cms_hit
+			FROM CMS_BOARD
+			UNION ALL
+			SELECT cms_bno
+				 , cms_rno
+				 , CONCAT('RE : ', cms_title) AS cms_title
+				 , cms_writer
+				 , cms_regdate
+				 , cms_hit
+			FROM CMS_REPLY
+		) A
 		WHERE cms_bno > 0
 		<include refid="search"></include>
-		ORDER BY cms_bno DESC
+		ORDER BY cms_bno DESC, cms_regdate ASC
 		LIMIT #{pageStart}, #{perPageNum}
 	</select>
 	

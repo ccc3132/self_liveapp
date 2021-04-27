@@ -182,7 +182,7 @@ public class cms_board_controller {
 		rttr.addAttribute("searchType", scri.getSearchType());
 		rttr.addAttribute("keyword", scri.getKeyword());
 		
-		return "dms_board/dms_0010_list";
+		return "redirect:/dms_board/dms_0010_list";
 	}
 
 }

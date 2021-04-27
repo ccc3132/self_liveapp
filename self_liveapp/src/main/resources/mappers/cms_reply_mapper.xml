@@ -14,13 +14,15 @@
 	</select>
 	
 	<!-- 답변등록 -->
-	<insert id="write_reply">
+	<insert id="write_reply" parameterType="kr.co.vo.cms_reply_vo">
 		INSERT INTO CMS_REPLY (
 			cms_bno
+			, cms_title
 			, cms_content
 			, cms_writer
 		) VALUES (
 			#{cms_bno}
+			, #{cms_title}
 			, #{cms_content}
 			, #{cms_writer}
 		)

@@ -13,11 +13,13 @@
 	<hr/>
 
 	<form name="reply_form" enctype="multipart/form-data">
+		<input type="hidden" id="cms_bno" name="cms_bno" value="${list.cms_bno }"/>
+		
 		<table>
 			<c:if test="${member.mms_userid != null }">
 				<tr>
 					<td>제목</td>
-					<td><input type="text" value="RE : ${list.cms_title }"/></td>
+					<td><input type="text" id="cms_title" name="cms_title" value="${list.cms_title }"/></td>
 				</tr>
 				
 				<tr>
@@ -25,6 +27,11 @@
 					<td>
 						<textarea class="chk" id="cms_content" name="cms_content" title="내용을 입력해주세요." style="height:200px;">성명 : ${list.cms_writer }&#10;내용 : ${list.cms_content }&#10;==================&#10;답변 : </textarea>
 					</td>
+				</tr>
+				
+				<tr>
+					<td>작성자</td>
+					<td><input type="text" id="cms_writer" name="cms_writer" value="${member.mms_userid }"/></td>
 				</tr>
 				
 				<tr>
@@ -61,7 +68,7 @@
 				return false;
 			}
 			
-			form_obj.attr("action", "/dms_reply/dms_0010_reply");
+			form_obj.attr("action", "/dms_reply/dms_0010_write");
 			form_obj.attr("method", "post");
 			form_obj.submit();
 		});
