@@ -4,43 +4,56 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>메인화면 테스트</title>
+<title>e-러닝 플랫폼 SELF</title>
 </head>
-<body>
+<body class="bg-light">
 	<nav class="navbar fixed-top" id=mainNav onmouseover='mouse_show();' onmouseout='mouse_hide();'>
-		<div class="container-fluid" style="text-align:left;">
+		<div class="container-fluid" style="text-align:left; font-size:13px;">
 			<table class="table table-borderless">
 				<tr>
-					<td width=10%><a class="navbar-brand mr-auto" href="/"> <img src="/resources/common/img/t_l_logo.png" height="35"></a></td>
-					<td width=15%><a href="/main.jsp" style="color:white;">&nbsp;| E-Class System&nbsp;&nbsp;</a></td>
-					<td width=10%><a href="/main.jsp" style="color:white;">학습홈</a></td>
-					<td width=10%>학습공지</td>
-					<td width=10%>학습관리</td>
-					<td></td>
-					<td></td>
+					<td width=10%><a class="navbar-brand mr-auto" href="https://liveapp.co.kr"> <img src="/resources/common/img/t_l_logo.png" height="50"></a></td>
+					<td width=15%><div style="height:10px;"></div><a href="" style="color:white; font-size:16px;">&nbsp;| E-Class System&nbsp;&nbsp;</a></td>
+					<td width=10%><div style="height:10px"></div>
+					<a href="" style="color:white;">학습홈</a>
+					</td>
+					<td width=10%><div style="height:10px;"></div>학습공지</td>
+					<td width=10%><div style="height:10px;"></div>학습관리</td>
+					<td width=10%><div style="height:10px;"></div>
+						<c:if test="${member != null }">
+							<a href="/dms_member/dms_0010_memberupdate_view"  style='color:white;'  ><font color=#D4D5D6>회원정보수정</font></a>
+						</c:if>				
+					</td>
+					<td width=10%><div style="height:10px;"></div>
+						<c:if test="${member != null }">
+							<a href="/logout"  style='color:white;'  ><font color=#D4D5D6>로그아웃</font>&nbsp;&nbsp;&nbsp;&nbsp;</a>
+						</c:if>		
+					</td>
 					<td></td>
 				</tr>
 			</table>
 		</div>
 	</nav>
-	<div style="height:55px;">&nbsp;</div>
+	<div style="height:80px;">&nbsp;</div>
 	<div id="sub_menu" class="container-fluid" onmouseover='mouse_show();' onmouseout='mouse_hide();'>
 		<table class="table table-borderless">
 			<tr>
 				<td width=10%>&nbsp;</td>
 				<td width=15%>&nbsp;</td>
 				<td width=10%>&nbsp;</td>
-				<td width=10%><a href="/WEB-INF/views/dms_board/dms_0010_list.jsp">수강과목 공지</a></td>
+				<td width=10%><a href="/dms_board/dms_0010_list">수강과목 공지</a></td>
 				<td width=10%>	
 					<span>
-					<c:if test="${member != null }"><a href="/logout">로그아웃</a></c:if>
 					<c:if test="${member == null }"><a href="/main">로그인</a></c:if>
 					</span>
+					
 					<span>
 					<c:if test="${member != null }">
-					<p>${member.mms_userid }님 안녕하세요.</p>
+						<p><a href="/dms_member/dms_0010_member_view">마이페이지</a></p>
+						<p><a href="/">질의 응답</a></p>
+						<p><a href="/">과제제출</a></p>
 					</c:if>
 					</span>
+					
 				</td> 
 				<!-- login.jsp 삽입 필요 (기능, 백엔드) -->
 				<td></td>
@@ -49,7 +62,6 @@
 			</tr>
 		</table>
 	</div>
-	
 	
 	<!-- 마우스 메뉴 보이기 -->
 		<script>

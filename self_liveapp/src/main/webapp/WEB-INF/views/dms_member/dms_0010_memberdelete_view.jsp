@@ -8,9 +8,9 @@
 </head>
 <body>
 
-	<hr/>
-	<nav><%@include file="/WEB-INF/views/menu.jsp" %></nav>
-	<hr/>
+	
+	<%@include file="/WEB-INF/views/menu.jsp" %>
+
 
 	<form id="memberdelete_form" name="memberdelete_form">
 		<table>

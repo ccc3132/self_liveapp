@@ -10,7 +10,7 @@
 <body>
 
 	<%@include file="/WEB-INF/views/menu.jsp" %>
-
+<div style="height:100px;"></div>
 	<div class="container">
 		<div style="height:20px;"></div>
 		
@@ -29,7 +29,7 @@
 						<form name="main_form">
 						<!-- login 기능 -->
 								<div class="row">
-									
+									<c:if test="${member == null }">									
 									<!-- 년도 선택 -->
 									<div class="col-md-6">
 										<select style="font-size:13px;" id="year" name="year" class="form-control form-control-sm">
@@ -52,7 +52,7 @@
 											</option>
 										</select><br>
 									</div>
-									<c:if test="${member == null }">	
+
 									<div class="col-md-3">
 										<label for="userid" style="font-size:13px">아이디</label> <br>
 									</div>
@@ -78,16 +78,23 @@
 									</c:if>
 									<c:if test="${member != null }">
 									<div>
-										<p>${member.mms_userid }님 환영합니다</p>
-										<button type="button" id="memberupdate_btn" name="memberupdate_btn">회원정보수정</button>
-										<button type="button" id="memberdelete_btn" name="memberdelete_btn">회원탈퇴</button>
-										<button type="button" id="logout_btn" name="logout_btn">로그아웃</button>
-									</div>
-								</c:if>
-								
-								<c:if test="${msg == false }">
-									<p>아이디와 비밀번호를 확인해주세요.</p>
-								</c:if>					
+										<table border=0 class='table table-bordered'>
+											<tr>
+												<td style="font-size:15px;font-weight:bold;" align=center valign=middle>
+													<br><br>
+													${member.mms_userid }님! 반갑습니다.
+													<br><br>
+													<p><a style="font-size:13px;" class="btn btn-primary btn-lg" href="/dms_member/dms_0010_member_view" 
+													role="button">마이페이지로 가기</a></p>
+												</td>
+											</tr>
+										</table>
+									</div>			
+									</c:if>
+									
+									<c:if test="${msg == false }">
+										<p>아이디와 비밀번호를 확인해주세요.</p>
+									</c:if>					
 								</div>
 							</form>
 						</div>
@@ -136,6 +143,8 @@
 	
 </script>
 
+
+<div style="height:100px;"></div>
 <%@ include file="tail.jsp" %>
 </body>
 </html>

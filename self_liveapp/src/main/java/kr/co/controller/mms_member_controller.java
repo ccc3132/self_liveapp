@@ -106,6 +106,14 @@ public class mms_member_controller {
 		return "redirect:/main";
 	}
 	
+	//마이페이지 뷰
+	@RequestMapping(value = "/dms_member/dms_0010_member_view", method = RequestMethod.GET)
+	public String dms_0010_member_view() throws Exception {
+		logger.info("dms_0010_member_view");
+		
+		return "/dms_member/dms_0010_member_view";
+	}
+	
 	//회원탈퇴 뷰
 	@RequestMapping(value = "/dms_member/dms_0010_memberdelete_view", method = RequestMethod.GET)
 	public String dms_0010_memberdelete_view() throws Exception {
