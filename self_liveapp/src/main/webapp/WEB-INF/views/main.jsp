@@ -76,7 +76,7 @@
 										id="login_btn" name="login_btn">로그인</button>
 									</div>
 									</c:if>
-											<c:if test="${member != null }">
+									<c:if test="${member != null }">
 									<div>
 										<p>${member.mms_userid }님 환영합니다</p>
 										<button type="button" id="memberupdate_btn" name="memberupdate_btn">회원정보수정</button>
