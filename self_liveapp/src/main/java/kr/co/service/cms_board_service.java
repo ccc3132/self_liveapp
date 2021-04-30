@@ -1,3 +1,11 @@
+/* 
+ * 게시판 작성 관련 service  
+ * 
+ * 
+ * 
+ * 
+ * */
+
 package kr.co.service;
 
 import java.util.List;
@@ -7,6 +15,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import kr.co.vo.SearchCriteria;
 import kr.co.vo.cms_board_vo;
+
 
 public interface cms_board_service {
 	

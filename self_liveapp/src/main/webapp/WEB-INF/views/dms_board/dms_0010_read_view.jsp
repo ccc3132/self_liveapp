@@ -10,6 +10,7 @@
 
 	<%@include file="/WEB-INF/views/menu.jsp" %>
 	<br><br>
+
 	
 	
 	<div class="container-fluid">
@@ -153,5 +154,7 @@
 	}
 	
 </script>
+
+	<%@include file="/WEB-INF/views/tail.jsp" %>
 </body>
 </html>

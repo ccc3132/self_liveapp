@@ -82,7 +82,7 @@
 											<tr>
 												<td style="font-size:15px;font-weight:bold;" align=center valign=middle>
 													<br><br>
-													${member.mms_userid }님! 반갑습니다.
+													${member.mms_username }님! 반갑습니다.
 													<br><br>
 													<p><a style="font-size:13px;" class="btn btn-primary btn-lg" href="/dms_member/dms_0010_member_view" 
 													role="button">마이페이지로 가기</a></p>

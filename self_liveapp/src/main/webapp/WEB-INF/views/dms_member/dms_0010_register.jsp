@@ -8,9 +8,9 @@
 </head>
 <body>
 
-	<hr/>
-	<nav><%@include file="/WEB-INF/views/menu.jsp" %></nav>
-	<hr/>
+
+	<%@include file="/WEB-INF/views/menu.jsp" %>
+
 
 	<form name="register_form">
 		<table>

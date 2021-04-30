@@ -20,7 +20,7 @@
 					<td width=10%><div style="height:10px;"></div>학습관리</td>
 					<td width=10%><div style="height:10px;"></div>
 						<c:if test="${member != null }">
-							<a href="/dms_member/dms_0010_memberupdate_view"  style='color:white;'  ><font color=#D4D5D6>회원정보수정</font></a>
+							<a href="/dms_member/dms_0010_register_form"  style='color:white;'  ><font color=#D4D5D6>회원정보수정</font></a>
 						</c:if>				
 					</td>
 					<td width=10%><div style="height:10px;"></div>
@@ -40,7 +40,7 @@
 				<td width=10%>&nbsp;</td>
 				<td width=15%>&nbsp;</td>
 				<td width=10%>&nbsp;</td>
-				<td width=10%><a href="/dms_board/dms_0010_list">수강과목 공지</a></td>
+				<td width=10%><a href="/dms_board/dms_0010_list?bo_table=notice">수강과목 공지</a></td>
 				<td width=10%>	
 					<span>
 					<c:if test="${member == null }"><a href="/main">로그인</a></c:if>
@@ -49,8 +49,8 @@
 					<span>
 					<c:if test="${member != null }">
 						<p><a href="/dms_member/dms_0010_member_view">마이페이지</a></p>
-						<p><a href="/">질의 응답</a></p>
-						<p><a href="/">과제제출</a></p>
+						<p><a href="/dms_board/dms_0010_list?bo_table=qna">질의 응답</a></p>
+						<p><a href="/dms_board/dms_0010_list?bo_table=pds">과제제출</a></p>
 					</c:if>
 					</span>
 					

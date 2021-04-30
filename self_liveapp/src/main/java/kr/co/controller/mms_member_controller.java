@@ -114,6 +114,26 @@ public class mms_member_controller {
 		return "/dms_member/dms_0010_member_view";
 	}
 	
+	//로그인페이지 화면 뷰
+	@RequestMapping(value = "/dms_member/dms_0010_login_view", method = RequestMethod.GET)
+	public String dms_0010_login_view() throws Exception {
+		logger.info("dms_0010_login_view");
+		
+		return "/dms_member/dms_0010_login_view";
+	}
+	
+	
+	
+	//회원정보확인 뷰
+	@RequestMapping(value = "dms_member/dms_0010_register_form", method = RequestMethod.GET) 
+	public String dms_0010_register_form() throws Exception {
+		logger.info("dms_0010_register_form");
+		return "/dms_member/dms_0010_register_form";
+	}
+	
+	
+	
+	
 	//회원탈퇴 뷰
 	@RequestMapping(value = "/dms_member/dms_0010_memberdelete_view", method = RequestMethod.GET)
 	public String dms_0010_memberdelete_view() throws Exception {

@@ -80,7 +80,7 @@
 							
 								<div class="row">
 									<div class="col-md-12">
-										${member.mms_userid }님! 반갑습니다.	
+										${member.mms_username }님! 반갑습니다.	
 									</div>
 									<div class="col-md-12">
 									
