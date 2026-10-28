@@ -49,6 +49,7 @@ public class CommonComponentsConfig {
                 "classpath:egovframework/message/com/uat/uia/message",
                 "classpath:egovframework/message/com/uat/uap/message",
                 "classpath:egovframework/message/com/uss/umt/message",
+                "classpath:egovframework/message/com/sec/rgm/message",
                 "classpath:messages/message-validation", // 실행환경 ptl-reactive 검증 메시지(validation.pwdCheck 등)
                 "classpath:org/egovframe/rte/fdl/idgnr/messages/idgnr",
                 "classpath:org/egovframe/rte/fdl/property/messages/properties");
