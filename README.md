@@ -46,6 +46,15 @@ src/
 
 **규칙:** Controller 는 `config-servlet.xml`, 그 외 Service/DAO 는 `context-*.xml` 에서 스캔합니다.
 
+## 브랜치·PR 규칙
+
+`master`에 직접 push하지 않고, 모든 변경은 PR을 거쳐 머지합니다.
+
+1. `master`에서 작업 브랜치를 만듭니다. 이름: `feat/<설명>`, `fix/<설명>`, `docs/<설명>` (예: `feat/board-list`)
+2. 작업 브랜치를 push하고 `master` 대상으로 PR을 생성합니다.
+3. 빌드(`mvn clean package`)가 통과하는지 확인한 뒤 머지합니다.
+4. 머지한 작업 브랜치는 삭제합니다.
+
 ## 참고
 
 - 이전 코드(eGovFrame 3.10 + 로그인/게시판 화면)는 git 기록에서 확인할 수 있습니다. 마지막 커밋: `4fd2adc`
