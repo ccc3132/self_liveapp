@@ -1,0 +1,10 @@
+# 운영(외부 DB) 실행용: 값은 환경변수로 주입한다. 비밀번호를 파일에 적지 않는다.
+#   SPRING_PROFILES_ACTIVE=prod
+#   DB_URL=jdbc:postgresql://localhost:5432/egovweb
+#   DB_USER=egov
+#   DB_PASSWORD=...
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
