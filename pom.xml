@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>egovframework.selfliveapp</groupId>
+  <artifactId>self_liveapp</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+  <name>self_liveapp</name>
+
+  <properties>
+    <java.version>1.8</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <egovframework.rte.version>3.10.0</egovframework.rte.version>
+    <failOnMissingWebXml>false</failOnMissingWebXml>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>egovframe</id>
+      <url>https://maven.egovframe.go.kr/maven/</url>
+      <releases><enabled>true</enabled></releases>
+      <snapshots><enabled>false</enabled></snapshots>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <!-- eGovFrame 실행환경 -->
+    <dependency>
+      <groupId>egovframework.rte</groupId>
+      <artifactId>egovframework.rte.ptl.mvc</artifactId>
+      <version>${egovframework.rte.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>egovframework.rte</groupId>
+      <artifactId>egovframework.rte.psl.dataaccess</artifactId>
+      <version>${egovframework.rte.version}</version>
+    </dependency>
+
+    <!-- Web -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.3.2</version>
+      </plugin>
+    </plugins>
+  </build>
+</project>
