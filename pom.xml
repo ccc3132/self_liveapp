@@ -4,6 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <!-- eGovFrame Web Parent: Java 17, Spring 6, Jakarta EE 의존성 버전 관리 -->
+  <parent>
+    <groupId>org.egovframe.web</groupId>
+    <artifactId>egovframe-web-config-parent</artifactId>
+    <version>5.0.0</version>
+  </parent>
+
   <groupId>egovframework.selfliveapp</groupId>
   <artifactId>self_liveapp</artifactId>
   <version>0.0.1-SNAPSHOT</version>
@@ -11,10 +18,7 @@
   <name>self_liveapp</name>
 
   <properties>
-    <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <egovframework.rte.version>3.10.0</egovframework.rte.version>
-    <failOnMissingWebXml>false</failOnMissingWebXml>
   </properties>
 
   <repositories>
@@ -29,47 +33,37 @@
   <dependencies>
     <!-- eGovFrame 실행환경 -->
     <dependency>
-      <groupId>egovframework.rte</groupId>
-      <artifactId>egovframework.rte.ptl.mvc</artifactId>
-      <version>${egovframework.rte.version}</version>
+      <groupId>org.egovframe.rte</groupId>
+      <artifactId>egovframe-rte-ptl-mvc</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
-      <groupId>egovframework.rte</groupId>
-      <artifactId>egovframework.rte.psl.dataaccess</artifactId>
-      <version>${egovframework.rte.version}</version>
+      <groupId>org.egovframe.rte</groupId>
+      <artifactId>egovframe-rte-psl-dataaccess</artifactId>
     </dependency>
 
-    <!-- Web -->
+    <!-- Jakarta Servlet / JSP / JSTL -->
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.servlet.jsp</groupId>
+      <artifactId>jakarta.servlet.jsp-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
-      <version>1.2</version>
+      <groupId>jakarta.servlet.jsp.jstl</groupId>
+      <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.web</groupId>
+      <artifactId>jakarta.servlet.jsp.jstl</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-        <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-          <encoding>UTF-8</encoding>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.2</version>
-      </plugin>
-    </plugins>
-  </build>
 </project>
