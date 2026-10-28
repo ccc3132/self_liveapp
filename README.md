@@ -13,7 +13,9 @@ java -jar target/egov-web-practice.war
 
 - 위 명령 대신 `run.bat`(Windows) / `run.sh`(Linux·Mac)를 실행해도 됩니다. 빌드 파일이 없으면 먼저 빌드합니다.
 - 접속: `http://localhost:8080/` (`/main.do` 로 이동)
-- DB: 설치 없이 H2 파일 DB가 `./data/` 에 생성되고, 테이블은 첫 실행 때 자동으로 만들어집니다.
+- DB: 설치 없이 **PostgreSQL 이 앱 안에서 함께 실행**되고(내장 PostgreSQL 14), 데이터는 `./data/pg/` 에 저장됩니다. 테이블은 첫 실행 때 자동으로 만들어집니다.
+- 첫 실행은 DB 초기화 때문에 10초 안팎 걸리고, 이후에는 5초 안팎입니다.
+- 앱을 강제 종료해도 다음 실행 때 남은 PostgreSQL 프로세스를 정리하고 다시 시작합니다(데이터 유지).
 - 포트 변경: 환경변수 `SERVER_PORT=9090`
 
 ## 외부 DB로 실행 (운영·다른 사람 접속용)
@@ -29,7 +31,8 @@ java -jar target/egov-web-practice.war
 ```
 
 - 앱이 시작할 때 Flyway 가 DB의 버전을 확인하고, 비어 있으면 테이블을 전부 만들고 오래됐으면 부족한 부분만 추가합니다.
-- 지원 DB: H2(로컬), PostgreSQL. MariaDB 는 드라이버와 마이그레이션 폴더를 추가하면 확장할 수 있습니다(미구현).
+- 지원 DB: PostgreSQL (로컬은 내장, 운영은 외부). 로컬과 운영이 같은 DB 라서 SQL 호환 문제가 없습니다.
+- MariaDB 등 다른 DB 는 드라이버와 `db/migration/<vendor>/` 를 추가하면 확장할 수 있습니다(미구현).
 - 외장 Tomcat(10.1 이상, Jakarta)에 war 를 배포하는 방식도 가능합니다.
 
 ## 기술 스택
@@ -42,7 +45,7 @@ java -jar target/egov-web-practice.war
 | 뷰 | JSP + JSTL (Jakarta) |
 | 데이터 접근 | MyBatis 3.5 (`mybatis-spring-boot-starter` 3.0.5) |
 | DB 마이그레이션 | Flyway |
-| DB | H2 2.3 (로컬, PostgreSQL 호환 모드) / PostgreSQL (외부) |
+| DB | PostgreSQL 14 내장(로컬, zonky `embedded-postgres` 2.2.2) / PostgreSQL (외부) |
 | 로깅 | logback (eGovFrame 이 끌고 오는 log4j2 계열은 충돌하므로 제외) |
 
 ## 프로젝트 구조
@@ -57,13 +60,13 @@ src/main/
 │     └─ impl/                          # XxxServiceImpl, XxxDAO
 ├─ resources/
 │  ├─ application.yml                   # 공통 설정 (메시지, 커넥션 풀)
-│  ├─ application-local.yml             # H2 (기본 프로필)
+│  ├─ application-local.yml             # 내장 PostgreSQL (기본 프로필)
 │  ├─ application-prod.yml              # 외부 DB (환경변수로 주입)
 │  ├─ messages/message.properties       # 예외 메시지 키
 │  ├─ mapper/*.xml                      # MyBatis SQL (namespace = DAO 빈 이름)
 │  └─ db/migration/
 │     ├─ common/V1__init.sql            # 모든 DB 공통 (ANSI 호환)
-│     └─ <vendor>/                      # DB별로 다른 SQL (h2, postgresql ...)
+│     └─ <vendor>/                      # DB별로 다른 SQL (postgresql ...)
 └─ webapp/WEB-INF/jsp/                  # 화면
 src/test/java/                          # EgovComplianceRulesTest(규칙 자동 검증), ApplicationContextTest
 ```
@@ -121,4 +124,5 @@ src/test/java/                          # EgovComplianceRulesTest(규칙 자동 
 ## 참고
 
 - 이전 코드(eGovFrame 3.10 + 로그인/게시판 화면)는 git 기록에서 확인할 수 있습니다. 마지막 커밋: `4fd2adc`
-- `./data/` (H2 DB 파일)는 git 에 올리지 않습니다.
+- `./data/` (내장 PostgreSQL 데이터)는 git 에 올리지 않습니다.
+- 내장 PostgreSQL 바이너리는 Windows·Linux(glibc, amd64)만 포함합니다. macOS/Alpine 에서 로컬 실행하려면 `pom.xml` 의 제외 항목을 지우세요. 그 때문에 war 크기가 약 78MB 입니다.
