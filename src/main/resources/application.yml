@@ -3,7 +3,7 @@ server:
 
 spring:
   profiles:
-    # 기본은 local(H2 파일 DB). 운영은 SPRING_PROFILES_ACTIVE=prod
+    # 기본은 local(내장 PostgreSQL). 운영은 SPRING_PROFILES_ACTIVE=prod
     default: local
   messages:
     # EgovAbstractServiceImpl 의 messageSource (예외 메시지 키)
@@ -23,7 +23,7 @@ spring:
       suffix: .jsp
   flyway:
     enabled: true
-    # {vendor}: h2 / postgresql / mariadb 등 접속한 DB 종류의 폴더를 자동 선택
+    # {vendor}: postgresql / mariadb 등 접속한 DB 종류의 폴더를 자동 선택
     locations: classpath:db/migration/common,classpath:db/migration/{vendor}
 
 mybatis:

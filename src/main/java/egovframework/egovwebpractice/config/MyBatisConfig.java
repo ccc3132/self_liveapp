@@ -16,7 +16,6 @@ public class MyBatisConfig {
     @Bean
     public DatabaseIdProvider databaseIdProvider() {
         Properties vendors = new Properties();
-        vendors.setProperty("H2", "h2");
         vendors.setProperty("PostgreSQL", "postgresql");
         vendors.setProperty("MariaDB", "mariadb");
         VendorDatabaseIdProvider provider = new VendorDatabaseIdProvider();

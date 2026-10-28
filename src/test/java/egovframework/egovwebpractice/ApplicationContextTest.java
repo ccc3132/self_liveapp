@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-/** 메모리 H2 로 Flyway 마이그레이션, EgovAbstractServiceImpl/EgovAbstractMapper 동작을 확인한다. */
-@SpringBootTest(properties = "spring.datasource.url=jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH")
+/** 내장 PostgreSQL(target/test-pg)로 Flyway 마이그레이션, EgovAbstractServiceImpl/EgovAbstractMapper 동작을 확인한다. */
+@SpringBootTest(properties = "app.embedded-db.dir=target/test-pg")
 class ApplicationContextTest {
 
     @Autowired
@@ -21,6 +21,6 @@ class ApplicationContextTest {
         SystemCheckVO vo = systemCheckService.selectSystemCheck();
         assertNotNull(vo);
         assertEquals(1, vo.getId());
-        assertEquals("h2", vo.getDbProduct());
+        assertEquals("postgresql", vo.getDbProduct());
     }
 }

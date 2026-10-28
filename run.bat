@@ -1,5 +1,5 @@
 @echo off
-rem 로컬 실행: 더블클릭하면 H2 DB로 바로 실행된다. (JDK 17 이상 필요)
+rem 로컬 실행: 더블클릭하면 내장 PostgreSQL 로 바로 실행된다. (JDK 17 이상 필요)
 rem 외부 DB: 환경변수 SPRING_PROFILES_ACTIVE=prod, DB_URL, DB_USER, DB_PASSWORD 를 지정한 뒤 실행
 chcp 65001 >nul
 cd /d "%~dp0"
