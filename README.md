@@ -1,4 +1,4 @@
-# self_liveapp
+# egov-web-practice
 
 전자정부프레임워크(eGovFrame) 기반 웹 사이트 프로젝트입니다. 기존 포트폴리오용 코드를 모두 정리하고 뼈대부터 다시 시작합니다.
 
@@ -9,7 +9,7 @@ mvn clean package
 ```
 
 - 필요 환경: JDK 17 이상, Maven 3.x
-- 산출물: `target/self_liveapp-0.0.1-SNAPSHOT.war` (Tomcat 10.1 등 Jakarta Servlet 6.0 컨테이너에 배포)
+- 산출물: `target/egov-web-practice-0.0.1-SNAPSHOT.war` (Tomcat 10.1 등 Jakarta Servlet 6.0 컨테이너에 배포)
 - 접속: `http://localhost:8080/<컨텍스트>/main.do`
 - 주의: Jakarta EE 기반이므로 Tomcat 9 이하(javax)에서는 동작하지 않습니다.
 
@@ -31,7 +31,7 @@ mvn clean package
 ```text
 src/
 ├─ main/
-│  ├─ java/egovframework/selfliveapp/
+│  ├─ java/egovframework/egovwebpractice/
 │  │  └─ web/MainController.java      # /main.do
 │  ├─ resources/egovframework/spring/
 │  │  └─ context-common.xml           # 공통 빈 (Controller 제외)
