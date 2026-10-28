@@ -8,20 +8,23 @@
 mvn clean package
 ```
 
-- 산출물: `target/self_liveapp-0.0.1-SNAPSHOT.war` (Tomcat 8/9 등 서블릿 3.1 컨테이너에 배포)
+- 필요 환경: JDK 17 이상, Maven 3.x
+- 산출물: `target/self_liveapp-0.0.1-SNAPSHOT.war` (Tomcat 10.1 등 Jakarta Servlet 6.0 컨테이너에 배포)
 - 접속: `http://localhost:8080/<컨텍스트>/main.do`
+- 주의: Jakarta EE 기반이므로 Tomcat 9 이하(javax)에서는 동작하지 않습니다.
 
 ## 기술 스택
 
 | 항목 | 기술 |
 |------|------|
-| 언어 | Java 8 (빌드 JDK 8 이상) |
-| 프레임워크 | 전자정부프레임워크 실행환경 3.10.0 (Spring 4.3 기반) |
-| 빌드 | Maven (war) |
-| 뷰 | JSP + JSTL |
-| 서블릿 | 3.1 |
+| 언어 | Java 17 |
+| 프레임워크 | 전자정부프레임워크 실행환경 5.0.0 (Spring Framework 6.2) |
+| 빌드 | Maven (war), 부모 pom `org.egovframe.web:egovframe-web-config-parent:5.0.0` |
+| 뷰 | JSP + JSTL (Jakarta) |
+| 서블릿 | Jakarta Servlet 6.0 |
+| 데이터 접근 | MyBatis 3.5 (`egovframe-rte-psl-dataaccess`, 의존성만 포함, 아직 미사용) |
 
-> DB, ORM(MyBatis 등), 인증 등은 사이트 요구사항이 정해진 뒤 추가합니다.
+> DB 연결, 인증 등은 사이트 요구사항이 정해진 뒤 추가합니다.
 
 ## 프로젝트 구조
 
@@ -46,3 +49,4 @@ src/
 ## 참고
 
 - 이전 코드(eGovFrame 3.10 + 로그인/게시판 화면)는 git 기록에서 확인할 수 있습니다. 마지막 커밋: `4fd2adc`
+- 3.10(Java 8, javax)에서 5.0(Java 17, jakarta)으로 올렸습니다. 이전 코드를 가져올 때는 `javax.*` → `jakarta.*` 패키지 변경이 필요합니다.
