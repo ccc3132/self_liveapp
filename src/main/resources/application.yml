@@ -1,0 +1,20 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  profiles:
+    # 기본은 local(H2 파일 DB). 운영은 SPRING_PROFILES_ACTIVE=prod
+    default: local
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+  flyway:
+    enabled: true
+    # {vendor}: h2 / postgresql / mariadb 등 접속한 DB 종류의 폴더를 자동 선택
+    locations: classpath:db/migration/common,classpath:db/migration/{vendor}
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true

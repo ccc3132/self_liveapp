@@ -4,11 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- eGovFrame Web Parent: Java 17, Spring 6, Jakarta EE 의존성 버전 관리 -->
+  <!-- Spring Boot 3.4 (Spring Framework 6.2, eGovFrame 5.0 실행환경과 같은 계열) -->
   <parent>
-    <groupId>org.egovframe.web</groupId>
-    <artifactId>egovframe-web-config-parent</artifactId>
-    <version>5.0.0</version>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.4.13</version>
+    <relativePath/>
   </parent>
 
   <groupId>egovframework.egovwebpractice</groupId>
@@ -18,7 +19,10 @@
   <name>egov-web-practice</name>
 
   <properties>
+    <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <egovframe.rte.version>5.0.0</egovframe.rte.version>
+    <mybatis-spring-boot.version>3.0.5</mybatis-spring-boot.version>
   </properties>
 
   <repositories>
@@ -31,31 +35,14 @@
   </repositories>
 
   <dependencies>
-    <!-- eGovFrame 실행환경 -->
+    <!-- Web / 내장 Tomcat / JSP -->
     <dependency>
-      <groupId>org.egovframe.rte</groupId>
-      <artifactId>egovframe-rte-ptl-mvc</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.egovframe.rte</groupId>
-      <artifactId>egovframe-rte-psl-dataaccess</artifactId>
-    </dependency>
-
-    <!-- Jakarta Servlet / JSP / JSTL -->
-    <dependency>
-      <groupId>jakarta.servlet</groupId>
-      <artifactId>jakarta.servlet-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.servlet.jsp</groupId>
-      <artifactId>jakarta.servlet.jsp-api</artifactId>
-      <scope>provided</scope>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-jasper</artifactId>
     </dependency>
     <dependency>
       <groupId>jakarta.servlet.jsp.jstl</groupId>
@@ -65,5 +52,85 @@
       <groupId>org.glassfish.web</groupId>
       <artifactId>jakarta.servlet.jsp.jstl</artifactId>
     </dependency>
+
+    <!-- eGovFrame 실행환경 -->
+    <dependency>
+      <groupId>org.egovframe.rte</groupId>
+      <artifactId>egovframe-rte-ptl-mvc</artifactId>
+      <version>${egovframe.rte.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+        <!-- 로깅은 Spring Boot(logback)로 통일: eGovFrame 이 끌고 오는 log4j2 계열은 충돌하므로 제외 -->
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j2-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>jcl-over-slf4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>log4j-over-slf4j</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- DB: MyBatis + JDBC + 마이그레이션(Flyway) -->
+    <dependency>
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
+      <version>${mybatis-spring-boot.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-database-postgresql</artifactId>
+    </dependency>
+
+    <!-- DB 드라이버: 로컬(H2) / 운영(PostgreSQL) -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- 외장 Tomcat 배포용 war 도 만들 수 있도록 provided -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
+  <build>
+    <finalName>egov-web-practice</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>
