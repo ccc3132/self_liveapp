@@ -1,5 +1,9 @@
 server:
   port: ${SERVER_PORT:8080}
+  servlet:
+    session:
+      # 주소창에 ;jsessionid=... 가 붙지 않도록 쿠키로만 세션을 추적
+      tracking-modes: cookie
 
 spring:
   profiles:
@@ -18,6 +22,9 @@ spring:
       idle-timeout: 600000
       max-lifetime: 1800000
   mvc:
+    # 공통컴포넌트 메시지는 한국어(_ko)만 쓰므로 로케일을 한국어로 고정
+    locale: ko
+    locale-resolver: fixed
     view:
       prefix: /WEB-INF/jsp/
       suffix: .jsp
@@ -27,6 +34,9 @@ spring:
     locations: classpath:db/migration/common,classpath:db/migration/{vendor}
 
 mybatis:
-  mapper-locations: classpath:mapper/**/*.xml
+  mapper-locations:
+    - classpath:mapper/**/*.xml
+    # 공통컴포넌트 매퍼 (Globals.DbType=postgres)
+    - classpath:egovframework/mapper/com/**/*_SQL_postgres.xml
   configuration:
     map-underscore-to-camel-case: true

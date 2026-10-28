@@ -1,4 +1,4 @@
--- 모든 DB 에서 공통으로 쓰는 ANSI 호환 SQL
+-- 모든 DB(H2 PostgreSQL 모드, PostgreSQL)에서 공통으로 쓰는 ANSI 호환 SQL
 -- DB마다 문법이 달라지는 스크립트는 db/migration/<vendor>/ 에 둔다.
 
 CREATE TABLE system_check (
