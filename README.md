@@ -46,6 +46,7 @@ java -jar target/egov-web-practice.war
 | 데이터 접근 | MyBatis 3.5 (`mybatis-spring-boot-starter` 3.0.5) |
 | DB 마이그레이션 | Flyway |
 | DB | PostgreSQL 14 내장(로컬, zonky `embedded-postgres` 2.2.2) / PostgreSQL (외부) |
+| 공통컴포넌트 | 표준프레임워크 공통컴포넌트 5.0.7 (로그인 모듈, 소스 도입) |
 | 로깅 | logback (eGovFrame 이 끌고 오는 log4j2 계열은 충돌하므로 제외) |
 
 ## 프로젝트 구조
@@ -54,11 +55,14 @@ java -jar target/egov-web-practice.war
 src/main/
 ├─ java/egovframework/egovwebpractice/
 │  ├─ EgovWebPracticeApplication.java   # Boot 진입점
-│  ├─ config/                           # FrameworkConfig(leaveaTrace, 트랜잭션), MyBatisConfig(databaseId)
+│  ├─ config/                           # FrameworkConfig(leaveaTrace, 트랜잭션), MyBatisConfig(databaseId),
+│  │                                     # EmbeddedPostgresConfig, CommonComponentsConfig(공통컴포넌트 빈)
 │  ├─ web/                              # XxxController
 │  └─ <업무>/service/                   # XxxService(인터페이스), XxxVO
 │     └─ impl/                          # XxxServiceImpl, XxxDAO
+├─ java/egovframework/com/               # 표준프레임워크 공통컴포넌트(로그인) - 소스를 가져와 사용
 ├─ resources/
+│  ├─ egovframework/                    # 공통컴포넌트 설정(globals.properties), 메시지, 매퍼 XML
 │  ├─ application.yml                   # 공통 설정 (메시지, 커넥션 풀)
 │  ├─ application-local.yml             # 내장 PostgreSQL (기본 프로필)
 │  ├─ application-prod.yml              # 외부 DB (환경변수로 주입)
@@ -66,8 +70,10 @@ src/main/
 │  ├─ mapper/*.xml                      # MyBatis SQL (namespace = DAO 빈 이름)
 │  └─ db/migration/
 │     ├─ common/V1__init.sql            # 모든 DB 공통 (ANSI 호환)
+│     ├─ common/V2__common_components_uat_uia.sql   # 공통컴포넌트 로그인 모듈 DDL (테이블 17개)
+│     ├─ common/V3__common_components_uat_uia_data.sql  # 공통컴포넌트 초기 데이터 (샘플 계정 포함)
 │     └─ <vendor>/                      # DB별로 다른 SQL (postgresql ...)
-└─ webapp/WEB-INF/jsp/                  # 화면
+└─ webapp/                              # 화면(JSP), css, js, images
 src/test/java/                          # EgovComplianceRulesTest(규칙 자동 검증), ApplicationContextTest
 ```
 
@@ -104,6 +110,40 @@ src/test/java/                          # EgovComplianceRulesTest(규칙 자동 
 
 > 이 규칙은 위 가이드에 적힌 내용을 코드로 옮긴 것이며, 공식 호환성 확인 도구로 검사한 결과는 아닙니다. 규칙 1-1, 1-2, 2 는 사람이 확인해야 합니다.
 
+## 공통컴포넌트(egovframework.com) 도입 현황
+
+[표준프레임워크 공통컴포넌트 v5.0.7](https://github.com/eGovFramework/egovframe-common-components)은 Maven 라이브러리가 아니라 **소스를 가져와 고쳐 쓰는 템플릿**입니다. 이 프로젝트는 필요한 모듈만 단계적으로 가져옵니다. (전체 자바 클래스 1,097개 중 로그인은 약 50개)
+
+| 모듈 | 상태 | 비고 |
+|------|------|------|
+| 로그인·로그아웃 (`uat.uia`) | 도입 | 세션 방식 인증(`Globals.Auth=session`) |
+| 회원관리 (`uss.umt`) | 예정 | |
+| 일정, 게시판, 쪽지, 메일 발송 (`cop.*`) | 예정 | 메신저·메일 수신은 공통컴포넌트에 없어 직접 개발 |
+
+**로그인 화면:** `http://localhost:8080/uat/uia/egovLoginUsr.do` (로그인 후 `Globals.MainPage` = `/main.do` 로 이동)
+
+**초기 계정** (공통컴포넌트 초기 데이터, 업무사용자 `userSe=USR`): `TEST1`, `webmaster` / 비밀번호 `rhdxhd12`
+
+> **주의:** 위 계정과 비밀번호는 공통 문서에 공개된 값입니다. 다른 사람이 접속할 수 있는 환경에 배포하기 전에 반드시 비밀번호를 바꾸거나 계정을 삭제하세요. 연속 5회 로그인에 실패하면 계정이 잠깁니다.
+
+**Spring Boot 에 맞춘 방식**
+- 원본은 서블릿(`WebApplicationInitializer`) + XML(`context-*.xml`) 구조라서, 필요한 빈만 `CommonComponentsConfig`(Java Config)로 옮겼습니다.
+- DB 는 공통컴포넌트의 PostgreSQL DDL/DML 을 그대로 Flyway 마이그레이션(`V2`, `V3`)으로 적용합니다. 매퍼는 `*_SQL_postgres.xml` 을 사용합니다.
+- `egovframework.com` 아래 소스는 원본과 같은 패키지 구조를 유지합니다. 표준프레임워크 호환성 규칙의 "공통컴포넌트 재사용" 예외에 해당하며, 자동 검증 테스트(`EgovComplianceRulesTest`)는 `egovframework.egovwebpractice` 패키지만 검사합니다.
+
+**원본에서 수정한 부분** (업데이트할 때 다시 확인)
+- `EgovProperties`: `java -jar` 로 실행하면 `WEB-INF/classes` 가 실제 파일이 아니므로, 파일이 없으면 클래스패스에서 `globals.properties` 를 읽도록 보완
+- `EgovLoginController`: 로그아웃 후 이동 주소를 포털 메인(`/EgovContent.do`)에서 로그인 화면으로 변경
+- `globals.properties`: 사용하는 키만 남기고 `Globals.DbType=postgres`, `Globals.Auth=session` 으로 설정
+- 제외한 클래스: Spring Security 방식 필터·구현체(`EgovSpringSecurityLoginFilter`, `EgovSpringSecurityLogoutFilter`, `EgovUserDetailsSecurityServiceImpl`)
+
+**새 모듈을 가져오는 순서**
+1. 시작 패키지(예: `egovframework.com.uss.umt`)에서 import, 같은 패키지, 전체 이름 참조, 인터페이스의 구현체를 따라가며 필요한 자바 클래스를 모읍니다. (Spring 은 구현체를 컴포넌트 스캔으로 찾으므로 import 만 보면 빠집니다.)
+2. 매퍼 XML(`*_SQL_postgres.xml`)에 `@패키지.클래스@메서드` 형태로 적힌 OGNL 참조 클래스도 확인합니다.
+3. 해당 모듈의 DDL/DML(`script/ddl/postgres`, `script/dml/postgres`)을 새 마이그레이션(`V4__...`)으로 추가합니다. 이미 적용된 마이그레이션 파일은 수정하지 않습니다.
+4. 필요한 빈을 `CommonComponentsConfig` 에 추가하고, JSP·CSS·JS·메시지를 복사합니다.
+5. `LoginIntegrationTest` 처럼 통합 테스트를 추가합니다.
+
 ## 브랜치·PR 규칙
 
 `master`에 직접 push하지 않고, 모든 변경은 PR을 거쳐 머지합니다.
@@ -115,7 +155,7 @@ src/test/java/                          # EgovComplianceRulesTest(규칙 자동 
 
 ## 로드맵
 
-1. 회원·로그인·권한(Spring Security)
+1. ~~로그인~~(공통컴포넌트 도입 완료) → 회원관리·권한(공통컴포넌트 `uss.umt`, `sec.ram`)
 2. 일정·업무(달력)
 3. 메일 발송 (외부 SMTP)
 4. 메신저(WebSocket)

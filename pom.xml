@@ -155,6 +155,91 @@
       </exclusions>
     </dependency>
 
+    <!-- 공통컴포넌트(egovframework.com)가 사용하는 라이브러리 -->
+    <dependency>
+      <groupId>org.egovframe.rte</groupId>
+      <artifactId>egovframe-rte-ptl-reactive</artifactId>
+      <version>${egovframe.rte.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j2-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>jcl-over-slf4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>log4j-over-slf4j</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.egovframe.rte</groupId>
+      <artifactId>egovframe-rte-fdl-idgnr</artifactId>
+      <version>${egovframe.rte.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.egovframe.rte</groupId>
+      <artifactId>egovframe-rte-fdl-property</artifactId>
+      <version>${egovframe.rte.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.egovframe.rte</groupId>
+      <artifactId>egovframe-rte-fdl-crypto</artifactId>
+      <version>${egovframe.rte.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.egovframe.rte</groupId>
+      <artifactId>egovframe-rte-fdl-access</artifactId>
+      <version>${egovframe.rte.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.xmlbeans</groupId>
+      <artifactId>xmlbeans</artifactId>
+      <version>5.3.0</version>
+    </dependency>
+    <!-- 공통컴포넌트 발송메일 모듈(XML 기반 발송요청 파일 생성) -->
+    <dependency>
+      <groupId>egovframework.com.ems</groupId>
+      <artifactId>sndng-mail</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.9.4</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-email2-jakarta</artifactId>
+      <version>2.0.0-M1</version>
+    </dependency>
+
     <!-- DB: MyBatis + JDBC + 마이그레이션(Flyway) -->
     <dependency>
       <groupId>org.mybatis.spring.boot</groupId>

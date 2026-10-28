@@ -5,7 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
-@SpringBootApplication
+// egovframework.com: 표준프레임워크 공통컴포넌트(소스를 가져와 사용)
+@SpringBootApplication(scanBasePackages = {"egovframework.egovwebpractice", "egovframework.com"})
 public class EgovWebPracticeApplication extends SpringBootServletInitializer {
 
     @Override
