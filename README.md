@@ -40,12 +40,13 @@ java -jar target/egov-web-practice.war
 | 항목 | 기술 |
 |------|------|
 | 언어 | Java 17 |
-| 프레임워크 | Spring Boot 3.5.6 (Spring Framework 6.2.11) + 전자정부프레임워크 실행환경 5.0.0 (`ptl-mvc`, `fdl-cmmn`, `fdl-logging`, `psl-dataaccess`) |
+| 프레임워크 | Spring Boot 3.5.6 (Spring Framework 6.2.11) + 전자정부프레임워크 실행환경 5.0.2 (`ptl-mvc`, `fdl-cmmn`, `fdl-logging`, `psl-dataaccess`, `fdl-security` 등) |
 | 빌드 | Maven (실행 가능한 war, 내장 Tomcat) |
 | 뷰 | JSP + JSTL (Jakarta) |
 | 데이터 접근 | MyBatis 3.5 (`mybatis-spring-boot-starter` 3.0.5) |
 | DB 마이그레이션 | Flyway |
 | DB | PostgreSQL 14 내장(로컬, zonky `embedded-postgres` 2.2.2) / PostgreSQL (외부) |
+| 보안 | Spring Security 6.5 (실행환경 `fdl-security` 의 Java Config 사용): 로그인, CSRF, DB 기반 URL 권한 |
 | 공통컴포넌트 | 표준프레임워크 공통컴포넌트 5.0.7 (로그인 모듈, 소스 도입) |
 | 로깅 | logback (eGovFrame 이 끌고 오는 log4j2 계열은 충돌하므로 제외) |
 
@@ -84,7 +85,7 @@ src/test/java/                          # EgovComplianceRulesTest(규칙 자동 
 | # | 규칙 | 이 프로젝트의 적용 | 자동 검증 |
 |---|------|--------------------|-----------|
 | 1-1 | 실행환경 라이브러리 변경 금지 | `org.egovframe.rte` jar 를 Maven 에서 받은 그대로 사용 (수정·재패키징 안 함). 제3자 log4j2 계열만 제외 | - (수동) |
-| 1-2 | 라이브러리 적용 범위·버전 | 필수 4종(`ptl-mvc`, `fdl-cmmn`, `fdl-logging`, `psl-dataaccess`)을 모두 5.0.0 으로 통일. Spring Framework 는 실행환경 적용 버전과 같은 6.2.11 (Boot 3.5.6 이 관리하는 버전) | - (수동) |
+| 1-2 | 라이브러리 적용 범위·버전 | 필수 4종(`ptl-mvc`, `fdl-cmmn`, `fdl-logging`, `psl-dataaccess`)을 포함한 실행환경 라이브러리를 모두 5.0.2 로 통일(공통컴포넌트 5.0.7 이 요구하는 버전). Spring Framework 는 실행환경 적용 버전과 같은 6.2.11 (Boot 3.5.6 이 관리하는 버전) | - (수동) |
 | 2 | 실행환경 설정 | 트랜잭션: `@EnableTransactionManagement` + `@Transactional` (Java Config). 커넥션 풀: HikariCP (`spring.datasource.hikari`). 메시지·`leaveaTrace`: `FrameworkConfig` | - (수동) |
 | 3 | MVC 아키텍처 | Controller 는 `@Controller` + `@GetMapping` 등 매핑, DAO·MyBatis·DataSource 직접 호출 금지, 서비스 인터페이스 주입으로만 처리 | O |
 | 4 | 서비스 아키텍처 | `@Service` 클래스는 `EgovAbstractServiceImpl` 상속 + `..service` 패키지의 인터페이스 구현. 예외는 `processException(키)` | O |
@@ -116,33 +117,59 @@ src/test/java/                          # EgovComplianceRulesTest(규칙 자동 
 
 | 모듈 | 상태 | 비고 |
 |------|------|------|
-| 로그인·로그아웃 (`uat.uia`) | 도입 | 세션 방식 인증(`Globals.Auth=session`) |
+| 로그인·로그아웃 (`uat.uia`) | 도입 | Spring Security 방식 인증(`Globals.Auth=security`) |
+| 권한(`sec.ram`) 중 사용자 권한 지정, `@RequireAdmin` | 도입 | 권한 관리 화면은 아직 없음 |
 | 회원관리 (`uss.umt`) | 예정 | |
 | 일정, 게시판, 쪽지, 메일 발송 (`cop.*`) | 예정 | 메신저·메일 수신은 공통컴포넌트에 없어 직접 개발 |
 
-**로그인 화면:** `http://localhost:8080/uat/uia/egovLoginUsr.do` (로그인 후 `Globals.MainPage` = `/main.do` 로 이동)
+**로그인 화면:** `http://localhost:8080/uat/uia/egovLoginUsr.do` (로그인 후 `/main.do` 로 이동)
 
-**초기 계정** (공통컴포넌트 초기 데이터, 업무사용자 `userSe=USR`): `TEST1`, `webmaster` / 비밀번호 `rhdxhd12`
+**초기 계정** (공통컴포넌트 초기 데이터): 비밀번호는 모두 `rhdxhd12`
+
+| 아이디 | 구분(`userSe`) | 권한 |
+|--------|----------------|------|
+| `TEST1`, `webmaster` | 업무사용자(`USR`) | `ROLE_ADMIN` |
+| `USER` | 일반회원(`GNR`) | `ROLE_USER` |
 
 > **주의:** 위 계정과 비밀번호는 공통 문서에 공개된 값입니다. 다른 사람이 접속할 수 있는 환경에 배포하기 전에 반드시 비밀번호를 바꾸거나 계정을 삭제하세요. 연속 5회 로그인에 실패하면 계정이 잠깁니다.
 
-**Spring Boot 에 맞춘 방식**
-- 원본은 서블릿(`WebApplicationInitializer`) + XML(`context-*.xml`) 구조라서, 필요한 빈만 `CommonComponentsConfig`(Java Config)로 옮겼습니다.
-- DB 는 공통컴포넌트의 PostgreSQL DDL/DML 을 그대로 Flyway 마이그레이션(`V2`, `V3`)으로 적용합니다. 매퍼는 `*_SQL_postgres.xml` 을 사용합니다.
+### 인증·권한 구조
+
+- **Spring Security**: 필터 체인은 실행환경 `EgovSecurityConfiguration` 이 만들고(`SecurityConfig` 에서 `@Import`), 설정값은 `egovframework/egovProps/conf/egov-security-config.properties` 에 있습니다.
+- **URL 권한은 DB 에서 읽습니다**: `COMTNROLEINFO`(URL 패턴), `COMTNAUTHORROLERELATE`(권한-롤), `COMTNEMPLYRSCRTYESTBS`(사용자-권한). 예) `/uat/uia/**` 는 익명 허용, 그 외 `*.do` 는 `ROLE_USER`·`ROLE_ADMIN`.
+- **CSRF 보호가 켜져 있습니다.** POST 폼에는 `_csrf` 값이 필요합니다. 공통컴포넌트의 로그인 화면(`<form:form>`)은 자동으로 포함합니다. 직접 만드는 폼은 `<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>` 를 넣으세요.
+- **`@RequireAdmin`**: 관리자(`ROLE_ADMIN`)만 호출할 수 있는 메서드에 붙입니다. 원본에서는 XML(`context-aspect.xml`)의 AOP 가 강제하던 것을 `CommonComponentsAspect` 로 옮겼습니다. 이 AOP 가 없으면 어노테이션만 있고 검사는 일어나지 않습니다. 권한이 없으면 403, 로그인이 필요하면 로그인 화면으로 이동합니다(`SecurityExceptionAdvice`).
+- 공통컴포넌트의 세션 방식 인증(`Globals.Auth=session`)은 5.0.7 에서 권한 조회가 서로를 끝없이 호출하는 구조라 관리자 판정이 불가능해서 사용하지 않습니다.
+
+### Spring Boot 에 맞춘 방식
+
+- 원본은 서블릿(`WebApplicationInitializer`) + XML(`context-*.xml`) 구조라서, 필요한 빈만 `CommonComponentsConfig`·`SecurityConfig`·`CommonComponentsAspect`(Java Config)로 옮겼습니다.
+- 원본이 서블릿에 직접 등록하던 필터는 `FilterRegistrationBean` 으로 등록합니다. 로그인·로그아웃 브리지 필터의 순서는 `RequestContextFilter`(-105) 다음, 보안 필터 체인(-100) 앞(-102)이어야 합니다.
+- DB 는 공통컴포넌트의 PostgreSQL DDL/DML 을 Flyway 마이그레이션으로 적용합니다. 매퍼는 `*_SQL_postgres.xml` 을 사용합니다.
+  - `V2`, `V3`: 로그인 모듈(테이블 17개, 초기 데이터)
+  - `V4`: 사용자 권한 지정 테이블(`COMTNEMPLYRSCRTYESTBS`) 과 초기 권한
+  - `V5`: **URL 권한 패턴 보정.** 원본 DML 은 정규식을 `'\\A/uat/uia/.*\\.do.*\\Z'` 처럼 역슬래시 두 개로 적었는데, MySQL/Oracle 과 달리 PostgreSQL 은 두 개를 그대로 저장해 모든 URL 이 거부됩니다(로그인 화면 무한 리다이렉트). 이미 적용된 V3 는 수정하지 않고 V5 로 바로잡았습니다.
+- 보안 모듈의 일부 빈은 생성 시점에 DB 를 조회합니다. 새 DB 에서는 Flyway 보다 먼저 만들어지면 앱이 뜨지 않으므로, `SecurityDatabaseInitializationDetector`(+ `META-INF/spring.factories`)로 "DB 초기화 이후에 생성"하도록 알려줍니다.
+- 보안 모듈이 `DataSource` 타입 빈을 하나 더 만들기 때문에 기본 DataSource 를 `@Primary` 로 명시합니다(`EmbeddedPostgresConfig`, `ExternalDataSourceConfig`). 그렇지 않으면 MyBatis 자동 설정이 꺼집니다.
 - `egovframework.com` 아래 소스는 원본과 같은 패키지 구조를 유지합니다. 표준프레임워크 호환성 규칙의 "공통컴포넌트 재사용" 예외에 해당하며, 자동 검증 테스트(`EgovComplianceRulesTest`)는 `egovframework.egovwebpractice` 패키지만 검사합니다.
 
-**원본에서 수정한 부분** (업데이트할 때 다시 확인)
+### 원본에서 수정한 부분 (업데이트할 때 다시 확인)
+
 - `EgovProperties`: `java -jar` 로 실행하면 `WEB-INF/classes` 가 실제 파일이 아니므로, 파일이 없으면 클래스패스에서 `globals.properties` 를 읽도록 보완
 - `EgovLoginController`: 로그아웃 후 이동 주소를 포털 메인(`/EgovContent.do`)에서 로그인 화면으로 변경
-- `globals.properties`: 사용하는 키만 남기고 `Globals.DbType=postgres`, `Globals.Auth=session` 으로 설정
-- 제외한 클래스: Spring Security 방식 필터·구현체(`EgovSpringSecurityLoginFilter`, `EgovSpringSecurityLogoutFilter`, `EgovUserDetailsSecurityServiceImpl`)
+- `EgovCsrfSecurityConfig`: `springSecurityFilterChain` 빈 제거(Boot 의 `@EnableWebSecurity` 가 같은 이름의 빈을 만듦). CSRF 토큰 노출 필터는 유지
+- `globals.properties`: 사용하는 키만 남기고 `Globals.DbType=postgres`, `Globals.Auth=security`
+- `egov-security-config.properties`: `dataSource` 빈 이름, 로그인 후 이동 주소(`/main.do`), 접근 허용 목록에 `/WEB-INF/**`(내부 forward), `/error` 추가
+- 제외: 세션 방식 구현(`EgovUserDetailsSessionServiceImpl`)
 
-**새 모듈을 가져오는 순서**
-1. 시작 패키지(예: `egovframework.com.uss.umt`)에서 import, 같은 패키지, 전체 이름 참조, 인터페이스의 구현체를 따라가며 필요한 자바 클래스를 모읍니다. (Spring 은 구현체를 컴포넌트 스캔으로 찾으므로 import 만 보면 빠집니다.)
+### 새 모듈을 가져오는 순서
+
+1. 시작 클래스에서 import, 같은 패키지, 전체 이름 참조, 인터페이스의 구현체를 따라가며 필요한 자바 클래스를 모읍니다. (Spring 은 구현체를 컴포넌트 스캔으로 찾으므로 import 만 보면 빠집니다.)
 2. 매퍼 XML(`*_SQL_postgres.xml`)에 `@패키지.클래스@메서드` 형태로 적힌 OGNL 참조 클래스도 확인합니다.
-3. 해당 모듈의 DDL/DML(`script/ddl/postgres`, `script/dml/postgres`)을 새 마이그레이션(`V4__...`)으로 추가합니다. 이미 적용된 마이그레이션 파일은 수정하지 않습니다.
-4. 필요한 빈을 `CommonComponentsConfig` 에 추가하고, JSP·CSS·JS·메시지를 복사합니다.
-5. `LoginIntegrationTest` 처럼 통합 테스트를 추가합니다.
+3. 해당 모듈의 DDL/DML(`script/ddl/postgres`, `script/dml/postgres`)에서 **새로 필요한 테이블·데이터만** 새 마이그레이션(`V6__...`)으로 추가합니다. 이미 적용된 마이그레이션 파일은 수정하지 않습니다. MySQL/Oracle 방식의 이스케이프(역슬래시 두 개)가 있는지 확인합니다.
+4. `@Resource(name=...)` 로 요구하는 빈을 `CommonComponentsConfig` 에 추가하고, JSP·CSS·JS·메시지를 복사합니다.
+5. 로그인 화면 URL 처럼 URL 권한(`COMTNROLEINFO`)이 필요한 화면은 권한 데이터를 확인합니다.
+6. `SecurityIntegrationTest` 처럼 통합 테스트를 추가합니다. `@RequireAdmin` 은 관리자·일반회원·비로그인 세 경우를 모두 검증합니다.
 
 ## 브랜치·PR 규칙
 
