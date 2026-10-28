@@ -1,19 +1,26 @@
 package egovframework.egovwebpractice.config;
 
 import egovframework.com.cmm.EgovMessageSource;
+import egovframework.com.cmm.ImagePaginationRenderer;
 import egovframework.com.cmm.config.EgovLoginConfig;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.cop.ems.service.EgovMultiPartEmail;
 import egovframework.com.sec.ram.service.impl.EgovUserDetailsSecurityServiceImpl;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 import javax.sql.DataSource;
+import org.egovframe.rte.fdl.crypto.config.EgovCryptoConfiguration;
 import org.egovframe.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl;
 import org.egovframe.rte.fdl.idgnr.impl.strategy.EgovIdGnrStrategyImpl;
+import org.egovframe.rte.fdl.property.impl.EgovPropertyServiceImpl;
 import org.egovframe.rte.psl.dataaccess.util.EgovMap;
+import org.egovframe.rte.ptl.mvc.tags.ui.pagination.DefaultPaginationManager;
 import org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -26,6 +33,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 @Configuration
 @PropertySource("classpath:egovframework/egovProps/globals.properties")
 @ImportResource("classpath:egovframework/spring/context-com-alias.xml")
+@Import(EgovCryptoConfiguration.class) // egovEnvCryptoService 등 암호화 빈 (egov-crypto-config.properties)
 public class CommonComponentsConfig {
 
     /** 메시지: 공통컴포넌트 메시지 + 이 프로젝트 메시지(messages/message). 빈 이름은 messageSource 여야 한다. */
@@ -37,8 +45,11 @@ public class CommonComponentsConfig {
                 "classpath:egovframework/message/com/message-common",
                 "classpath:egovframework/message/com/message-validation",
                 "classpath:egovframework/message/com/cmm/message-common",
+                "classpath:egovframework/message/com/cmm/err/message-common",
                 "classpath:egovframework/message/com/uat/uia/message",
                 "classpath:egovframework/message/com/uat/uap/message",
+                "classpath:egovframework/message/com/uss/umt/message",
+                "classpath:messages/message-validation", // 실행환경 ptl-reactive 검증 메시지(validation.pwdCheck 등)
                 "classpath:org/egovframe/rte/fdl/idgnr/messages/idgnr",
                 "classpath:org/egovframe/rte/fdl/property/messages/properties");
         source.setDefaultEncoding(StandardCharsets.UTF_8.name());
@@ -117,6 +128,73 @@ public class CommonComponentsConfig {
         email.setSenderName(senderName);
         email.setEmailAddress(senderAddress);
         return email;
+    }
+
+    /** 속성 서비스: 페이지당 건수 등 (원본 context-properties.xml) */
+    @Bean(name = "propertiesService", destroyMethod = "destroy")
+    public EgovPropertyServiceImpl propertiesService(
+            @Value("${Globals.fileUpload.maxRequestSize:104857600}") String maxRequestSize,
+            @Value("${Globals.fileStorePath:./data/upload/}") String fileStorePath) {
+        EgovPropertyServiceImpl service = new EgovPropertyServiceImpl();
+        service.setProperties(Map.of(
+                "pageUnit", "10",
+                "pageSize", "10",
+                "posblAtchFileSize", maxRequestSize,
+                "Globals.fileStorePath", fileStorePath,
+                "Globals.addedOptions", "false"));
+        return service;
+    }
+
+    /** 업무사용자 ID(USRCNFRM_...) 생성기 (원본 idgn/context-idgn-UsrCnfrm.xml) */
+    @Bean(name = "usrCnfrmStrategy")
+    public EgovIdGnrStrategyImpl usrCnfrmStrategy() {
+        EgovIdGnrStrategyImpl strategy = new EgovIdGnrStrategyImpl();
+        strategy.setPrefix("USRCNFRM_");
+        strategy.setCipers(11);
+        strategy.setFillChar('0');
+        return strategy;
+    }
+
+    @Bean(name = "egovUsrCnfrmIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovUsrCnfrmIdGnrService(DataSource dataSource, EgovIdGnrStrategyImpl usrCnfrmStrategy) {
+        EgovTableIdGnrServiceImpl service = new EgovTableIdGnrServiceImpl();
+        service.setDataSource(dataSource);
+        service.setStrategy(usrCnfrmStrategy);
+        service.setBlockSize(10);
+        service.setTable("COMTECOPSEQ");
+        service.setTableName("USRCNFRM_ID");
+        return service;
+    }
+
+    /** 화면 이동(EgovPageLink.do) 허용 목록과, 로그인 후 이동 허용 URL 목록 (원본 context-whitelist.xml) */
+    @Bean(name = "egovPageLinkWhitelist")
+    public List<String> egovPageLinkWhitelist() {
+        return List.of(
+                "/egovframework/com/sym/mnu/stm/EgovSiteMap",
+                "/cmm/sym/mpm/EgovSiteMap",
+                "/egovframework/com/main_bottom",
+                "utl/sys/wsi/EgovWebStandardInspectionUri");
+    }
+
+    @Bean(name = "egovNextUrlWhitelist")
+    public List<String> egovNextUrlWhitelist() {
+        return List.of(
+                "/uss/umt/EgovMberSbscrbView.do",
+                "/uss/umt/EgovEntrprsSbscrbView.do",
+                "/uss/olp/cns/CnsltDtlsRegistView.do");
+    }
+
+    /** 목록 화면의 페이지 번호 표시(<ui:pagination type="image">) (원본 egov-com-servlet.xml) */
+    @Bean(name = "imageRenderer")
+    public ImagePaginationRenderer imageRenderer() {
+        return new ImagePaginationRenderer();
+    }
+
+    @Bean(name = "paginationManager")
+    public DefaultPaginationManager paginationManager(ImagePaginationRenderer imageRenderer) {
+        DefaultPaginationManager manager = new DefaultPaginationManager();
+        manager.setRendererType(Map.of("image", imageRenderer));
+        return manager;
     }
 
     /** 공통컴포넌트 mapper-config.xml 의 설정을 Boot 의 MyBatis 설정에 반영한다. */

@@ -1,1 +1,2 @@
 org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitializationDetector=egovframework.egovwebpractice.config.SecurityDatabaseInitializationDetector
+org.springframework.boot.env.EnvironmentPostProcessor=egovframework.egovwebpractice.config.CryptoConfigEnvironmentPostProcessor
