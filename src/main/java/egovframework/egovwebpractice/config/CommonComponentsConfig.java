@@ -2,9 +2,9 @@ package egovframework.egovwebpractice.config;
 
 import egovframework.com.cmm.EgovMessageSource;
 import egovframework.com.cmm.config.EgovLoginConfig;
-import egovframework.com.cmm.service.impl.EgovUserDetailsSessionServiceImpl;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.cop.ems.service.EgovMultiPartEmail;
+import egovframework.com.sec.ram.service.impl.EgovUserDetailsSecurityServiceImpl;
 import java.nio.charset.StandardCharsets;
 import javax.sql.DataSource;
 import org.egovframe.rte.fdl.idgnr.impl.EgovTableIdGnrServiceImpl;
@@ -65,11 +65,17 @@ public class CommonComponentsConfig {
         return config;
     }
 
-    /** 인증 사용자 조회 헬퍼 (Globals.Auth=session 방식) */
+    /** 인증 사용자·권한 조회 서비스 (Globals.Auth=security, Spring Security 의 인증 정보를 사용) */
+    @Bean(name = "egovUserDetailsSecurityService")
+    public EgovUserDetailsSecurityServiceImpl egovUserDetailsSecurityService() {
+        return new EgovUserDetailsSecurityServiceImpl();
+    }
+
+    /** 인증 사용자 조회 헬퍼 */
     @Bean(name = "egovUserDetailsHelper")
-    public EgovUserDetailsHelper egovUserDetailsHelper() {
+    public EgovUserDetailsHelper egovUserDetailsHelper(EgovUserDetailsSecurityServiceImpl egovUserDetailsSecurityService) {
         EgovUserDetailsHelper helper = new EgovUserDetailsHelper();
-        helper.setEgovUserDetailsService(new EgovUserDetailsSessionServiceImpl());
+        helper.setEgovUserDetailsService(egovUserDetailsSecurityService);
         return helper;
     }
 

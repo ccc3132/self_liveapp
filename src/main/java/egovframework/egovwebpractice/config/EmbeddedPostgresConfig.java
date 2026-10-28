@@ -18,6 +18,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 /**
@@ -44,7 +45,9 @@ public class EmbeddedPostgresConfig {
                 .start();
     }
 
+    /** @Primary: 보안 모듈(DataSourceFactoryBean)도 DataSource 타입 빈을 만들기 때문에, 기본 DataSource 를 명시한다. */
     @Bean
+    @Primary
     @ConfigurationProperties("spring.datasource.hikari")
     public DataSource dataSource(EmbeddedPostgres embeddedPostgres) {
         return DataSourceBuilder.create()

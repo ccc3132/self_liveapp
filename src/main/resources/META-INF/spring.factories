@@ -1,0 +1,1 @@
+org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitializationDetector=egovframework.egovwebpractice.config.SecurityDatabaseInitializationDetector
