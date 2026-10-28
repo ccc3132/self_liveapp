@@ -120,12 +120,15 @@ src/test/java/                          # EgovComplianceRulesTest(규칙 자동 
 | 로그인·로그아웃 (`uat.uia`) | 도입 | Spring Security 방식 인증(`Globals.Auth=security`) |
 | 권한(`sec.ram`) 중 사용자 권한 지정, `@RequireAdmin` | 도입 | 권한 관리 화면은 아직 없음 |
 | 업무사용자 관리 (`uss.umt`) | 도입 | 목록·등록·수정·삭제·비밀번호 변경. **관리자(`ROLE_ADMIN`) 전용**. 일반회원·기업회원 관리와 회원가입 화면은 도입하지 않음 |
-| 권한 지정 화면 (`sec.rgm`, `sec.ram` 관리 화면) | 예정 | 지금은 신규 업무사용자에게 권한을 주는 화면이 없음(아래 참고) |
+| 권한그룹 관리 (`sec.rgm`) | 도입 | 사용자에게 `ROLE_USER`/`ROLE_ADMIN` 등 권한 지정. **관리자 전용** |
+| 권한·롤·그룹 관리 화면 (`sec.ram`, `sec.rmt`, `sec.gmt`) | 예정 | |
 | 일정, 게시판, 쪽지, 메일 발송 (`cop.*`) | 예정 | 메신저·메일 수신은 공통컴포넌트에 없어 직접 개발 |
 
 **로그인 화면:** `http://localhost:8080/uat/uia/egovLoginUsr.do` (로그인 후 `/main.do` 로 이동)
 
 **업무사용자 관리 화면:** `http://localhost:8080/uss/umt/EgovEmplyrManage.do` (관리자 로그인 필요)
+
+**권한 지정 화면:** `http://localhost:8080/sec/rgm/EgovAuthorGroupList.do` (관리자 로그인 필요)
 
 **초기 계정** (공통컴포넌트 초기 데이터): 비밀번호는 모두 `rhdxhd12`
 
@@ -139,15 +142,17 @@ src/test/java/                          # EgovComplianceRulesTest(규칙 자동 
 ### 업무사용자 관리 (`uss.umt`)
 
 - **관리자만 접근할 수 있습니다.** 공통컴포넌트 초기 데이터는 `/uss/umt/**`(회원관리) URL 을 익명에게 열어 두었고(회원가입 화면이 공개여야 하므로), 업무사용자 목록 화면은 "로그인했는지"만 확인할 뿐 관리자인지는 확인하지 않습니다. 그대로 두면 **로그인한 일반회원이 직원 목록(개인정보)을 볼 수 있어서**, 마이그레이션 `V7` 로 이 URL 전체를 `ROLE_ADMIN` 전용으로 바꿨습니다. 회원가입 화면을 도입할 때는 해당 URL 만 따로 익명 허용하세요.
-- **새로 등록한 업무사용자는 권한이 지정되기 전까지 로그인할 수 없습니다.** 공통컴포넌트는 등록할 때 `COMTNEMPLYRSCRTYESTBS`(사용자별 권한) 행을 만들지 않고, 별도의 "권한 지정" 화면(`sec.rgm`)에서 지정하는 설계입니다. 이 화면은 아직 도입하지 않았으므로, 지금은 DB 에 직접 넣어야 합니다.
-  ```sql
-  -- 사용자의 고유 ID(ESNTL_ID)로 권한을 지정한다 (ROLE_USER 또는 ROLE_ADMIN)
-  INSERT INTO COMTNEMPLYRSCRTYESTBS (SCRTY_DTRMN_TRGET_ID, MBER_TY_CODE, AUTHOR_CODE)
-  SELECT ESNTL_ID, 'USR01', 'ROLE_USER' FROM COMTNEMPLYRINFO WHERE EMPLYR_ID = '아이디';
-  ```
+- **새로 등록한 업무사용자는 권한이 지정되기 전까지 로그인할 수 없습니다.** 공통컴포넌트는 등록할 때 `COMTNEMPLYRSCRTYESTBS`(사용자별 권한) 행을 만들지 않습니다. 등록한 뒤 **권한 지정 화면(`/sec/rgm/EgovAuthorGroupList.do`)에서 권한을 지정**하세요(아래 "권한 지정" 참고).
 - **비밀번호 규칙**: 연속된 숫자·문자(예: `1234`, `abcd`)가 있으면 거부됩니다. 오류 메시지는 `validation.pwdCheck`("잘못된 비밀번호 형식입니다")입니다.
 - **암호화 키(`egovEnvCryptoService`)**: 실행환경의 기본 키(`egovframe`)는 공개된 값이라 그대로 쓰면 "치명 경고"가 납니다. 첫 실행 때 **무작위 키를 만들어 `./data/egov-crypto-config.properties` 에 저장**하고 그것을 씁니다(`CryptoConfigEnvironmentPostProcessor`). 이 파일은 비밀 키이므로 git 에 올리지 말고(`data/` 는 제외됨), 여러 서버가 같은 암호화 ID 를 주고받아야 하면 같은 파일을 공유하세요. 위치는 환경변수 `APP_CRYPTO_CONFIG_FILE` 로 바꿀 수 있습니다. 키를 바꾸면 이미 발급된 암호화 ID(URL 의 `selectedId` 등)는 무효가 됩니다.
 - 우편번호 검색 팝업(`sym/ccm/zip`)은 도입하지 않아 동작하지 않습니다. 주소는 직접 입력합니다.
+
+### 권한 지정 (`sec.rgm`)
+
+- 관리자가 사용자(업무사용자·일반회원·기업회원)에게 권한(`ROLE_USER`, `ROLE_ADMIN` 등)을 지정하는 화면입니다. 지정 내용은 `COMTNEMPLYRSCRTYESTBS` 에 저장되고, 로그인할 때 Spring Security 가 이 테이블로 권한을 읽습니다. 권한을 바꾸면 **해당 사용자가 다시 로그인해야** 반영됩니다.
+- **권한 상승을 막기 위해 이중으로 보호합니다.** 모든 핸들러의 `@RequireAdmin`(AOP) + URL 규칙 `V8`(`/sec/rgm/**` 는 `ROLE_ADMIN` 전용). 둘 중 하나를 빼도 일반회원은 막히는 것을 테스트로 확인했습니다. 기본 URL 규칙은 `ROLE_USER` 에도 모든 `*.do` 를 열어 두므로, 새 관리 화면을 도입할 때는 URL 규칙(`COMTNROLEINFO`)도 함께 추가하세요.
+- 새 업무사용자를 만든 뒤 처음 권한을 지정할 때의 요청 값은 `regYns=N`(아직 권한이 없음), 이미 권한이 있으면 `Y`(수정)입니다.
+- 마지막 관리자의 권한을 `ROLE_USER` 로 바꾸면 더 이상 관리자가 없어지므로 주의하세요(복구는 DB 에서 직접).
 
 ### 인증·권한 구조
 
@@ -166,6 +171,7 @@ src/test/java/                          # EgovComplianceRulesTest(규칙 자동 
   - `V4`: 사용자 권한 지정 테이블(`COMTNEMPLYRSCRTYESTBS`) 과 초기 권한
   - `V6`: 업무사용자 정보 변경 이력 테이블(`COMTHEMPLYRINFOCHANGEDTLS`)
   - `V7`: 회원관리 URL(`/uss/umt/**`)을 관리자 전용으로 제한
+  - `V8`: 권한 지정 URL(`/sec/rgm/**`)을 관리자 전용으로 제한
   - `V5`: **URL 권한 패턴 보정.** 원본 DML 은 정규식을 `'\\A/uat/uia/.*\\.do.*\\Z'` 처럼 역슬래시 두 개로 적었는데, MySQL/Oracle 과 달리 PostgreSQL 은 두 개를 그대로 저장해 모든 URL 이 거부됩니다(로그인 화면 무한 리다이렉트). 이미 적용된 V3 는 수정하지 않고 V5 로 바로잡았습니다.
 - 보안 모듈의 일부 빈은 생성 시점에 DB 를 조회합니다. 새 DB 에서는 Flyway 보다 먼저 만들어지면 앱이 뜨지 않으므로, `SecurityDatabaseInitializationDetector`(+ `META-INF/spring.factories`)로 "DB 초기화 이후에 생성"하도록 알려줍니다.
 - 보안 모듈이 `DataSource` 타입 빈을 하나 더 만들기 때문에 기본 DataSource 를 `@Primary` 로 명시합니다(`EmbeddedPostgresConfig`, `ExternalDataSourceConfig`). 그렇지 않으면 MyBatis 자동 설정이 꺼집니다.
@@ -185,7 +191,7 @@ src/test/java/                          # EgovComplianceRulesTest(규칙 자동 
 
 1. 시작 클래스에서 import, 같은 패키지, 전체 이름 참조, 인터페이스의 구현체를 따라가며 필요한 자바 클래스를 모읍니다. (Spring 은 구현체를 컴포넌트 스캔으로 찾으므로 import 만 보면 빠집니다.)
 2. 매퍼 XML(`*_SQL_postgres.xml`)에 `@패키지.클래스@메서드` 형태로 적힌 OGNL 참조 클래스도 확인합니다.
-3. 해당 모듈의 DDL/DML(`script/ddl/postgres`, `script/dml/postgres`)에서 **새로 필요한 테이블·데이터만** 새 마이그레이션(`V6__...`)으로 추가합니다. 이미 적용된 마이그레이션 파일은 수정하지 않습니다. MySQL/Oracle 방식의 이스케이프(역슬래시 두 개)가 있는지 확인합니다.
+3. 해당 모듈의 DDL/DML(`script/ddl/postgres`, `script/dml/postgres`)에서 **새로 필요한 테이블·데이터만** 새 마이그레이션(`V9__...`)으로 추가합니다. 이미 적용된 마이그레이션 파일은 수정하지 않습니다. MySQL/Oracle 방식의 이스케이프(역슬래시 두 개)가 있는지 확인합니다.
 4. `@Resource(name=...)` 로 요구하는 빈을 `CommonComponentsConfig` 에 추가하고, JSP·CSS·JS·메시지를 복사합니다. **복사한 메시지 파일은 `CommonComponentsConfig.messageSource()` 의 basename 에도 등록해야 합니다**(안 하면 JSP 가 `No message found` 로 500). JSP 가 `<c:import>`, `<%@ include %>` 로 가져오는 다른 JSP 도 확인하세요.
 5. 로그인 화면 URL 처럼 URL 권한(`COMTNROLEINFO`)이 필요한 화면은 권한 데이터를 확인합니다.
 6. **MockMvc 는 JSP 를 렌더링하지 않으므로**, 새 화면은 반드시 `java -jar` 로 실제 실행해서 화면이 그려지는지(메시지, 태그, import 포함) 확인하세요. 새 DB(데이터 폴더 삭제)로 첫 실행도 확인합니다.
