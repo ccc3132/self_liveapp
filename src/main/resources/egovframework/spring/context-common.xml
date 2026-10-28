@@ -6,7 +6,7 @@
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
     <!-- Service/DAO 등 공통 빈. DataSource, 트랜잭션 등은 context-*.xml 로 추가 -->
-    <context:component-scan base-package="egovframework.selfliveapp">
+    <context:component-scan base-package="egovframework.egovwebpractice">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 </beans>
