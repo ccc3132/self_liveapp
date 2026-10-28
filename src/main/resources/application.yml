@@ -5,6 +5,18 @@ spring:
   profiles:
     # 기본은 local(H2 파일 DB). 운영은 SPRING_PROFILES_ACTIVE=prod
     default: local
+  messages:
+    # EgovAbstractServiceImpl 의 messageSource (예외 메시지 키)
+    basename: messages/message
+    encoding: UTF-8
+  datasource:
+    # 표준프레임워크 설정 규칙: 커넥션 풀 설정 (HikariCP)
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
   mvc:
     view:
       prefix: /WEB-INF/jsp/

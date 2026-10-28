@@ -4,11 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- Spring Boot 3.4 (Spring Framework 6.2, eGovFrame 5.0 실행환경과 같은 계열) -->
+  <!-- Spring Boot 3.5.6: 관리하는 Spring Framework 가 6.2.11 로, eGovFrame 5.0 실행환경 적용 버전과 일치 -->
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.4.13</version>
+    <version>3.5.6</version>
     <relativePath/>
   </parent>
 
@@ -53,7 +53,11 @@
       <artifactId>jakarta.servlet.jsp.jstl</artifactId>
     </dependency>
 
-    <!-- eGovFrame 실행환경 -->
+    <!--
+      eGovFrame 실행환경 (호환성 규칙 2: 필수 라이브러리 4종을 모두 같은 버전으로 적용)
+      jar 자체는 변경하지 않는다(규칙 1). 로깅은 Spring Boot(logback)로 통일하기 위해
+      끌려오는 제3자 log4j2 계열만 제외한다.
+    -->
     <dependency>
       <groupId>org.egovframe.rte</groupId>
       <artifactId>egovframe-rte-ptl-mvc</artifactId>
@@ -63,7 +67,75 @@
           <groupId>commons-logging</groupId>
           <artifactId>commons-logging</artifactId>
         </exclusion>
-        <!-- 로깅은 Spring Boot(logback)로 통일: eGovFrame 이 끌고 오는 log4j2 계열은 충돌하므로 제외 -->
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j2-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>jcl-over-slf4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>log4j-over-slf4j</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.egovframe.rte</groupId>
+      <artifactId>egovframe-rte-fdl-cmmn</artifactId>
+      <version>${egovframe.rte.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j2-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>jcl-over-slf4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>log4j-over-slf4j</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.egovframe.rte</groupId>
+      <artifactId>egovframe-rte-fdl-logging</artifactId>
+      <version>${egovframe.rte.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-slf4j2-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>jcl-over-slf4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>log4j-over-slf4j</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.egovframe.rte</groupId>
+      <artifactId>egovframe-rte-psl-dataaccess</artifactId>
+      <version>${egovframe.rte.version}</version>
+      <exclusions>
         <exclusion>
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-core</artifactId>
@@ -120,6 +192,13 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- 표준프레임워크 호환성 규칙을 빌드에서 자동 검증 -->
+    <dependency>
+      <groupId>com.tngtech.archunit</groupId>
+      <artifactId>archunit-junit5</artifactId>
+      <version>1.4.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
