@@ -60,6 +60,10 @@ public class CommonComponentsConfig {
                 "classpath:egovframework/message/com/cop/smt/sdm/message",
                 "classpath:egovframework/message/com/cop/smt/sim/message",
                 "classpath:egovframework/message/com/cop/smt/wmr/message",
+                "classpath:egovframework/message/com/uss/ion/ntm/message",
+                "classpath:egovframework/message/com/uss/ion/ntr/message",
+                "classpath:egovframework/message/com/uss/ion/nts/message",
+                "classpath:egovframework/message/com/cop/adb/message",
                 "classpath:messages/message-validation", // 실행환경 ptl-reactive 검증 메시지(validation.pwdCheck 등)
                 "classpath:org/egovframe/rte/fdl/idgnr/messages/idgnr",
                 "classpath:org/egovframe/rte/fdl/property/messages/properties");
@@ -238,6 +242,36 @@ public class CommonComponentsConfig {
     @Bean(name = "egovLeaderSchdulIdGnrService", destroyMethod = "destroy")
     public EgovTableIdGnrServiceImpl egovLeaderSchdulIdGnrService(DataSource dataSource) {
         return idGnrService(dataSource, "LDSCHDUL_", 11, "LEADER_SCHDUL_ID");
+    }
+
+    /** 쪽지 ID 생성기 (원본 idgn/context-idgn-NoteManage.xml) */
+    @Bean(name = "egovNoteManageIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovNoteManageIdGnrService(DataSource dataSource) {
+        return idGnrService(dataSource, "NOTE_ID", 13, "NOTE_ID");
+    }
+
+    /** 보낸 쪽지함 ID 생성기 (원본 idgn/context-idgn-NoteManage.xml) */
+    @Bean(name = "egovNoteTrnsmitIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovNoteTrnsmitIdGnrService(DataSource dataSource) {
+        return idGnrService(dataSource, "NOTE_TR", 13, "NOTE_TRNSMIT_ID");
+    }
+
+    /** 받은 쪽지함 ID 생성기 (원본 idgn/context-idgn-NoteManage.xml) */
+    @Bean(name = "egovNoteRecptnIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovNoteRecptnIdGnrService(DataSource dataSource) {
+        return idGnrService(dataSource, "NOTE_RE", 13, "NOTE_RECPTN_ID");
+    }
+
+    /** 주소록 ID 생성기 (원본 idgn/context-idgn-Adbk.xml) */
+    @Bean(name = "egovAdbkIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovAdbkIdGnrService(DataSource dataSource) {
+        return idGnrService(dataSource, "ADBK_", 15, "ADBK_ID");
+    }
+
+    /** 주소록 연락처 ID 생성기 (원본 idgn/context-idgn-Adbk.xml) */
+    @Bean(name = "egovAdbkUserIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovAdbkUserIdGnrService(DataSource dataSource) {
+        return idGnrService(dataSource, "ADBKUSER_", 11, "ADBKUSER_ID");
     }
 
     /** 첨부파일 ID(FILE_...) 생성기. EgovFileMngUtil 이 요구한다 (원본 idgn/context-idgn-File.xml) */
