@@ -7,6 +7,8 @@ import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.egovframe.rte.fdl.cmmn.exception.BaseRuntimeException;
 import org.egovframe.rte.fdl.cmmn.exception.FdlException;
 import org.egovframe.rte.fdl.idgnr.EgovIdGnrService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import egovframework.com.cmm.service.EgovFileMngService;
@@ -44,6 +46,8 @@ import noNamespace.SndngMailDocument;
  */
 @Service("sndngMailRegistService")
 public class EgovSndngMailRegistServiceImpl extends EgovAbstractServiceImpl implements EgovSndngMailRegistService {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(EgovSndngMailRegistServiceImpl.class);
 
 	/** SndngMailRegistDAO */
 	@Resource(name = "sndngMailRegistDAO")
@@ -120,8 +124,14 @@ public class EgovSndngMailRegistServiceImpl extends EgovAbstractServiceImpl impl
 				return false;
 			}
 
-			// 1-5.발송메일 요청XML 파일을 생성한다.
-			trnsmitXmlData(mailVO);
+			// 1-5.발송메일 요청XML 파일을 생성한다(발송 자체는 끝났으므로, 감사 로그 기록이
+			// 실패해도 사용자에게는 발송 실패로 보이지 않게 한다. XMLBeans 가 Spring Boot 실행
+			// 가능한 jar 의 클래스로더에서 생성 클래스를 못 찾는 경우가 있어 방어적으로 처리).
+			try {
+				trnsmitXmlData(mailVO);
+			} catch (RuntimeException e) {
+				LOGGER.warn("메일 발송 요청 XML 기록 실패(발송 자체는 완료됨): {}", e.getMessage());
+			}
 		}
 		return true;
 	}
