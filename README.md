@@ -4,6 +4,8 @@
 
 > 이 문서만 읽고 새 PC 에서 시작해 [로드맵](#7-로드맵-다음-할-일)을 이어갈 수 있도록 썼습니다. 처음이면 1장부터 순서대로 읽으세요.
 > GitHub 저장소 이름은 `self_liveapp` 입니다(코드 안의 프로젝트 이름은 `egov-web-practice`).
+> **2026.11 부터 개발은 이 PC(Windows) 한 대로만 고정합니다.** 2장의 "새 PC 에서 시작하기"는 그래서 더 이상
+> 다른 환경과의 호환을 검증하는 절차가 아니라, 이 PC에 이미 깔려 있는 도구의 기록입니다. 아래 "이 PC의 고정 환경"을 참고하세요.
 
 ## 목차
 
@@ -28,7 +30,8 @@
 | 업무사용자(직원) 관리 | 완료 | 관리자 전용 |
 | 권한 지정 | 완료 | 관리자 전용, `@RequireAdmin` + URL 규칙 이중 방어 |
 | 표준프레임워크 규칙 자동 검증 | 완료 | `mvn package` 때 테스트로 확인 |
-| 공지 게시판, 일정, 쪽지, 메일 발송 | **다음 할 일** | [로드맵](#7-로드맵-다음-할-일) |
+| 공지 게시판(게시판+게시물만) | 완료 | 관리자만 게시판 설정, 로그인한 누구나 글쓰기. [6장](#6-공통컴포넌트-도입-현황과-설계) |
+| 일정, 쪽지, 메일 발송 | **다음 할 일** | [로드맵](#7-로드맵-다음-할-일) |
 | 메신저(실시간), 메일 수신 | 예정 | 공통컴포넌트에 없어 직접 개발 |
 | 메인 화면(대시보드) | 예정 | 지금 `/main.do` 는 DB 연결 확인용 임시 화면 |
 
@@ -39,6 +42,30 @@
 ---
 
 ## 2. 새 PC 에서 시작하기
+
+### 이 PC의 고정 환경 (2026.11 ~)
+
+개발을 이 Windows PC 한 대로 고정하기로 하면서, 아래 도구들을 이 PC에 직접 설치했습니다(모두 시스템 PATH 에는
+없어서, 새 셸을 열 때마다 아래처럼 `$env:Path` 에 추가해야 합니다 — PowerShell 세션 사이에 변수나 PATH 가
+유지되지 않습니다).
+
+| 도구 | 경로 | 설치 방법 |
+|------|------|-----------|
+| JDK 21 (Microsoft Build of OpenJDK) | `C:\Program Files\Microsoft\jdk-21.*` | `winget install Microsoft.OpenJDK.21` |
+| Maven 3.9.9 | `C:\Tools\apache-maven-3.9.9` | winget 에 패키지가 없어 `archive.apache.org` 에서 직접 압축 해제 |
+| Git | `C:\Program Files\Git` | `winget install Git.Git` |
+| GitHub CLI (`gh`) | `C:\Program Files\GitHub CLI` | `winget install GitHub.cli`, `gh auth login --web` 로 ccc3132 계정 인증(디바이스 코드), `gh auth setup-git` 로 git 자격 증명 연결 |
+| 저장소 로컬 경로 | `C:\workspace\self_liveapp` | `git clone https://github.com/ccc3132/self_liveapp.git` |
+
+매번 새 셸에서 빌드/실행하려면:
+```powershell
+$jdkPath = Get-ChildItem "C:\Program Files\Microsoft" -Directory -Filter "jdk*" | Select-Object -First 1 -ExpandProperty FullName
+$env:JAVA_HOME = $jdkPath
+$env:Path = "$jdkPath\bin;C:\Tools\apache-maven-3.9.9\bin;C:\Program Files\Git\cmd;C:\Program Files\GitHub CLI;$env:Path"
+```
+
+Git 작성자 정보는 전역이 아니라 이 저장소에만 로컬로 설정되어 있습니다(`choi seong keun <ccc3132@naver.com>`,
+저장소 폴더에서 `git config user.name`/`user.email`로 확인).
 
 ### 준비물
 
@@ -268,9 +295,11 @@ src/test/java/egovframework/egovwebpractice/
 | 업무사용자 관리 (`uss.umt`) | 도입 | **관리자 전용**. 일반회원·기업회원 관리, 회원가입 화면은 도입하지 않음 |
 | 권한그룹 관리 (`sec.rgm`) | 도입 | **관리자 전용** |
 | 권한·롤·그룹 관리 화면 (`sec.ram`, `sec.rmt`, `sec.gmt`) | 예정 | |
-| 게시판·일정·쪽지·메일 등 (`cop.*`) | 예정 | [로드맵](#7-로드맵-다음-할-일) |
+| 공지 게시판 (`cop.bbs`, 게시판+게시물만) | 도입 | 게시판 설정은 **관리자 전용**, 글쓰기는 로그인한 누구나. 댓글·만족도·템플릿 화면은 제외 |
+| 일정·쪽지·메일 등 나머지 `cop.*` | 예정 | [로드맵](#7-로드맵-다음-할-일) |
 
-**화면 주소:** 로그인 `/uat/uia/egovLoginUsr.do`, 직원 관리 `/uss/umt/EgovEmplyrManage.do`, 권한 지정 `/sec/rgm/EgovAuthorGroupList.do`
+**화면 주소:** 로그인 `/uat/uia/egovLoginUsr.do`, 직원 관리 `/uss/umt/EgovEmplyrManage.do`, 권한 지정 `/sec/rgm/EgovAuthorGroupList.do`,
+게시판 관리(관리자) `/cop/bbs/selectBBSMasterInfs.do`, 게시글 목록 `/cop/bbs/selectArticleList.do?bbsId=BBSMSTR_000000000001`
 
 ### Flyway 마이그레이션
 
@@ -283,6 +312,7 @@ src/test/java/egovframework/egovwebpractice/
 | `V6` | 업무사용자 정보 변경 이력 테이블 |
 | `V7` | `/uss/umt/**` 를 관리자 전용으로 제한 |
 | `V8` | `/sec/rgm/**` 를 관리자 전용으로 제한 |
+| `V9` | 공지 게시판(`cop.bbs`) 테이블(COMTNBBSMASTER, COMTNBBS, COMTNBBSUSE), 매퍼가 LEFT JOIN 하는 테이블(COMTNCOMMENT, COMTNTMPLATINFO, COMTNBLOG, COMTNBLOGUSER, 데이터 없음), 초기 "공지사항" 게시판 1개, 게시판 설정 URL 을 관리자 전용으로 제한 |
 
 ### 인증·권한 구조
 
@@ -335,26 +365,20 @@ src/test/java/egovframework/egovwebpractice/
 
 [화면 확인 체크리스트](#화면-확인-체크리스트)를 브라우저로 진행합니다. 이상이 있는 곳(CSS, 이미지, 버튼 동작)은 `fix/` 브랜치로 먼저 고칩니다.
 
-### ② 공지 게시판 (`cop.bbs`)
+### ② 공지 게시판 (`cop.bbs`) — 완료 (스코프 B)
 
-**측정 결과** (`closure.py` 로 `egovframework.com.cop.bbs.web` 를 시작점으로 계산, 이 프로젝트에 없는 것만):
+"게시판 + 게시물만" 으로 들어왔습니다. 가져온 것: `bbs.service`/`bbs.web`(컨트롤러 2개), `EgovHtmlSanitizer`,
+`EgovFileMngUtil`, 매퍼 3개(`EgovArticle`, `EgovBBSAddedOptions`, `EgovBBSMaster`), JSP 19개(블로그·방명록 화면
+포함 — 컨트롤러가 그대로 들어와서 JSP 도 같이 복사했으나 화면 확인은 안 함). 제외한 것: `cmt.service`(댓글),
+`tpl.service`(게시판 템플릿 화면), `stf.service`(만족도). 단 `COMTNCOMMENT`, `COMTNTMPLATINFO`, `COMTNBLOG`,
+`COMTNBLOGUSER` 테이블은 매퍼가 SQL에서 직접 LEFT JOIN 하므로 데이터 없이 테이블만 `V9` 에 추가했습니다.
 
-| 구분 | 내용 |
-|------|------|
-| 자바 클래스 | 34개: `bbs.service`(게시판·게시물·블로그·만족도), `bbs.web`(2개 컨트롤러), `cmt.service`(댓글, 5), `tpl.service`(게시판 템플릿, 5), `stf.service`(만족도, 2), `EgovHtmlSanitizer`, `EgovFileMngUtil` |
-| 매퍼 | `EgovArticle`, `EgovBBSAddedOptions`, `EgovBBSMaster` (`mapper/com/cop/bbs/`) |
-| JSP | `WEB-INF/jsp/egovframework/com/cop/bbs/` 19개 |
-| 새 테이블 | `COMTNBBS`, `COMTNBBSMASTER`, `COMTNBBSMASTEROPTN`, `COMTNBBSUSE`, `COMTNCOMMENT` (`COMTNFILE`, `COMTNFILEDETAIL` 은 `V2` 에 이미 있음) |
-
-**범위 선택** (먼저 정하세요)
-- **A. 전체**: 게시판 설정, 게시물, 댓글, 첨부파일, 템플릿
-- **B. 게시판 + 게시물만 (추천)**: 공지 용도에는 충분하고 PR 이 작습니다. 댓글·만족도·템플릿은 제외
-
-**반드시 점검할 것**
-- 읽기·쓰기·수정·삭제를 누가 할 수 있는가: 게시판 설정은 관리자 전용, 게시물 수정·삭제는 작성자 본인 또는 관리자. 컨트롤러 코드에서 `@RequireAdmin`/`EgovAuthorizationHelper` 사용 여부를 핸들러마다 확인하고, `/cop/bbs/**` URL 규칙을 DB 에 추가합니다(기본 규칙은 `ROLE_USER` 에 모든 `*.do` 를 엶).
-- **파일 업로드**: 저장 경로(`Globals.fileStorePath`), 확장자 제한(`Globals.fileUpload.Extensions`), 크기 제한(`maxSize`), 업로드 크기는 Boot 의 `spring.servlet.multipart.*` 도 설정해야 함. 경로 조작·실행 파일 업로드가 막히는지 테스트로 확인.
-- **HTML 정화**: `EgovHtmlSanitizer` 가 jsoup 을 쓰는지 확인하고(공통컴포넌트 pom 은 jsoup 1.18.3), 게시물 본문의 XSS 가 막히는지 테스트.
-- JSP 가 쓰는 에디터(CKEditor 등) 의존 여부. 도입하지 않으면 해당 화면 기능이 동작하지 않을 수 있음.
+- 게시판 설정(등록/수정/삭제/목록/상세)은 **관리자 전용**(`@RequireAdmin` + `V9` URL 규칙 이중 방어). 게시물
+  조회·작성은 로그인한 누구나(기본 `ROLE_USER` 규칙), 수정·삭제는 작성자 본인만(`EgovAuthorizationHelper.assertOwner`,
+  원본 설계 그대로).
+- 통합 테스트: `NoticeBoardIntegrationTest`. **MockMvc 는 보안 모듈의 접근 거부 forward 를 실행하지 않으므로
+  (9장 참고) 상태 코드 403 을 직접 assert 하지 말고 `forwardedUrl`/DB 조회로 확인했습니다.**
+- 확인 못 한 것: 블로그·방명록 화면을 브라우저로 열어보지 않음, 첨부파일 업로드 자체는 테스트하지 않음(의존 빈만 연결).
 
 ### ③ 일정관리 (`cop.smt`)
 
@@ -434,3 +458,8 @@ src/test/java/egovframework/egovwebpractice/
 | 이미 적용된 마이그레이션의 주석을 고쳤더니 Flyway 검증 실패 | 체크섬이 달라짐 | 적용된 마이그레이션은 절대 수정하지 않음(원본으로 되돌림) |
 | PR 링크가 "Your request URL is too long" | 링크에 본문을 넣어 길이 제한 초과 | 제목만 링크에 넣고 본문은 붙여 넣기 |
 | Windows 에서 공통컴포넌트 클론이 일부 실패 | 경로가 너무 김 | `git -c core.longpaths=true` (ckeditor 샘플 등 무관한 파일만 빠짐) |
+| 게시판 모듈 추가 후 `EgovHtmlSanitizer`/`EgovFileMngUtil` 컴파일 실패 | jsoup 의존성이 `pom.xml` 에 없음, `commons-lang`(2.x) import 오타 | jsoup 1.18.3 추가, `commons-lang` → `commons-lang3` 로 수정 |
+| `EgovFileMngUtil` 빈 생성 실패 (`No bean named 'egovFileIdGnrService'`) | 첨부파일 ID 생성기 빈이 없었음(원본 `context-idgn-File.xml`에만 있던 설정) | `CommonComponentsConfig` 에 `fileStrategy`/`egovFileIdGnrService` Java Config 로 추가 |
+| 게시글 목록 조회가 500 (`relation "comtncomment" does not exist`) | 댓글 기능은 빼기로 했지만, `EgovArticle` 매퍼가 댓글 수를 세는 서브쿼리에서 `COMTNCOMMENT` 를 직접 LEFT JOIN 함 | 댓글·만족도·템플릿 **기능**(화면/서비스)은 빼도, 매퍼가 LEFT JOIN 하는 테이블(`COMTNCOMMENT`, `COMTNTMPLATINFO`, `COMTNBLOG`, `COMTNBLOGUSER`)은 데이터 없이 테이블만 만들어야 함 |
+| 로그인 직후 CSRF 토큰으로 POST 하면 "CSRF Error" | 로그인 성공 시 세션 고정 공격 방지로 `request.changeSessionId()` 를 호출해 세션이 바뀌어, 로그인 전에 받은 CSRF 토큰이 무효가 됨 | 로그인 **후에** 아무 GET 응답에서 새 CSRF 토큰을 다시 받아서 써야 함 |
+| 게시판 통합 테스트에서 관리자 전용 URL 에 대해 `status().isForbidden()` 이 실패(실제론 200) | MockMvc 는 보안 모듈의 접근 거부 forward 를 실행하지 않음(이미 `EmplyrManageIntegrationTest`/`AuthorGroupIntegrationTest` 의 주석에 적혀 있던 내용) | `forwardedUrl("/sec/ram/accessDenied.do")` 로 대상만 확인하고, 실제 403 은 `java -jar` 로 확인. 쓰기 성공 여부도 렌더링된 내용이 아니라 `JdbcTemplate` 으로 DB 를 조회해서 확인 |
