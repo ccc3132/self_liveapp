@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace 는 DAO 의 빈 이름과 같게 한다 (mailAccountDAO) -->
+<mapper namespace="mailAccountDAO">
+
+    <select id="selectMailAccount" parameterType="string"
+            resultType="egovframework.egovwebpractice.mail.service.MailAccountVO">
+        SELECT user_id, imap_host, imap_port, imap_username, encrypted_password, use_ssl
+          FROM MAIL_ACCOUNT
+         WHERE user_id = #{value}
+    </select>
+
+    <insert id="insertMailAccount" parameterType="egovframework.egovwebpractice.mail.service.MailAccountVO">
+        INSERT INTO MAIL_ACCOUNT (user_id, imap_host, imap_port, imap_username, encrypted_password, use_ssl)
+        VALUES (#{userId}, #{imapHost}, #{imapPort}, #{imapUsername}, #{encryptedPassword}, #{useSsl})
+    </insert>
+
+    <update id="updateMailAccount" parameterType="egovframework.egovwebpractice.mail.service.MailAccountVO">
+        UPDATE MAIL_ACCOUNT SET
+            imap_host = #{imapHost}, imap_port = #{imapPort}, imap_username = #{imapUsername},
+            encrypted_password = #{encryptedPassword}, use_ssl = #{useSsl}, last_updt_pnttm = NOW()
+         WHERE user_id = #{userId}
+    </update>
+</mapper>
