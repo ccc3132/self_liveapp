@@ -4,6 +4,11 @@ server:
     session:
       # 주소창에 ;jsessionid=... 가 붙지 않도록 쿠키로만 세션을 추적
       tracking-modes: cookie
+      cookie:
+        # 로컬은 http 라서 secure 는 prod 프로필(HTTPS 전제)에서만 켠다
+        secure: false
+        same-site: lax
+        http-only: true
 
 spring:
   profiles:
