@@ -3,8 +3,8 @@ package egovframework.egovwebpractice;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import egovframework.egovwebpractice.common.service.SystemCheckService;
-import egovframework.egovwebpractice.common.service.SystemCheckVO;
+import egovframework.egovwebpractice.common.service.DashboardService;
+import egovframework.egovwebpractice.common.service.DashboardVO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,13 +14,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 class ApplicationContextTest {
 
     @Autowired
-    private SystemCheckService systemCheckService;
+    private DashboardService dashboardService;
 
     @Test
     void 마이그레이션_후_서비스_DAO_조회가_동작한다() throws Exception {
-        SystemCheckVO vo = systemCheckService.selectSystemCheck();
+        DashboardVO vo = dashboardService.selectDashboard("USRCNFRM_00000000000");
         assertNotNull(vo);
-        assertEquals(1, vo.getId());
-        assertEquals("postgresql", vo.getDbProduct());
+        assertNotNull(vo.getRecentNotices());
+        assertEquals(0, vo.getUnreadNoteCount());
     }
 }
