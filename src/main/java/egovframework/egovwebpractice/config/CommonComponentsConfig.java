@@ -50,6 +50,7 @@ public class CommonComponentsConfig {
                 "classpath:egovframework/message/com/uat/uap/message",
                 "classpath:egovframework/message/com/uss/umt/message",
                 "classpath:egovframework/message/com/sec/rgm/message",
+                "classpath:egovframework/message/com/cop/bbs/message",
                 "classpath:messages/message-validation", // 실행환경 ptl-reactive 검증 메시지(validation.pwdCheck 등)
                 "classpath:org/egovframe/rte/fdl/idgnr/messages/idgnr",
                 "classpath:org/egovframe/rte/fdl/property/messages/properties");
@@ -164,6 +165,89 @@ public class CommonComponentsConfig {
         service.setBlockSize(10);
         service.setTable("COMTECOPSEQ");
         service.setTableName("USRCNFRM_ID");
+        return service;
+    }
+
+    /** 첨부파일 ID(FILE_...) 생성기. EgovFileMngUtil 이 요구한다 (원본 idgn/context-idgn-File.xml) */
+    @Bean(name = "fileStrategy")
+    public EgovIdGnrStrategyImpl fileStrategy() {
+        EgovIdGnrStrategyImpl strategy = new EgovIdGnrStrategyImpl();
+        strategy.setPrefix("FILE_");
+        strategy.setCipers(15);
+        strategy.setFillChar('0');
+        return strategy;
+    }
+
+    @Bean(name = "egovFileIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovFileIdGnrService(DataSource dataSource, EgovIdGnrStrategyImpl fileStrategy) {
+        EgovTableIdGnrServiceImpl service = new EgovTableIdGnrServiceImpl();
+        service.setDataSource(dataSource);
+        service.setStrategy(fileStrategy);
+        service.setBlockSize(10);
+        service.setTable("COMTECOPSEQ");
+        service.setTableName("FILE_ID");
+        return service;
+    }
+
+    /** 게시판 마스터 ID(BBSMSTR_...) 생성기 (원본 idgn/context-idgn-bbs.xml) */
+    @Bean(name = "bbsMstrStrategy")
+    public EgovIdGnrStrategyImpl bbsMstrStrategy() {
+        EgovIdGnrStrategyImpl strategy = new EgovIdGnrStrategyImpl();
+        strategy.setPrefix("BBSMSTR_");
+        strategy.setCipers(12);
+        strategy.setFillChar('0');
+        return strategy;
+    }
+
+    @Bean(name = "egovBBSMstrIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovBBSMstrIdGnrService(DataSource dataSource, EgovIdGnrStrategyImpl bbsMstrStrategy) {
+        EgovTableIdGnrServiceImpl service = new EgovTableIdGnrServiceImpl();
+        service.setDataSource(dataSource);
+        service.setStrategy(bbsMstrStrategy);
+        service.setBlockSize(10);
+        service.setTable("COMTECOPSEQ");
+        service.setTableName("BBS_ID");
+        return service;
+    }
+
+    /** 게시물 ID(NTT_ID) 생성기 (원본 idgn/context-idgn-bbs.xml) */
+    @Bean(name = "nttIdStrategy")
+    public EgovIdGnrStrategyImpl nttIdStrategy() {
+        EgovIdGnrStrategyImpl strategy = new EgovIdGnrStrategyImpl();
+        strategy.setCipers(20);
+        return strategy;
+    }
+
+    @Bean(name = "egovNttIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovNttIdGnrService(DataSource dataSource, EgovIdGnrStrategyImpl nttIdStrategy) {
+        EgovTableIdGnrServiceImpl service = new EgovTableIdGnrServiceImpl();
+        service.setDataSource(dataSource);
+        service.setStrategy(nttIdStrategy);
+        service.setBlockSize(10);
+        service.setTable("COMTECOPSEQ");
+        service.setTableName("NTT_ID");
+        return service;
+    }
+
+    /** 블로그 ID(BLOG_...) 생성기. 이 프로젝트는 블로그 화면을 열지 않지만
+     *  EgovArticleController/EgovBBSMasterController 가 무조건 주입받는 빈이라 등록은 필요하다. (원본 idgn/context-idgn-bbs.xml) */
+    @Bean(name = "blogIdStrategy")
+    public EgovIdGnrStrategyImpl blogIdStrategy() {
+        EgovIdGnrStrategyImpl strategy = new EgovIdGnrStrategyImpl();
+        strategy.setPrefix("BLOG_");
+        strategy.setCipers(15);
+        strategy.setFillChar('0');
+        return strategy;
+    }
+
+    @Bean(name = "egovBlogIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovBlogIdGnrService(DataSource dataSource, EgovIdGnrStrategyImpl blogIdStrategy) {
+        EgovTableIdGnrServiceImpl service = new EgovTableIdGnrServiceImpl();
+        service.setDataSource(dataSource);
+        service.setStrategy(blogIdStrategy);
+        service.setBlockSize(10);
+        service.setTable("COMTECOPSEQ");
+        service.setTableName("BLOG_ID");
         return service;
     }
 
