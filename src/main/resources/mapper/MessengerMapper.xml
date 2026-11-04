@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace 는 DAO 의 빈 이름과 같게 한다 (messengerDAO) -->
+<mapper namespace="messengerDAO">
+
+    <!-- 대화 상대방 목록: 나와 주고받은 메시지가 있는 상대방별로 마지막 메시지와 안읽은 수 -->
+    <select id="selectConversationList" parameterType="string"
+            resultType="egovframework.egovwebpractice.msg.service.ConversationVO">
+        SELECT partner_id, partner_nm, last_content, last_sent_at,
+               (SELECT COUNT(1) FROM MSGR_MESSAGE m2
+                 WHERE m2.sender_id = partner_id AND m2.receiver_id = #{value} AND m2.read_at IS NULL) AS unread_count
+          FROM (
+                SELECT DISTINCT ON (partner_id) partner_id, partner_nm, content AS last_content, sent_at AS last_sent_at
+                  FROM (
+                        SELECT receiver_id AS partner_id, receiver_nm AS partner_nm, content, sent_at FROM MSGR_MESSAGE WHERE sender_id = #{value}
+                        UNION ALL
+                        SELECT sender_id AS partner_id, sender_nm AS partner_nm, content, sent_at FROM MSGR_MESSAGE WHERE receiver_id = #{value}
+                       ) both_sides
+                 ORDER BY partner_id, sent_at DESC
+               ) latest
+         ORDER BY last_sent_at DESC
+    </select>
+
+    <!-- 나와 특정 상대방 사이의 대화 전체 -->
+    <select id="selectConversation" parameterType="map"
+            resultType="egovframework.egovwebpractice.msg.service.MessageVO">
+        SELECT msg_id, sender_id, sender_nm, receiver_id, receiver_nm, content, sent_at, read_at
+          FROM MSGR_MESSAGE
+         WHERE (sender_id = #{uniqId} AND receiver_id = #{partnerId})
+            OR (sender_id = #{partnerId} AND receiver_id = #{uniqId})
+         ORDER BY sent_at
+    </select>
+
+    <insert id="insertMessage" parameterType="egovframework.egovwebpractice.msg.service.MessageVO">
+        INSERT INTO MSGR_MESSAGE (sender_id, sender_nm, receiver_id, receiver_nm, content, sent_at)
+        VALUES (#{senderId}, #{senderNm}, #{receiverId}, #{receiverNm}, #{content}, #{sentAt})
+    </insert>
+
+    <update id="markRead" parameterType="map">
+        UPDATE MSGR_MESSAGE SET read_at = NOW()
+         WHERE receiver_id = #{uniqId} AND sender_id = #{partnerId} AND read_at IS NULL
+    </update>
+
+    <select id="selectUnreadCount" parameterType="string" resultType="int">
+        SELECT COUNT(1) FROM MSGR_MESSAGE WHERE receiver_id = #{value} AND read_at IS NULL
+    </select>
+</mapper>
