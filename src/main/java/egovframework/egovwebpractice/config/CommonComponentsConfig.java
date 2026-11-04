@@ -51,6 +51,7 @@ public class CommonComponentsConfig {
                 "classpath:egovframework/message/com/uss/umt/message",
                 "classpath:egovframework/message/com/sec/rgm/message",
                 "classpath:egovframework/message/com/cop/bbs/message",
+                "classpath:egovframework/message/com/cop/sym/ems/message",
                 "classpath:egovframework/message/com/cop/smt/djm/message",
                 "classpath:egovframework/message/com/cop/smt/dsm/message",
                 "classpath:egovframework/message/com/cop/smt/lsm/message",
