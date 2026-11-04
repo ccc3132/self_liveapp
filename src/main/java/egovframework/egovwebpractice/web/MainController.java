@@ -1,6 +1,8 @@
 package egovframework.egovwebpractice.web;
 
-import egovframework.egovwebpractice.common.service.SystemCheckService;
+import egovframework.com.cmm.LoginVO;
+import egovframework.com.cmm.util.EgovUserDetailsHelper;
+import egovframework.egovwebpractice.common.service.DashboardService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,10 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class MainController {
 
-    private final SystemCheckService systemCheckService;
+    private final DashboardService dashboardService;
 
-    public MainController(SystemCheckService systemCheckService) {
-        this.systemCheckService = systemCheckService;
+    public MainController(DashboardService dashboardService) {
+        this.dashboardService = dashboardService;
     }
 
     @GetMapping("/")
@@ -22,7 +24,10 @@ public class MainController {
 
     @GetMapping("/main.do")
     public String main(Model model) throws Exception {
-        model.addAttribute("check", systemCheckService.selectSystemCheck());
+        LoginVO loginVO = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+        String uniqId = loginVO == null ? "" : loginVO.getUniqId();
+        model.addAttribute("loginVO", loginVO);
+        model.addAttribute("dashboard", dashboardService.selectDashboard(uniqId));
         return "main";
     }
 }
