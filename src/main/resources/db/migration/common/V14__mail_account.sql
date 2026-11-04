@@ -1,0 +1,14 @@
+-- 메일 수신(직접 개발, 공통컴포넌트에 없는 모듈). 사용자별 IMAP 계정 설정을 저장한다.
+-- 비밀번호는 평문으로 저장하지 않고 애플리케이션 레벨에서 egovEnvCryptoService 로 암호화해서 저장한다.
+CREATE TABLE MAIL_ACCOUNT
+(
+	USER_ID            VARCHAR(20) NOT NULL,
+	IMAP_HOST          VARCHAR(255) NOT NULL,
+	IMAP_PORT          NUMERIC(5) NOT NULL,
+	IMAP_USERNAME      VARCHAR(255) NOT NULL,
+	ENCRYPTED_PASSWORD VARCHAR(500) NOT NULL,
+	USE_SSL            CHAR(1) NOT NULL DEFAULT 'Y',
+	FRST_REGIST_PNTTM  TIMESTAMP NOT NULL DEFAULT NOW(),
+	LAST_UPDT_PNTTM    TIMESTAMP NULL,
+	PRIMARY KEY (USER_ID)
+);
