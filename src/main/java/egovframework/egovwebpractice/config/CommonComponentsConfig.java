@@ -51,6 +51,15 @@ public class CommonComponentsConfig {
                 "classpath:egovframework/message/com/uss/umt/message",
                 "classpath:egovframework/message/com/sec/rgm/message",
                 "classpath:egovframework/message/com/cop/bbs/message",
+                "classpath:egovframework/message/com/cop/smt/djm/message",
+                "classpath:egovframework/message/com/cop/smt/dsm/message",
+                "classpath:egovframework/message/com/cop/smt/lsm/message",
+                "classpath:egovframework/message/com/cop/smt/mrm/message",
+                "classpath:egovframework/message/com/cop/smt/mtm/message",
+                "classpath:egovframework/message/com/cop/smt/sam/message",
+                "classpath:egovframework/message/com/cop/smt/sdm/message",
+                "classpath:egovframework/message/com/cop/smt/sim/message",
+                "classpath:egovframework/message/com/cop/smt/wmr/message",
                 "classpath:messages/message-validation", // 실행환경 ptl-reactive 검증 메시지(validation.pwdCheck 등)
                 "classpath:org/egovframe/rte/fdl/idgnr/messages/idgnr",
                 "classpath:org/egovframe/rte/fdl/property/messages/properties");
@@ -166,6 +175,69 @@ public class CommonComponentsConfig {
         service.setTable("COMTECOPSEQ");
         service.setTableName("USRCNFRM_ID");
         return service;
+    }
+
+    /** {@code idgn/context-idgn-*.xml} 패턴의 ID 생성기 빈을 코드로 만드는 공통 도우미. */
+    private EgovTableIdGnrServiceImpl idGnrService(DataSource dataSource, String prefix, int cipers, String tableName) {
+        EgovIdGnrStrategyImpl strategy = new EgovIdGnrStrategyImpl();
+        strategy.setPrefix(prefix);
+        strategy.setCipers(cipers);
+        strategy.setFillChar('0');
+        EgovTableIdGnrServiceImpl service = new EgovTableIdGnrServiceImpl();
+        service.setDataSource(dataSource);
+        service.setStrategy(strategy);
+        service.setBlockSize(10);
+        service.setTable("COMTECOPSEQ");
+        service.setTableName(tableName);
+        return service;
+    }
+
+    /** 부서/개인 일정관리 ID 생성기. sim(개인)과 sdm(부서)이 공유한다 (원본 idgn/context-idgn-deptSchdulManage.xml) */
+    @Bean(name = "deptSchdulManageIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl deptSchdulManageIdGnrService(DataSource dataSource) {
+        return idGnrService(dataSource, "SCHDUL_", 13, "SCHDUL_ID");
+    }
+
+    /** 업무일지 ID 생성기 (원본 idgn/context-idgn-diaryManage.xml) */
+    @Bean(name = "diaryManageIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl diaryManageIdGnrService(DataSource dataSource) {
+        return idGnrService(dataSource, "DIARY_", 14, "DIARY_ID");
+    }
+
+    /** 부서업무 ID 생성기 (원본 idgn/context-idgn-DeptJob.xml) */
+    @Bean(name = "egovDeptJobIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovDeptJobIdGnrService(DataSource dataSource) {
+        return idGnrService(dataSource, "DEPTJOB_", 12, "DEPT_JOB_ID");
+    }
+
+    /** 부서업무함 ID 생성기 (원본 idgn/context-idgn-DeptJob.xml) */
+    @Bean(name = "egovDeptJobBxIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovDeptJobBxIdGnrService(DataSource dataSource) {
+        return idGnrService(dataSource, "DX_", 3, "DEPT_JOB_BX_ID");
+    }
+
+    /** 메모보고 ID 생성기 (원본 idgn/context-idgn-MemoReprt.xml) */
+    @Bean(name = "egovMemoReprtIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovMemoReprtIdGnrService(DataSource dataSource) {
+        return idGnrService(dataSource, "MR", 4, "MEMO_REPRT");
+    }
+
+    /** 메모할일 ID 생성기 (원본 idgn/context-idgn-MemoTodo.xml) */
+    @Bean(name = "egovMemoTodoIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovMemoTodoIdGnrService(DataSource dataSource) {
+        return idGnrService(dataSource, "MEMOTODO_", 11, "MEMO_TODO_ID");
+    }
+
+    /** 주간/월간 보고 ID 생성기 (원본 idgn/context-idgn-WikMnthngReprt.xml) */
+    @Bean(name = "egovWikMnthngReprtIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovWikMnthngReprtIdGnrService(DataSource dataSource) {
+        return idGnrService(dataSource, "WR", 4, "WIKMNTHNG_REPRT");
+    }
+
+    /** 간부(상급자) 일정 ID 생성기 (원본 idgn/context-idgn-LeaderSchdu.xml) */
+    @Bean(name = "egovLeaderSchdulIdGnrService", destroyMethod = "destroy")
+    public EgovTableIdGnrServiceImpl egovLeaderSchdulIdGnrService(DataSource dataSource) {
+        return idGnrService(dataSource, "LDSCHDUL_", 11, "LEADER_SCHDUL_ID");
     }
 
     /** 첨부파일 ID(FILE_...) 생성기. EgovFileMngUtil 이 요구한다 (원본 idgn/context-idgn-File.xml) */
