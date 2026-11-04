@@ -31,7 +31,8 @@
 | 권한 지정 | 완료 | 관리자 전용, `@RequireAdmin` + URL 규칙 이중 방어 |
 | 표준프레임워크 규칙 자동 검증 | 완료 | `mvn package` 때 테스트로 확인 |
 | 공지 게시판(게시판+게시물만) | 완료 | 관리자만 게시판 설정, 로그인한 누구나 글쓰기. [6장](#6-공통컴포넌트-도입-현황과-설계) |
-| 일정, 쪽지, 메일 발송 | **다음 할 일** | [로드맵](#7-로드맵-다음-할-일) |
+| 일정관리(9개 모듈), 쪽지·주소록, 메일 발송, 메인 화면, 메신저(1:1), 메일 수신(IMAP) | 완료 | [로드맵](#7-로드맵-다음-할-일) |
+| 운영 준비(CI, 세션 쿠키, 로그 파일) | 일부 완료 | HTTPS 리버스 프록시, DB 백업, 회원가입 화면은 아직 |
 | 메신저(실시간), 메일 수신 | 예정 | 공통컴포넌트에 없어 직접 개발 |
 | 메인 화면(대시보드) | 예정 | 지금 `/main.do` 는 DB 연결 확인용 임시 화면 |
 
@@ -296,7 +297,13 @@ src/test/java/egovframework/egovwebpractice/
 | 권한그룹 관리 (`sec.rgm`) | 도입 | **관리자 전용** |
 | 권한·롤·그룹 관리 화면 (`sec.ram`, `sec.rmt`, `sec.gmt`) | 예정 | |
 | 공지 게시판 (`cop.bbs`, 게시판+게시물만) | 도입 | 게시판 설정은 **관리자 전용**, 글쓰기는 로그인한 누구나. 댓글·만족도·템플릿 화면은 제외 |
-| 일정·쪽지·메일 등 나머지 `cop.*` | 예정 | [로드맵](#7-로드맵-다음-할-일) |
+| 일정관리(`cop.smt`, 9개 하위 모듈 전부) | 도입 | sdm/djm 은 원본 자체의 `@RequireAdmin` 으로 관리자 전용 |
+| 쪽지(`uss.ion.ntm/ntr/nts`) | 도입 | 원본의 `@RequireAdmin` 5곳은 제거함(일반회원도 쓸 수 있어야 해서) |
+| 주소록(`cop.adb`) | 도입 | |
+| 메일 발송 화면·이력(`cop.ems.web`) | 도입 | |
+| 메인 화면(대시보드) | 도입 | V1 의 system_check 샘플은 정리(V12 로 드롭) |
+| 메신저(1:1, 직접 개발) | 도입 | WebSocket 실시간 push 는 없음(화면 재방문으로 갱신) |
+| 메일 수신(IMAP, 직접 개발) | 도입 | 실제 IMAP 서버 연결 자체는 미확인(연결 실패 경로만 확인) |
 
 **화면 주소:** 로그인 `/uat/uia/egovLoginUsr.do`, 직원 관리 `/uss/umt/EgovEmplyrManage.do`, 권한 지정 `/sec/rgm/EgovAuthorGroupList.do`,
 게시판 관리(관리자) `/cop/bbs/selectBBSMasterInfs.do`, 게시글 목록 `/cop/bbs/selectArticleList.do?bbsId=BBSMSTR_000000000001`
@@ -313,6 +320,11 @@ src/test/java/egovframework/egovwebpractice/
 | `V7` | `/uss/umt/**` 를 관리자 전용으로 제한 |
 | `V8` | `/sec/rgm/**` 를 관리자 전용으로 제한 |
 | `V9` | 공지 게시판(`cop.bbs`) 테이블(COMTNBBSMASTER, COMTNBBS, COMTNBBSUSE), 매퍼가 LEFT JOIN 하는 테이블(COMTNCOMMENT, COMTNTMPLATINFO, COMTNBLOG, COMTNBLOGUSER, 데이터 없음), 초기 "공지사항" 게시판 1개, 게시판 설정 URL 을 관리자 전용으로 제한 |
+| `V10` | 일정관리(`cop.smt`) 9개 모듈 테이블 10개(COMTNSCHDULINFO 등) |
+| `V11` | 쪽지(`uss.ion`)·주소록(`cop.adb`) 테이블 6개 |
+| `V12` | V1 의 `system_check` 샘플 테이블 드롭(메인 화면이 실제 대시보드가 되면서 불필요해짐) |
+| `V13` | 메신저(직접 개발) `MSGR_MESSAGE` 테이블 |
+| `V14` | 메일 수신(직접 개발) `MAIL_ACCOUNT` 테이블(IMAP 계정, 비밀번호는 암호화 저장) |
 
 ### 인증·권한 구조
 
@@ -380,43 +392,59 @@ src/test/java/egovframework/egovwebpractice/
   (9장 참고) 상태 코드 403 을 직접 assert 하지 말고 `forwardedUrl`/DB 조회로 확인했습니다.**
 - 확인 못 한 것: 블로그·방명록 화면을 브라우저로 열어보지 않음, 첨부파일 업로드 자체는 테스트하지 않음(의존 빈만 연결).
 
-### ③ 일정관리 (`cop.smt`)
+### ③ 일정관리 (`cop.smt`) — 완료
 
-달력 중심의 일정·업무입니다. `cop.smt` 아래에 하위 모듈이 여러 개(`sdm`, `djm`, `lsm`, `mrm`, `wmr`, `mtm` …)라 **범위 측정이 먼저**입니다. 약어의 정확한 의미와 어떤 하위 모듈이 필요한지는 코드와 JSP 를 열어 확인하세요(아직 측정하지 않았습니다). 부서 일정은 "같은 부서 확인"(`EgovAuthorizationHelper.isSameDept`) 같은 권한 로직이 있으니 `EgovAuthorizationHelper` 를 읽고 시작하세요.
+9개 하위 모듈(sim/sdm/sam/lsm/dsm/djm/mrm/mtm/wmr) 전부 도입(사용자가 전체 도입을 선택). 부서일정(sdm)·부서업무(djm)는
+원본 소스 자체에 `@RequireAdmin` 이 이미 있어 관리자 전용으로 동작한다(새 URL 규칙 추가 안 함, 원본 설계 그대로).
+나머지는 로그인한 누구나, 수정/삭제는 `EgovAuthorizationHelper.assertOwner`/`assertSameDept` 로 원본이 이미 보호.
+통합 테스트는 대표로 개인일정(sim)과 부서업무(djm)만 깊게 확인하고 나머지는 500 없이 뜨는지만 확인했다.
 
-### ④ 쪽지(`cop.ncm`)·주소록(`cop.adb`)
+### ④ 쪽지(`uss.ion.ntm/ntr/nts`)·주소록(`cop.adb`) — 완료
 
-아직 측정하지 않았습니다. 쪽지는 암호화 ID(`noteId` 등, `BindingInitializerAdvice` 가 복호화)를 쓰므로 암호화 키 파일 관리가 중요합니다. 메신저(⑦)와는 별개의 기능입니다.
+README 초안의 모듈명 추정(`cop.ncm`)이 틀렸다 — 실제 쪽지 모듈은 `uss.ion.ntm`(보내기)/`ntr`(받은쪽지함)/`nts`(보낸쪽지함)이고,
+`cop.ncm`은 명함관리(이번에 도입 안 함)였다. **원본 소스 자체에 쪽지 핵심 기능(보내기/상세조회/수신자 선택)에
+`@RequireAdmin`이 걸려 있어서, 그대로면 관리자만 쪽지를 쓸 수 있었다** — 사용자 확인을 받아 5곳을 제거했다
+(소유권 검증은 원본에 이미 있어 안전).
 
-### ⑤ 메일 발송 (`cop.ems`)
+### ⑤ 메일 발송 (`cop.ems`) — 완료
 
-- 이미 도입된 것: 발송 서비스 일부(`EgovSndngMailRegistService`, `EgovMultiPartEmail`)와 외부 SMTP 설정(`app.mail.*`). 로그인 화면의 "비밀번호 찾기"가 이 서비스를 요구해서 들어왔습니다.
-- 아직 없는 것: 메일 발송 화면(`cop.ems.web`), 발송 이력 조회.
-- **미확인**: 공통컴포넌트의 발송은 "XML 요청 파일을 만드는 방식"(`sndng-mail` 라이브러리)과 직접 발송(`EgovSndngMailServiceImpl`) 두 갈래로 보입니다. 어느 쪽이 실제로 메일을 보내는지, 별도의 스케줄러/배치가 필요한지 코드를 읽어 확인하세요. 처음에는 Mailpit 같은 가짜 SMTP 로 테스트해서 실제 메일이 나가지 않게 하세요.
-- SMTP 비밀번호는 환경변수로만 주고, 로그에 찍히지 않는지 확인하세요.
+발송 흐름 확인: `insertSndngMail` → DB 기록(R) → `EgovMultiPartEmail` 로 동기 발송 → XML 요청 파일 기록
+(`trnsmitXmlData`) → 그 파일을 바로 다시 읽어 완료(C) 처리. **별도 스케줄러/배치 없음**, 한 요청 안에서 전부 끝난다.
+`trnsmitXmlData`(감사 로그용 XMLBeans 문서 생성)가 Spring Boot 실행 가능 jar 의 클래스로더에서 생성 클래스를
+못 찾아 500을 내는 버그가 있어 try-catch 로 방어(발송 자체는 이미 끝난 뒤라 결과에 영향 없음). Mailpit(로컬
+가짜 SMTP, `winget install axllent.mailpit`)으로 실제 발송을 확인했다.
 
-### ⑥ 메인 화면(대시보드)
+### ⑥ 메인 화면(대시보드) — 완료
 
-지금 `/main.do` 는 DB 연결을 확인하는 임시 화면(`SystemCheck`)입니다. 로그인 후 이동하는 주소가 `Globals.MainPage`(`globals.properties`)와 `egov-security-config.properties`(`defaultTargetUrl`)에 있습니다. 오늘 일정, 최근 공지, 안 읽은 쪽지 등을 모아 보여 주는 화면으로 바꾸고, `V1` 의 `system_check` 와 샘플 코드(`common/service`)는 정리하세요(`V1` 파일 자체는 수정 금지, 테이블을 지우려면 새 마이그레이션).
+`/main.do` 를 오늘 일정·최근 공지·안 읽은 쪽지를 모아 보여주는 대시보드로 교체했고, `V1` 의 `system_check`
+샘플은 `V12` 로 테이블을 드롭하고 서비스/DAO/매퍼를 지웠다(`V1` 파일 자체는 수정 안 함). MyBatis
+`resultType="map"` 조회에서 PostgreSQL 이 unquoted 별칭을 소문자로 접어버리는 것 때문에 처음에 값이
+안 보였다 — 별칭을 snake_case 로 통일해서 해결(9장 참고).
 
-### ⑦ 메신저 (직접 개발)
+### ⑦ 메신저 (직접 개발) — 완료, 설계는 바뀜
 
-공통컴포넌트에 없습니다. 설계 제안:
-- Spring WebSocket + STOMP, 인증은 기존 HTTP 세션(Spring Security)을 재사용. **WebSocket 접속·구독·전송 모두 권한을 확인**(다른 사람의 대화방 구독 방지), CSRF·Origin 검사 확인
-- 메시지는 DB 에 저장(새 마이그레이션 `V*__messenger.sql`), 읽음 표시와 대화방(1:1 → 그룹) 순서로 확장
-- 표준프레임워크 규칙(Controller → Service → DAO, 명명 규칙)을 그대로 따라 `egovframework.egovwebpractice.msg...` 같은 패키지에 작성하고, 자동 검증 테스트에 걸리는지 확인
-- 이 모듈은 "표준프레임워크 적용 규칙 7"의 예외("실행환경이 적용되지 않는 모듈")를 주장할 수도 있지만, 되도록 규칙을 따르세요
+WebSocket/STOMP 대신 **REST 기반**으로 구현했다(1:1 대화만, 그룹 없음, 실시간 push 없음 — 화면을
+새로고침/재방문해야 새 메시지가 보인다). 범위를 좁게 잡아 테스트 가능하고 안정적인 형태를 먼저 들여오는
+쪽을 선택했다. `egovframework.egovwebpractice.msg` 패키지, 표준프레임워크 규칙(Controller → Service → DAO)을
+그대로 따름. 새 테이블 `MSGR_MESSAGE`(`V13`).
 
-### ⑧ 메일 수신 (직접 개발)
+### ⑧ 메일 수신 (직접 개발) — 완료, 실제 IMAP 연결은 미확인
 
-공통컴포넌트에 없습니다. IMAP 연동(Jakarta Mail)이 필요하고, 사용자별 메일 계정 비밀번호를 저장하면 **암호화 저장과 접근 통제**가 필수입니다. 난이도가 높아 마지막에 하세요.
+사용자별 IMAP 계정(호스트/포트/아이디/비밀번호/SSL) 설정 화면 + 받은편지함 조회(`egovframework.egovwebpractice.mail`
+패키지). 비밀번호는 `egovEnvCryptoService` 로 암호화해서 `MAIL_ACCOUNT`(`V14`)에 저장. 받은 메일은 이 앱에
+저장하지 않고 매번 IMAP 서버에 새로 연결해서 읽기 전용으로 조회한다. 연결/인증 실패는 500 대신 에러 화면으로
+처리. **실제 IMAP 서버 연결 자체는 확인하지 못했다** — Mailpit 은 SMTP 만 지원해서 연결 실패 경로(에러 화면)만
+확인했다.
 
-### ⑨ 운영 준비
+### ⑨ 운영 준비 — 일부 완료
 
-- `prod` 프로필(외부 PostgreSQL)로 실제 실행 확인, 초기 계정(`rhdxhd12`) 비밀번호 변경 또는 삭제
-- 암호화 키 파일(`APP_CRYPTO_CONFIG_FILE`) 관리·백업, HTTPS, 세션 쿠키 `Secure`/`SameSite`, 로그 파일 설정
-- CI(빌드·테스트 자동 실행), macOS/Apple Silicon 대응, DB 백업
-- 일반회원·기업회원 관리와 회원가입 화면(필요하면). 도입할 때 `/uss/umt/**` 중 가입 화면 URL 만 익명 허용하도록 URL 규칙을 조정
+완료: CI(GitHub Actions, `mvn clean package` 를 push/PR 마다 실행), 세션 쿠키(`Secure`/`SameSite=Lax`/`HttpOnly`,
+`prod` 프로필은 `Secure=true`), 로그 파일 설정(`prod` 프로필, 롤링 50MB/30개).
+
+아직: `prod` 프로필로 실제 외부 PostgreSQL 에 실행해 본 적은 없음(로컬 테스트로만 확인). 초기 계정(`rhdxhd12`)
+비밀번호 변경/삭제는 실제 배포 시점에 해야 함(코드로 강제하면 로컬 개발이 불편해져서 넣지 않음). 암호화 키
+파일 백업, HTTPS(리버스 프록시 또는 `server.ssl.*`), macOS/Apple Silicon 대응, DB 백업, 일반회원·기업회원
+관리와 회원가입 화면은 손대지 않았다.
 
 ---
 
@@ -463,3 +491,10 @@ src/test/java/egovframework/egovwebpractice/
 | 게시글 목록 조회가 500 (`relation "comtncomment" does not exist`) | 댓글 기능은 빼기로 했지만, `EgovArticle` 매퍼가 댓글 수를 세는 서브쿼리에서 `COMTNCOMMENT` 를 직접 LEFT JOIN 함 | 댓글·만족도·템플릿 **기능**(화면/서비스)은 빼도, 매퍼가 LEFT JOIN 하는 테이블(`COMTNCOMMENT`, `COMTNTMPLATINFO`, `COMTNBLOG`, `COMTNBLOGUSER`)은 데이터 없이 테이블만 만들어야 함 |
 | 로그인 직후 CSRF 토큰으로 POST 하면 "CSRF Error" | 로그인 성공 시 세션 고정 공격 방지로 `request.changeSessionId()` 를 호출해 세션이 바뀌어, 로그인 전에 받은 CSRF 토큰이 무효가 됨 | 로그인 **후에** 아무 GET 응답에서 새 CSRF 토큰을 다시 받아서 써야 함 |
 | 게시판 통합 테스트에서 관리자 전용 URL 에 대해 `status().isForbidden()` 이 실패(실제론 200) | MockMvc 는 보안 모듈의 접근 거부 forward 를 실행하지 않음(이미 `EmplyrManageIntegrationTest`/`AuthorGroupIntegrationTest` 의 주석에 적혀 있던 내용) | `forwardedUrl("/sec/ram/accessDenied.do")` 로 대상만 확인하고, 실제 403 은 `java -jar` 로 확인. 쓰기 성공 여부도 렌더링된 내용이 아니라 `JdbcTemplate` 으로 DB 를 조회해서 확인 |
+| `@RequireAdmin` 만 있는(URL 규칙 없는) 핸들러의 접근거부 forward 대상이 모듈마다 다름 | `SecurityExceptionAdvice`(전역, `/WEB-INF/jsp/egovframework/com/cmm/error/accessDenied.jsp`)와 `EgovEmplyrManageController`/`EgovAuthorGroupController` 가 자체적으로 forward 하는 `/sec/ram/accessDenied.do` 는 서로 다른 코드 경로 | 테스트에서 어느 컨트롤러인지에 따라 `forwardedUrl` 기대값을 맞는 걸로 써야 함 |
+| `resultType="map"` 으로 MyBatis 조회 시 JSP 의 `${s.schdulNm}` 값이 비어 보임 | PostgreSQL 이 unquoted 별칭(`AS schdulNm`)을 전부 소문자로 접어버려(`schdulnm`) EL 과 안 맞음(반면 `resultType=`클래스`" 는 `map-underscore-to-camel-case: true` 설정으로 자동 변환되어 문제 없음) | Map 조회는 별칭을 snake_case 로 통일, 클래스 바인딩은 snake_case 컬럼명 그대로 둬도 됨 |
+| 일정관리(smt) 추가 후 테스트에서 `is3xxRedirection()` 이 실패(실제론 200) | 등록 성공 시 컨트롤러가 `forward:`(200)를 쓰는 핸들러와 `redirect:`(302)를 쓰는 핸들러가 섞여 있음 — 코드를 직접 읽지 않고 추측하면 틀림 | 컨트롤러의 `return` 문을 직접 확인해서 맞는 상태코드로 assert |
+| 메일 발송 화면이 500 (`No message found under code 'comCopSymEms.regist.title'`) | 메시지 파일 경로가 `com/cop/ems` 가 아니라 공통컴포넌트 원본 구조상 `com/cop/sym/ems` 였음 | 올바른 경로로 등록 |
+| 메일 발송 후 XML 요청 파일을 만들 때 `ClassCastException`(XmlAnyTypeImpl → SndngMailDocument) | XMLBeans 가 Spring Boot 실행 가능 jar 의 커스텀 클래스로더에서 생성 클래스의 타입시스템을 못 찾음 — 발송 자체(SMTP)는 이미 끝난 뒤에 터짐 | 감사 로그용 XML 기록을 try-catch 로 감싸서 실패해도 발송 결과에 영향 없게 함 |
+| 쪽지 모듈 이름을 README 초안에서 `cop.ncm` 으로 잘못 짐작함 | `cop.ncm` 은 명함관리(NameCard)였고, 실제 쪽지는 `uss.ion.ntm/ntr/nts` | 코드에서 `NoteManageService`/`NoteRecptn`/`NoteTrnsmit` 클래스명으로 검색해서 진짜 위치를 찾음 |
+| 쪽지 핵심 기능(보내기/상세조회)이 원본 소스에서부터 관리자만 쓸 수 있게 되어 있었음 | 다른 모듈의 보안 점검 커밋에서 과하게 적용된 `@RequireAdmin` 으로 보임(일반회원용 기능인데 관리자 전용이면 기능의 목적과 안 맞음) | 사용자 확인 받고 5곳 제거. 소유권 검증(`assertOwner`)은 원본에 이미 있어서 안전 |
