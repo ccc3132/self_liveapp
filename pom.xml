@@ -258,6 +258,12 @@
       <artifactId>jsoup</artifactId>
       <version>1.18.3</version>
     </dependency>
+    <!-- 일정관리 달력 계산(EgovDateUtil) -->
+    <dependency>
+      <groupId>com.ibm.icu</groupId>
+      <artifactId>icu4j</artifactId>
+      <version>75.1</version>
+    </dependency>
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
