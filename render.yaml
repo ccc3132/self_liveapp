@@ -1,0 +1,24 @@
+# Render.com 블루프린트: README 의 "Deploy to Render" 버튼이 이 파일을 읽어서
+# 웹 서비스(Docker 빌드) + PostgreSQL 을 한 번에 만든다. 무료 플랜 기준이며, 그만큼
+# 제약이 있다(아래 README "외부 서버에 배포하기" 참고).
+services:
+  - type: web
+    name: egov-web-practice
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: egov-web-practice-db
+          property: connectionString
+      - key: APP_JWT_SECRET
+        generateValue: true
+
+databases:
+  - name: egov-web-practice-db
+    plan: free

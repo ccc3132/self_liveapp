@@ -3,13 +3,14 @@
 #   DB_URL=jdbc:postgresql://localhost:5432/egovweb
 #   DB_USER=egov
 #   DB_PASSWORD=...
-# HTTPS 뒤에서 띄우는 것을 전제로 한다(세션 쿠키 Secure). HTTP로 직접 띄우면 쿠키가 전송되지
-# 않아 로그인이 안 되니, 앞에 리버스 프록시(HTTPS 종료)를 두거나 server.ssl.* 로 TLS를 직접 설정하라.
+# 기본은 HTTPS 뒤에서 띄우는 것을 전제로 한다(세션 쿠키 Secure). 리버스 프록시 없이 평문 HTTP로
+# 띄우면(예: 사설망 docker compose) 쿠키가 전송되지 않아 로그인이 안 되니, 그 경우에만
+# COOKIE_SECURE=false 로 끈다.
 server:
   servlet:
     session:
       cookie:
-        secure: true
+        secure: ${COOKIE_SECURE:true}
 
 spring:
   datasource:
