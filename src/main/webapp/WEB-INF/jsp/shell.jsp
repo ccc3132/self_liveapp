@@ -46,8 +46,8 @@
             <a href="javascript:void(0)" onclick="go('/cop/bbs/selectBBSMasterInfs.do', this)"><span class="ic">&#9881;</span>게시판 관리(관리자)</a>
 
             <div class="group-title">일정관리</div>
-            <a href="javascript:void(0)" onclick="go('/cop/smt/sim/EgovIndvdlSchdulManageMainList.do', this)"><span class="ic">&#128197;</span>내 일정</a>
-            <a href="javascript:void(0)" onclick="go('/cop/smt/sdm/EgovDeptSchdulManageMainList.do', this)"><span class="ic">&#128197;</span>부서 일정(관리자)</a>
+            <a href="javascript:void(0)" onclick="go('/cop/smt/sim/EgovIndvdlSchdulManageMonthList.do', this)"><span class="ic">&#128197;</span>내 일정</a>
+            <a href="javascript:void(0)" onclick="go('/cop/smt/sdm/EgovDeptSchdulManageMonthList.do', this)"><span class="ic">&#128197;</span>부서 일정(관리자)</a>
             <a href="javascript:void(0)" onclick="go('/cop/smt/sam/EgovAllSchdulManageList.do', this)"><span class="ic">&#128467;</span>전체 일정</a>
             <a href="javascript:void(0)" onclick="go('/cop/smt/mtm/selectMemoTodoList.do', this)"><span class="ic">&#128221;</span>메모할일</a>
             <a href="javascript:void(0)" onclick="go('/cop/smt/dsm/EgovDiaryManageList.do', this)"><span class="ic">&#128214;</span>업무일지</a>
@@ -59,7 +59,7 @@
             <div class="group-title">소통</div>
             <a href="javascript:void(0)" onclick="go('/uss/ion/ntr/listNoteRecptn.do', this)"><span class="ic">&#9993;</span>쪽지(받은함)</a>
             <a href="javascript:void(0)" onclick="go('/uss/ion/nts/listNoteTrnsmit.do', this)"><span class="ic">&#128228;</span>쪽지(보낸함)</a>
-            <a href="javascript:void(0)" onclick="go('/cop/adb/selectAdbkMainList.do', this)"><span class="ic">&#128218;</span>주소록</a>
+            <a href="javascript:void(0)" onclick="go('/cop/adb/selectAdbkList.do', this)"><span class="ic">&#128218;</span>주소록</a>
             <a href="javascript:void(0)" onclick="go('/msg/EgovMessengerMain.do', this)"><span class="ic">&#128172;</span>메신저</a>
 
             <div class="group-title">메일</div>
