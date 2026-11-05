@@ -538,4 +538,82 @@ cursor :pointer;
 .ck-content img {max-width:100%; height:auto; }
 .ck-content table {max-width:100%; }
 
+/* ============================================================
+   2026 UI 현대화 오버레이
+   - 기존 규칙(폭 고정, 레이아웃, 스프라이트 배경 버튼 등)은 그대로 두고
+     폰트/색상/둥근모서리/그림자/여백만 다시 입힌다 (iframe 안쪽 상속 JSP 전체 적용 대상).
+   - 기존 셀렉터와 동일한 특이도로 파일 맨 뒤에 선언해 캐스케이드로 덮어쓴다.
+============================================================ */
+body,
+div, table, em, h1, h2, h3, h4, h5, h6, form, fieldset, p, th, td, input, textarea, select, button {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', 'Apple SD Gothic Neo', Roboto, sans-serif;
+	font-size: 13px;
+	color: #2a2d34;
+}
+body { background: #f6f7f9; }
+
+a { color: #3a6df0; }
+a:hover { color: #244ea8; text-decoration: underline; }
+
+textarea,
+input[type="file"],
+input[type="password"],
+input[type="text"] { border: 1px solid #d7dae0; border-radius: 6px; padding: 5px 8px; transition: border-color .12s ease, box-shadow .12s ease; }
+textarea:focus,
+input[type="password"]:focus,
+input[type="text"]:focus { outline: none; border-color: #3a6df0; box-shadow: 0 0 0 3px rgba(58,109,240,.15); }
+select { border-radius: 6px; }
+
+button,
+.btn_submit,
+.btn_style3, .btn_style3c,
+.btn_01, .btn_s, .btn_s2, .btn_r,
+span.btn_s, span.btn_s2,
+.search_box input.s_btn, .search_box2 .btns,
+.egov_file_box label {
+	border-radius: 7px !important;
+	box-shadow: 0 1px 2px rgba(20,25,40,.08);
+	transition: filter .12s ease, box-shadow .12s ease, transform .05s ease;
+}
+button:hover,
+.btn_submit:hover,
+.btn_style3c:hover,
+.btn_01:hover, .btn_s:hover, .btn_s2:hover, .btn_r:hover,
+span.btn_s:hover, span.btn_s2:hover,
+.search_box input.s_btn:hover, .search_box2 .btns:hover {
+	filter: brightness(1.08);
+	box-shadow: 0 2px 6px rgba(20,25,40,.14);
+}
+button:active { transform: translateY(1px); }
+
+.search_box, .search_box2 { border-radius: 10px; border-top: 1px solid #b1bbcb; box-shadow: 0 1px 2px rgba(20,25,40,.05); }
+
+.board_list, .wTable, .popwTable, .pop_board_list {
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 1px 2px rgba(20,25,40,.06), 0 1px 10px rgba(20,25,40,.03);
+}
+.board_list thead th, .board_list tbody th,
+.wTable > thead > tr > th, .wTable > tbody > tr > th,
+.popwTable thead th, .popwTable tbody th,
+.pop_board_list thead th, .pop_board_list tbody th {
+	background: #eef2fc;
+	color: #2f3444;
+	font-weight: 700;
+}
+.board_list tbody tr:nth-child(even) td,
+.wTable > tbody > tr:nth-child(even) > td,
+.popwTable tbody tr:nth-child(even) td {
+	background: #fafbfd;
+}
+.board_list tbody tr:hover td,
+.wTable > tbody > tr:hover > td,
+.popwTable tbody tr:hover td {
+	background: #f1f5ff;
+}
+
+.pagination ul li a { border-radius: 50%; }
+.pagination ul li.current a,
+.pagination ul li a:hover { border-radius: 50%; background: #3a6df0; box-shadow: 0 1px 4px rgba(58,109,240,.4); }
+
 

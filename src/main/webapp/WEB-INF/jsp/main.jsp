@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -46,5 +47,34 @@
         <h2>쪽지 (<a href="${pageContext.request.contextPath}/uss/ion/ntr/listNoteRecptn.do">바로가기</a>)</h2>
         <p>안 읽은 쪽지 <c:out value="${dashboard.unreadNoteCount}"/>건</p>
     </section>
+
+    <section>
+        <h2>현재 접속 중인 사용자 (<span id="activeUserCount"><c:out value="${fn:length(dashboard.activeUsers)}"/></span>명)</h2>
+        <ul id="activeUserList">
+            <c:forEach var="u" items="${dashboard.activeUsers}">
+                <li><c:out value="${u.name}"/> (<c:out value="${u.loginId}"/>)</li>
+            </c:forEach>
+        </ul>
+    </section>
+
+    <script>
+        // 15초마다 접속 중인 사용자 목록을 다시 받아와서 갱신한다(실시간에 가깝게, 별도 WebSocket 없이).
+        function refreshActiveUsers() {
+            fetch('${pageContext.request.contextPath}/main/activeUsers.do')
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    document.getElementById('activeUserCount').textContent = data.count;
+                    var list = document.getElementById('activeUserList');
+                    list.innerHTML = '';
+                    data.users.forEach(function (u) {
+                        var li = document.createElement('li');
+                        li.textContent = u.name + ' (' + u.loginId + ')';
+                        list.appendChild(li);
+                    });
+                })
+                .catch(function () { /* 다음 주기에 다시 시도 */ });
+        }
+        setInterval(refreshActiveUsers, 15000);
+    </script>
 </body>
 </html>
