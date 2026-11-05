@@ -64,7 +64,20 @@ int iEndDay = cal.getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
 <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
 <script type="text/javaScript" language="javascript">
 
-	var gOpener = parent.document.all? parent.document.leaderSchdulVO : parent.document.getElementById("leaderSchdulVO") ;
+	// 이 페이지는 (원래 eGovFrame 예제처럼) 상위 포털 프레임의 폼을 기대하지만,
+	// 이 프로젝트는 그런 프레임을 쓰지 않으므로 같은 문서 안에 폼을 직접 만든다.
+	var gOpener = document.createElement('form');
+	gOpener.method = 'post';
+	gOpener.style.display = 'none';
+	['schdulBgnDe', 'schdulEndDe', 'year', 'month', 'day', 'searchMode', 'schdulId', 'schdulDe'].forEach(function (n) {
+		var i = document.createElement('input'); i.type = 'hidden'; i.name = n; gOpener.appendChild(i);
+	});
+	(function () {
+		var csrf = document.createElement('input'); csrf.type = 'hidden';
+		csrf.name = '${_csrf.parameterName}'; csrf.value = '${_csrf.token}';
+		gOpener.appendChild(csrf);
+	})();
+	document.documentElement.appendChild(gOpener);
 	/* ********************************************************
 	* 간부일정 등록페이지
 	******************************************************** */

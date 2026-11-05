@@ -70,7 +70,20 @@ String sTodate = formatter.format(new java.util.Date());
 	<link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/cop/smt/sdm/dept_schdule_manage.css'/>">
 	<script type="text/javaScript" language="javascript">
 
-	var gOpener = parent.document.all? parent.document.IndvdlSchdulManageVO : parent.document.getElementById("IndvdlSchdulManageVO") ;
+	// 이 페이지는 (원래 eGovFrame 예제처럼) 상위 포털 프레임의 폼을 기대하지만,
+	// 이 프로젝트는 그런 프레임을 쓰지 않으므로 같은 문서 안에 폼을 직접 만든다.
+	var gOpener = document.createElement('form');
+	gOpener.method = 'post';
+	gOpener.style.display = 'none';
+	['schdulBgnde', 'schdulEndde'].forEach(function (n) {
+		var i = document.createElement('input'); i.type = 'hidden'; i.name = n; gOpener.appendChild(i);
+	});
+	(function () {
+		var csrf = document.createElement('input'); csrf.type = 'hidden';
+		csrf.name = '${_csrf.parameterName}'; csrf.value = '${_csrf.token}';
+		gOpener.appendChild(csrf);
+	})();
+	document.documentElement.appendChild(gOpener);
 	/* ********************************************************
 	* 주관 부서 팝업창열기
 	******************************************************** */
@@ -88,7 +101,7 @@ String sTodate = formatter.format(new java.util.Date());
 	******************************************************** */
 	function fn_egov_detail_DeptSchdulManage(schdulId){
 
-		parent.location.href = "<c:url value='/cop/smt/sim/EgovIndvdlSchdulManageDetail.do' />?schdulId=" + encodeURIComponent(schdulId);
+		location.href = "<c:url value='/cop/smt/sim/EgovIndvdlSchdulManageDetail.do' />?schdulId=" + encodeURIComponent(schdulId);
 	}
 
 
