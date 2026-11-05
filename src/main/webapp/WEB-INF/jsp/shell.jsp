@@ -48,21 +48,29 @@
             <div class="group-title">일정관리</div>
             <a href="javascript:void(0)" onclick="go('/cop/smt/sim/EgovIndvdlSchdulManageMainList.do', this)"><span class="ic">&#128197;</span>내 일정</a>
             <a href="javascript:void(0)" onclick="go('/cop/smt/sdm/EgovDeptSchdulManageMainList.do', this)"><span class="ic">&#128197;</span>부서 일정(관리자)</a>
+            <a href="javascript:void(0)" onclick="go('/cop/smt/sam/EgovAllSchdulManageList.do', this)"><span class="ic">&#128467;</span>전체 일정</a>
             <a href="javascript:void(0)" onclick="go('/cop/smt/mtm/selectMemoTodoList.do', this)"><span class="ic">&#128221;</span>메모할일</a>
             <a href="javascript:void(0)" onclick="go('/cop/smt/dsm/EgovDiaryManageList.do', this)"><span class="ic">&#128214;</span>업무일지</a>
+            <a href="javascript:void(0)" onclick="go('/cop/smt/wmr/selectWikMnthngReprtList.do', this)"><span class="ic">&#128203;</span>주간/월간 보고</a>
+            <a href="javascript:void(0)" onclick="go('/cop/smt/mrm/selectMemoReprtList.do', this)"><span class="ic">&#128172;</span>메모 보고</a>
+            <a href="javascript:void(0)" onclick="go('/cop/smt/djm/selectDeptJobList.do', this)"><span class="ic">&#128188;</span>부서 업무</a>
+            <a href="javascript:void(0)" onclick="go('/cop/smt/lsm/usr/selectLeaderSchdulList.do', this)"><span class="ic">&#128081;</span>지휘 일정</a>
 
             <div class="group-title">소통</div>
             <a href="javascript:void(0)" onclick="go('/uss/ion/ntr/listNoteRecptn.do', this)"><span class="ic">&#9993;</span>쪽지(받은함)</a>
+            <a href="javascript:void(0)" onclick="go('/uss/ion/nts/listNoteTrnsmit.do', this)"><span class="ic">&#128228;</span>쪽지(보낸함)</a>
             <a href="javascript:void(0)" onclick="go('/cop/adb/selectAdbkMainList.do', this)"><span class="ic">&#128218;</span>주소록</a>
             <a href="javascript:void(0)" onclick="go('/msg/EgovMessengerMain.do', this)"><span class="ic">&#128172;</span>메신저</a>
 
             <div class="group-title">메일</div>
+            <a href="javascript:void(0)" onclick="go('/mail/EgovMailInbox.do', this)"><span class="ic">&#128229;</span>받은 메일함</a>
             <a href="javascript:void(0)" onclick="go('/cop/ems/insertSndngMailView.do', this)"><span class="ic">&#128228;</span>메일 발송</a>
             <a href="javascript:void(0)" onclick="go('/mail/EgovMailAccountSetting.do', this)"><span class="ic">&#128231;</span>메일 수신 설정</a>
 
             <div class="group-title">관리자</div>
             <a href="javascript:void(0)" onclick="go('/uss/umt/EgovEmplyrManage.do', this)"><span class="ic">&#128100;</span>직원 관리</a>
             <a href="javascript:void(0)" onclick="go('/sec/rgm/EgovAuthorGroupList.do', this)"><span class="ic">&#128273;</span>권한 지정</a>
+            <a href="javascript:void(0)" onclick="go('/cop/smt/lsm/mng/selectLeaderSttusList.do', this)"><span class="ic">&#9878;</span>지휘 현황 관리</a>
         </nav>
         <div class="main">
             <div class="topbar">
