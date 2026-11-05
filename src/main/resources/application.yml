@@ -45,3 +45,10 @@ mybatis:
     - classpath:egovframework/mapper/com/**/*_SQL_postgres.xml
   configuration:
     map-underscore-to-camel-case: true
+
+app:
+  jwt:
+    # 모바일 앱(React Native 등) 전용 REST API(/api/**) 인증 토큰 서명 키.
+    # 운영에서는 반드시 환경변수(APP_JWT_SECRET)로 32바이트 이상의 랜덤 값을 넣어 덮어쓴다.
+    secret: ${APP_JWT_SECRET:local-dev-only-secret-key-change-me-0123456789abcdef}
+    expiration-minutes: ${APP_JWT_EXPIRATION_MINUTES:720}
