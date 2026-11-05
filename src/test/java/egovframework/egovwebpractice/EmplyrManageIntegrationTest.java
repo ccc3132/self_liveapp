@@ -42,7 +42,7 @@ class EmplyrManageIntegrationTest {
     private MockHttpSession login(String id, String password, String userSe) throws Exception {
         MvcResult result = mockMvc.perform(post("/uat/uia/actionLogin.do").with(csrf())
                         .param("id", id).param("password", password).param("userSe", userSe))
-                .andExpect(redirectedUrl("/main.do"))
+                .andExpect(redirectedUrl("/shell.do"))
                 .andReturn();
         return (MockHttpSession) result.getRequest().getSession(false);
     }

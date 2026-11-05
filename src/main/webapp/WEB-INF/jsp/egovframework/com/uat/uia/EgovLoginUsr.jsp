@@ -159,13 +159,6 @@ function fnInit() {
     <c:if test="${not empty fn:trim(loginMessage) &&  loginMessage ne ''}">
     alert("loginMessage:<c:out value='${loginMessage}'/>");
     </c:if>
-    
-    // reload "_top", "_left" frame page after login
-    if (parent.frames["_top"] == undefined)
-    parent.frames["_top"].location.reload();
-    if (parent.frames["_left"] != undefined) {
-    	parent.frames["_left"].location.reload();
-    }
 }
 
 function fnLoginTypeSelect(objName){

@@ -37,7 +37,7 @@ class SecurityIntegrationTest {
         MvcResult result = mockMvc.perform(post(LOGIN_ACTION).with(csrf())
                         .param("id", id).param("password", password).param("userSe", userSe))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/main.do"))
+                .andExpect(redirectedUrl("/shell.do"))
                 .andReturn();
         return (MockHttpSession) result.getRequest().getSession(false);
     }

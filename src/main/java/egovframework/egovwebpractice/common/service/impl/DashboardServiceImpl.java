@@ -16,9 +16,11 @@ public class DashboardServiceImpl extends EgovAbstractServiceImpl implements Das
     private static final DateTimeFormatter YYYYMMDD = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     private final DashboardDAO dashboardDAO;
+    private final ActiveUserTracker activeUserTracker;
 
-    public DashboardServiceImpl(DashboardDAO dashboardDAO) {
+    public DashboardServiceImpl(DashboardDAO dashboardDAO, ActiveUserTracker activeUserTracker) {
         this.dashboardDAO = dashboardDAO;
+        this.activeUserTracker = activeUserTracker;
     }
 
     @Override
@@ -29,6 +31,7 @@ public class DashboardServiceImpl extends EgovAbstractServiceImpl implements Das
         vo.setTodaySchedules(dashboardDAO.selectTodaySchedules(uniqId, today));
         vo.setRecentNotices(dashboardDAO.selectRecentNotices());
         vo.setUnreadNoteCount(dashboardDAO.selectUnreadNoteCount(uniqId));
+        vo.setActiveUsers(activeUserTracker.selectActiveUsers());
         return vo;
     }
 }
