@@ -57,6 +57,7 @@
             <a href="javascript:void(0)" onclick="go('/cop/smt/lsm/usr/selectLeaderSchdulList.do', this)"><span class="ic">&#128081;</span>지휘 일정</a>
 
             <div class="group-title">소통</div>
+            <a href="javascript:void(0)" onclick="go('/uss/ion/ntm/registEgovNoteManage.do', this)"><span class="ic">&#128221;</span>쪽지 쓰기</a>
             <a href="javascript:void(0)" onclick="go('/uss/ion/ntr/listNoteRecptn.do', this)"><span class="ic">&#9993;</span>쪽지(받은함)</a>
             <a href="javascript:void(0)" onclick="go('/uss/ion/nts/listNoteTrnsmit.do', this)"><span class="ic">&#128228;</span>쪽지(보낸함)</a>
             <a href="javascript:void(0)" onclick="go('/cop/adb/selectAdbkList.do', this)"><span class="ic">&#128218;</span>주소록</a>

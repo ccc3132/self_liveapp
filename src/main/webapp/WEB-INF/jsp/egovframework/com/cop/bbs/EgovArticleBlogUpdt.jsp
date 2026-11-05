@@ -81,7 +81,11 @@ function fn_egov_init() {
 		filebrowserImageUploadUrl: '${ckImageUploadUrl}?${_csrf.parameterName}=${_csrf.token}', // ck.properties ck.image.url
 	};
 
-	CKEDITOR.replace('nttCn',ckeditor_config);
+	// CKEditor 미도입 상태라 없으면 조용히 건너뛴다. 없는 채로 바로 호출하면 예외가 던져져서
+	// 아래 첨부파일 초기화까지 전부 멈춘다.
+	if (typeof CKEDITOR !== 'undefined') {
+		CKEDITOR.replace('nttCn',ckeditor_config);
+	}
 
 	<c:if test="${boardMasterVO.fileAtchPosblAt == 'Y'}">
 
@@ -115,8 +119,10 @@ function fn_egov_init() {
  * 저장처리화면
  ******************************************************** */
 function fn_egov_updt_article(form) {
-	
-	CKEDITOR.instances.nttCn.updateElement();
+
+	if (typeof CKEDITOR !== 'undefined') {
+		CKEDITOR.instances.nttCn.updateElement();
+	}
 	
 	if (!validateArticleVO(form)) {
 		return false;

@@ -49,7 +49,11 @@ function fn_egov_init_IndvdlSchdulManage(){
 	var ckeditor_config = {
 		filebrowserImageUploadUrl: '${ckImageUploadUrl}?${_csrf.parameterName}=${_csrf.token}'
 	};
-	CKEDITOR.replace('schdulCn', ckeditor_config);
+	// CKEditor 미도입 상태라 없으면 조용히 건너뛴다(textarea로 그대로 쓸 수 있음).
+	// 없는 채로 바로 호출하면 예외가 던져져서 이 함수의 나머지(날짜 선택기, 첨부파일, 날짜 채우기)가 전부 멈춘다.
+	if (typeof CKEDITOR !== 'undefined') {
+		CKEDITOR.replace('schdulCn', ckeditor_config);
+	}
 
 	$("#schdulBgndeYYYMMDD").datepicker( 
 	        {dateFormat:'yy-mm-dd'
@@ -116,7 +120,9 @@ function fn_egov_list_IndvdlSchdulManage(){
  * 저장처리화면
  ******************************************************** */
 function fn_egov_save_IndvdlSchdulManage(form){
-	CKEDITOR.instances.schdulCn.updateElement();
+	if (typeof CKEDITOR !== 'undefined') {
+		CKEDITOR.instances.schdulCn.updateElement();
+	}
 	if(confirm("<spring:message code="common.save.msg" />")){
 		if(!validateIndvdlSchdulManageVO(form)){
 			return;

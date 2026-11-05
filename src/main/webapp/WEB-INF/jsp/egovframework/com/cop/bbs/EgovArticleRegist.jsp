@@ -83,8 +83,11 @@ function fn_egov_init(){
 		//filebrowserImageUploadUrl: '${ckImageUploadUrl}?${_csrf.parameterName}=${_csrf.token}', // 파일 업로드를 처리 할 경로 설정.
 		filebrowserImageUploadUrl: '${ckImageUploadUrl}?${_csrf.parameterName}=${_csrf.token}', // ck.properties ck.image.url
 	};
-	CKEDITOR.replace('nttCn',ckeditor_config);
-	
+	// CKEditor 미도입 상태라 없으면 조용히 건너뛴다(textarea로 그대로 쓸 수 있음).
+	if (typeof CKEDITOR !== 'undefined') {
+		CKEDITOR.replace('nttCn',ckeditor_config);
+	}
+
 	// 첫 입력란에 포커스
 	document.getElementById("articleVO").nttSj.focus();
 	
@@ -95,7 +98,9 @@ function fn_egov_init(){
 	 ******************************************************** */
 	function fn_egov_regist_article(form) {
 
-		CKEDITOR.instances.nttCn.updateElement();
+		if (typeof CKEDITOR !== 'undefined') {
+			CKEDITOR.instances.nttCn.updateElement();
+		}
 
 		//input item Client-Side validate
 		if (!validateArticleVO(form)) {

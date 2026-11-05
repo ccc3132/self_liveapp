@@ -181,6 +181,11 @@ function  fn_egov_recptnEmpSearchPupup(){
 
 	var openWindows = window.open(url,name,"width="+width+",height="+height+",top="+top+",left="+left+",toolbar=no,status=no,location=no,scrollbars=yes,menubar=no,resizable=yes");
 
+	// 브라우저 팝업 차단 설정이면 openWindows 가 null - 그대로 focus() 하면 예외가 난다.
+	if (!openWindows) {
+		alert("팝업이 차단되었습니다. 이 사이트의 팝업을 허용해 주세요.");
+		return;
+	}
 	if (window.focus) {openWindows.focus()}
 }
 

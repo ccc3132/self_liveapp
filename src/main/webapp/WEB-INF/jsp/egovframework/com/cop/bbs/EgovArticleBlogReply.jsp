@@ -79,7 +79,10 @@ function fn_egov_init(){
 	var ckeditor_config = {
 		filebrowserImageUploadUrl: '${ckImageUploadUrl}?${_csrf.parameterName}=${_csrf.token}',
 	};
-	CKEDITOR.replace('nttCn',ckeditor_config);
+	// CKEditor 미도입 상태라 없으면 조용히 건너뛴다(textarea로 그대로 쓸 수 있음).
+	if (typeof CKEDITOR !== 'undefined') {
+		CKEDITOR.replace('nttCn',ckeditor_config);
+	}
 
 	// 첫 입력란에 포커스
 	document.getElementById("articleVO").nttSj.focus();
@@ -89,8 +92,10 @@ function fn_egov_init(){
  * 답글저장처리화면
  ******************************************************** */
 function fn_egov_reply_article(form){
-	
-	CKEDITOR.instances.nttCn.updateElement();
+
+	if (typeof CKEDITOR !== 'undefined') {
+		CKEDITOR.instances.nttCn.updateElement();
+	}
 	
 	//input item Client-Side validate
 	if (!validateArticleVO(form)) {	
