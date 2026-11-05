@@ -9,6 +9,7 @@
 
 ## 목차
 
+0. [화면 구성 둘러보기 (처음 보는 사람용)](#0-화면-구성-둘러보기-처음-보는-사람용)
 1. [현재 상태 한눈에](#1-현재-상태-한눈에)
 2. [새 PC 에서 시작하기](#2-새-pc-에서-시작하기)
 3. [기술 스택과 프로젝트 구조](#3-기술-스택과-프로젝트-구조)
@@ -18,6 +19,44 @@
 7. [로드맵 (다음 할 일)](#7-로드맵-다음-할-일)
 8. [아직 확인하지 못한 것](#8-아직-확인하지-못한-것)
 9. [겪었던 문제 모음](#9-겪었던-문제-모음)
+10. [외부 서버에 배포하기 (Docker)](#10-외부-서버에-배포하기-docker)
+
+---
+
+## 0. 화면 구성 둘러보기 (처음 보는 사람용)
+
+코드를 읽기 전에, 실제로 브라우저에 어떻게 보이는지부터 봅니다(2장 안내대로 로그인하면 아래와 같은 화면이 뜹니다).
+
+### 로그인 화면
+
+![로그인 화면](docs/screenshots/login.jpg)
+
+상단 탭으로 사용자 구분(일반/기업/업무)을 고른 뒤 아이디·비밀번호를 입력합니다. 로컬 테스트 계정은
+[2장 3절](#3-로그인-정보)을 참고하세요.
+
+### 로그인 후 기본 화면 (셸 + 대시보드)
+
+![대시보드 - 라이트 테마](docs/screenshots/dashboard-light.jpg)
+
+로그인하면 `/shell.do`(포털 셸)로 이동합니다. 레이아웃은 세 부분으로 나뉩니다.
+
+- **왼쪽 사이드바**: 게시판·일정관리·소통·메일·관리자 그룹으로 묶인 전체 메뉴. 클릭하면 오른쪽 iframe
+  안에서만 화면이 바뀌고 사이드바는 고정됩니다(기존 ~150개 공통컴포넌트 JSP를 건드리지 않고 공통 틀을
+  씌운 구조 — [6장](#6-공통컴포넌트-도입-현황과-설계) 참고).
+- **상단 헤더**: 로그인한 사용자 이름, 테마 선택(라이트/다크/블루), 로그아웃.
+- **가운데 대시보드**: 오늘 일정·최근 공지·안 읽은 쪽지·현재 접속 중인 사용자를 카드로 요약(15초마다
+  접속자 수를 갱신).
+
+### 테마 전환
+
+![대시보드 - 블루 테마](docs/screenshots/dashboard-blue.jpg)
+
+헤더 오른쪽 드롭다운으로 라이트/다크/블루 3가지 테마를 바로 바꿀 수 있습니다(쿠키에 저장되어 다음 접속에도
+유지됩니다). 테마는 셸(사이드바·헤더)에만 적용되고, iframe 안의 화면 자체(게시판·일정 등)는 아직
+공통 스타일(`com.css`)만 적용되어 색상 테마를 따라 바꾸지는 않습니다.
+
+> 더 많은 화면(게시판, 일정관리 달력, 쪽지, 메신저 등)은 로그인 후 사이드바에서 직접 눌러 보는 게 가장
+> 빠릅니다. 메뉴 구성 전체 목록은 [6장의 "화면 주소"](#6-공통컴포넌트-도입-현황과-설계)를 참고하세요.
 
 ---
 
@@ -153,6 +192,7 @@ java -jar target/egov-web-practice.war
 - **`prod` 프로필로 실제 실행해 본 적은 없습니다**([아직 확인하지 못한 것](#8-아직-확인하지-못한-것)).
 - 외부 SMTP(메일 발송)는 환경변수 `APP_MAIL_HOST`, `APP_MAIL_PORT`, `APP_MAIL_USERNAME`, `APP_MAIL_PASSWORD`, `APP_MAIL_SENDER_NAME`, `APP_MAIL_SENDER_ADDRESS` 로 줍니다(`CommonComponentsConfig`). 환경변수 이름은 Spring 의 이름 변환 규칙을 따른 것이며, 실제 메일 발송으로 확인하지는 않았습니다.
 - 외장 Tomcat(10.1 이상, Jakarta)에 war 를 올리는 방식도 가능하지만 확인하지 않았습니다.
+- **내 서버가 없거나 설치 과정 없이 바로 올리고 싶다면 [10장 외부 서버에 배포하기](#10-외부-서버에-배포하기-docker)** 를 보세요(Docker Compose 한 줄 실행, Render 원클릭 배포).
 
 ---
 
@@ -460,6 +500,7 @@ WebSocket/STOMP 대신 **REST 기반**으로 구현했다(1:1 대화만, 그룹 
 - `prod` 프로필(외부 PostgreSQL)로 실행, 외부 Tomcat 배포
 - Linux 에서 내장 PostgreSQL 실행(Windows 에서만 확인), `run.bat` 더블클릭 실행
 - 공식 호환성 확인 도구 검사(규칙은 가이드 문구를 코드로 옮긴 것)
+- Docker 빌드·배포 전반(이 PC에 Docker 미설치 — [10장](#10-외부-서버에-배포하기-docker) 참고)
 
 ---
 
@@ -498,3 +539,67 @@ WebSocket/STOMP 대신 **REST 기반**으로 구현했다(1:1 대화만, 그룹 
 | 메일 발송 후 XML 요청 파일을 만들 때 `ClassCastException`(XmlAnyTypeImpl → SndngMailDocument) | XMLBeans 가 Spring Boot 실행 가능 jar 의 커스텀 클래스로더에서 생성 클래스의 타입시스템을 못 찾음 — 발송 자체(SMTP)는 이미 끝난 뒤에 터짐 | 감사 로그용 XML 기록을 try-catch 로 감싸서 실패해도 발송 결과에 영향 없게 함 |
 | 쪽지 모듈 이름을 README 초안에서 `cop.ncm` 으로 잘못 짐작함 | `cop.ncm` 은 명함관리(NameCard)였고, 실제 쪽지는 `uss.ion.ntm/ntr/nts` | 코드에서 `NoteManageService`/`NoteRecptn`/`NoteTrnsmit` 클래스명으로 검색해서 진짜 위치를 찾음 |
 | 쪽지 핵심 기능(보내기/상세조회)이 원본 소스에서부터 관리자만 쓸 수 있게 되어 있었음 | 다른 모듈의 보안 점검 커밋에서 과하게 적용된 `@RequireAdmin` 으로 보임(일반회원용 기능인데 관리자 전용이면 기능의 목적과 안 맞음) | 사용자 확인 받고 5곳 제거. 소유권 검증(`assertOwner`)은 원본에 이미 있어서 안전 |
+| 일정관리(sim/sdm/lsm) 달력에서 날짜를 클릭해 등록·상세보기를 열면 아무 반응이 없음 | JSP가 `parent.document.getElementById('...SchdulManageVO')`로 상위 프레임의 폼을 찾으려 했는데, 그 폼은 원래 eGovFrame 예제의 포털 메인 프레임에만 있고 이 프로젝트의 셸(`shell.jsp`) 구조에는 없어 `gOpener`가 null | 9개 JSP가 상위 프레임에 의존하지 않도록 자기 문서 안에 숨겨진 폼을 직접 만들어 쓰도록 수정(CSRF 토큰 포함). **사이드바 메뉴를 눈으로만 보지 말고 실제로 클릭해서 끝까지 확인**해야 드러나는 종류의 버그였다 |
+| 사이드바의 일부 메뉴(내 일정/부서 일정/주소록)가 빈 화면으로 연결됨 | 포털 메인화면에 작은 위젯으로 박아 넣는 용도의 JSP(`...MainList.do`, `selectAdbkMainList.do`)를 독립 화면인 줄 알고 그대로 연결함 — 본문이 사실상 빈 테이블이라 겉보기엔 "로드는 되는데 아무 내용도 없는" 상태라 쉽게 지나침 | 실제 목록/달력 화면(`...MonthList.do`, `selectAdbkList.do`)으로 교체. 새 메뉴를 사이드바에 추가할 때는 그 URL의 응답 HTML 본문 길이까지 확인 |
+
+---
+
+## 10. 외부 서버에 배포하기 (Docker)
+
+`Dockerfile`, `docker-compose.yml`, `render.yaml` 을 추가했습니다. **이 PC에 Docker 가 설치되어 있지 않아
+실제로 이미지가 빌드되는지는 아직 확인하지 못했습니다** — 코드와 `pom.xml`을 보고 작성한 구성이니, 처음
+쓸 때는 로그를 보면서 진행하세요.
+
+### 방법 A: 내 서버에서 `docker compose up` (사설 서버·VPS 등 직접 관리하는 서버용)
+
+```shell
+git clone https://github.com/ccc3132/self_liveapp.git
+cd self_liveapp
+cp .env.example .env
+# .env 를 열어 DB_PASSWORD, APP_JWT_SECRET 을 직접 정한 값으로 바꾸세요
+docker compose up -d --build
+```
+
+- `http://서버주소:8080/` 으로 접속합니다. 포트를 바꾸려면 `.env` 의 `APP_PORT`.
+- PostgreSQL 데이터는 `db_data` 라는 Docker volume 에 남아서, 컨테이너를 내렸다 올려도 유지됩니다.
+- **HTTPS 리버스 프록시(Caddy·nginx·Cloudflare Tunnel 등)를 앞에 두는 것을 권장합니다.** 프록시 없이
+  평문 HTTP 로 바로 열면 `.env` 의 `COOKIE_SECURE=false` 를 유지해야 로그인이 됩니다(기본값). HTTPS
+  뒤에 두면 `COOKIE_SECURE=true` 로 바꾸세요.
+- 로그 확인: `docker compose logs -f app`. 중지: `docker compose down`(데이터 유지) / `docker compose down -v`(데이터까지 삭제).
+
+### 방법 B: Render 에 원클릭 배포 (내 서버가 없어도 됨)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ccc3132/self_liveapp)
+
+버튼을 누르면 Render 가 `render.yaml` 을 읽어서 **웹 서비스(Docker 빌드) + PostgreSQL** 을 한 번에 만듭니다.
+DB 접속정보와 `APP_JWT_SECRET` 은 Render 가 자동으로 생성해서 연결해 줍니다(`docker-entrypoint.sh` 가
+Render 의 `DATABASE_URL`, `PORT` 형식을 이 앱이 읽는 `DB_URL`, `SERVER_PORT` 형식으로 변환합니다).
+
+- 무료(Free) 플랜 기준입니다. 일정 시간 요청이 없으면 서비스가 잠들고(다음 요청 때 다시 깨는 데 수십 초
+  걸릴 수 있음), 무료 PostgreSQL 은 일정 기간(가입 시점 기준 약 30일) 후 만료됩니다 — Render 정책이 바뀔
+  수 있으니 콘솔에서 확인하세요. 계속 쓰려면 유료 플랜으로 올리거나 DB 를 새로 연결하세요.
+- 빌드는 `Dockerfile` 을 그대로 씁니다(Maven 으로 war 를 빌드 → JRE 이미지에 올림). 첫 빌드는 라이브러리를
+  새로 받기 때문에 몇 분 걸립니다.
+- 배포 후 접속 → 로그인은 [2장 3절](#3-로그인-정보)의 초기 계정으로 됩니다. **다른 사람도 볼 수 있는
+  주소가 되는 순간, 반드시 비밀번호를 바꾸거나 계정을 정리하세요.**
+- Render 외에 Railway 등 `DATABASE_URL`(postgres://user:pass@host:port/db) 환경변수로 DB 를 연결해 주는
+  다른 PaaS 에도 같은 `Dockerfile`/`docker-entrypoint.sh` 로 배포할 수 있을 것으로 보이나(동일한 변환
+  로직), 실제로 확인한 것은 아닙니다.
+
+### 구성 파일 설명
+
+| 파일 | 역할 |
+|------|------|
+| `Dockerfile` | 2단계 빌드: `maven:3.9-eclipse-temurin-21` 로 war 를 빌드하고, `eclipse-temurin:21-jre-alpine` 에 war 하나만 올려서 이미지를 가볍게 유지 |
+| `docker-entrypoint.sh` | PaaS 가 주는 `DATABASE_URL`(postgres://...)을 이 앱의 `DB_URL`(jdbc:postgresql://...) 형식으로, `PORT` 를 `SERVER_PORT` 로 변환한 뒤 `java -jar` 실행. 둘 다 없으면 그대로 통과(기존 `DB_URL`/`SERVER_PORT` 방식도 계속 됨) |
+| `docker-compose.yml` | 앱 컨테이너 + PostgreSQL 컨테이너를 한 번에 띄움(`prod` 프로필) |
+| `.env.example` | `docker-compose.yml` 이 읽는 값의 틀. `cp .env.example .env` 로 복사해서 실제 값을 채움(`.env` 자체는 git에 올라가지 않음) |
+| `render.yaml` | Render 블루프린트. "Deploy to Render" 버튼이 이 파일을 읽어 서비스를 구성 |
+| `.dockerignore` | 이미지 빌드에 불필요한 것(`target/`, `data/`, `mobile/`, 문서 등) 제외 |
+
+### 아직 확인하지 못한 것 (이 장 전용)
+
+- `docker build`/`docker compose up` 이 실제로 성공하는지(이 PC에 Docker 미설치)
+- Render 원클릭 배포가 실제로 끝까지 되는지(버튼을 눌러 실행해 보지 않음)
+- Railway 등 다른 PaaS 와의 호환성(형식만 맞춰 작성, 실제 배포는 안 해봄)
+- 외장 PostgreSQL 에 `prod` 프로필로 실제 접속해 본 적이 없다는 점은 [8장](#8-아직-확인하지-못한-것)과 동일하게 적용됨

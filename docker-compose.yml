@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: egovweb
+      POSTGRES_USER: egov
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?.env 파일에 DB_PASSWORD 를 설정하세요}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: jdbc:postgresql://db:5432/egovweb
+      DB_USER: egov
+      DB_PASSWORD: ${DB_PASSWORD:?.env 파일에 DB_PASSWORD 를 설정하세요}
+      APP_JWT_SECRET: ${APP_JWT_SECRET:?.env 파일에 APP_JWT_SECRET 를 설정하세요}
+      # 앞에 HTTPS 리버스 프록시(Caddy/nginx 등)를 두지 않고 평문 HTTP 로 바로 접속한다면
+      # true 로는 로그인이 안 된다(쿠키가 Secure 라 브라우저가 HTTP 에는 보내지 않음).
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    restart: unless-stopped
+
+volumes:
+  db_data:
