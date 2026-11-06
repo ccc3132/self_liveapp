@@ -40,7 +40,13 @@ function fn_egov_setPostNavigateParam(form, name, value) {
 	form.appendChild(input);
 }
 
-function fn_egov_postNavigate(action, params, targetForm) {
+/**
+ * modalOptions 를 넘기면(예: {title: '...', doneUrlIncludes: 'selectXxxList.do'})
+ * 같은 문서 안에서 페이지를 이동하는 대신 EgovIframeModal 로 등록/수정 화면을 띄운다.
+ * 등록/수정 폼 JSP 자체는 그대로이고, 저장 후 서버가 목록 URL로 redirect/forward 하면
+ * EgovIframeModal 이 자동으로 모달을 닫고 목록을 새로고침한다.
+ */
+function fn_egov_postNavigate(action, params, targetForm, modalOptions) {
 	var form = targetForm;
 	if (!form) {
 		var forms = document.forms;
@@ -65,7 +71,16 @@ function fn_egov_postNavigate(action, params, targetForm) {
 	}
 
 	fn_egov_appendCsrfToken(form);
-	form.submit();
+
+	if (modalOptions && window.EgovIframeModal) {
+		window.EgovIframeModal.open({
+			form: form,
+			title: modalOptions.title,
+			doneUrlIncludes: modalOptions.doneUrlIncludes
+		});
+	} else {
+		form.submit();
+	}
 }
 
 function fn_egov_postNavigateFromQuery(action, queryString, targetForm) {
