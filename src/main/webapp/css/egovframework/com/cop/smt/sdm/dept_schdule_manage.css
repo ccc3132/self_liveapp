@@ -14,8 +14,8 @@
 		.date_view ul li a { display: block; height: 19px; line-height: 19px; background-color: #fff; border: 1px solid #e6e6e6; }
 		.date_view ul li a:hover { background-color: #e6e6e6; }
 		.date_view ul li a.today { padding: 0 7px; color: #000; font-size: 11px; margin-right: 5px; }
-		.date_view ul li a.prev { width: 18px; background: url('../../../../../../images/egovframework/com/cop/smt/sdm/btn_prev.png') 5px no-repeat; text-indent: -10000em; margin-right: 0px; }
-		.date_view ul li a.next { width: 18px; background: url('../../../../../../images/egovframework/com/cop/smt/sdm/btn_next.png') 6px 5px no-repeat; text-indent: -10000em; }
+		.date_view ul li a.prev { width: 18px; background: url('../../../../../../images/egovframework/com/cmm/btn/btn_prev.png') 5px no-repeat; text-indent: -10000em; margin-right: 0px; }
+		.date_view ul li a.next { width: 18px; background: url('../../../../../../images/egovframework/com/cmm/btn/btn_next.png') 6px 5px no-repeat; text-indent: -10000em; }
 		/*
 		.view_type { position: absolute; top: 5px; right: 0; }
 		.view_type ul { display: inline-block; }
