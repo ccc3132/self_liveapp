@@ -639,4 +639,14 @@ td.today-cell, .calendar td.today-cell { background: #eaf2ff; box-shadow: inset 
 .pagination ul li.current a,
 .pagination ul li a:hover { border-radius: 50%; background: #3a6df0; box-shadow: 0 1px 4px rgba(58,109,240,.4); }
 
+/* 공용 iframe 모달(EgovIframeModal.js) - 등록/수정/상세 화면을 띄우는 오버레이 */
+.egov-modal-backdrop { position: fixed; inset: 0; background: rgba(20,25,40,.45); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+.egov-modal-backdrop.hidden { display: none; }
+.egov-modal-box { width: min(900px, 94vw); height: min(720px, 90vh); background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(20,25,40,.25); display: flex; flex-direction: column; overflow: hidden; }
+.egov-modal-head { padding: 12px 18px; border-bottom: 1px solid #eef0f4; display: flex; align-items: center; justify-content: space-between; flex: none; }
+.egov-modal-title { margin: 0; font-size: 15px; font-weight: 700; }
+.egov-modal-close { cursor: pointer; font-size: 20px; color: #9aa0ab; border: none; background: none; line-height: 1; }
+.egov-modal-close:hover { color: #2a2d34; }
+.egov-modal-iframe { flex: 1; width: 100%; border: 0; }
+
 
