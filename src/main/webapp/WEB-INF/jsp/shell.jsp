@@ -81,6 +81,7 @@
 
             <div class="group-title">결재</div>
             <a href="javascript:void(0)" onclick="go('/apv/EgovApvSubmitSelect.do', this)"><span class="ic">&#9999;</span>결재 상신</a>
+            <a href="javascript:void(0)" onclick="go('/apv/EgovApvInbox.do', this)"><span class="ic">&#128203;</span>결재함</a>
             <a href="javascript:void(0)" onclick="go('/apv/admin/EgovApvTemplateList.do', this)"><span class="ic">&#128196;</span>양식 관리(관리자)</a>
 
             <div class="group-title">관리자</div>

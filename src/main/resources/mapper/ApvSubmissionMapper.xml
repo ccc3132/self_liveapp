@@ -38,4 +38,12 @@
          ORDER BY USER_NM
          LIMIT 30
     </select>
+
+    <update id="advanceStep" parameterType="long">
+        UPDATE APV_SUBMISSION SET current_step_order = current_step_order + 1 WHERE submission_id = #{value}
+    </update>
+
+    <update id="completeSubmission" parameterType="map">
+        UPDATE APV_SUBMISSION SET status = #{status}, completed_at = NOW() WHERE submission_id = #{submissionId}
+    </update>
 </mapper>

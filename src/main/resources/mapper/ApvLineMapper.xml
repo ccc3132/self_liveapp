@@ -15,4 +15,28 @@
          WHERE submission_id = #{value}
          ORDER BY step_order
     </select>
+
+    <!-- 내가 결재할 문서: 현재 단계(current_step_order)의 '대기' 라인만, 진행중인 제출문서만 -->
+    <select id="selectPendingLines" parameterType="string" resultType="map">
+        SELECT l.line_id AS line_id, l.submission_id AS submission_id, l.step_order AS step_order,
+               s.title AS title, s.template_nm AS template_nm, s.requester_nm AS requester_nm,
+               s.submitted_at AS submitted_at
+          FROM APV_LINE l
+          JOIN APV_SUBMISSION s ON s.submission_id = l.submission_id
+         WHERE l.approver_id = #{value}
+           AND l.status = '대기'
+           AND s.status = '진행중'
+           AND s.current_step_order = l.step_order
+         ORDER BY s.submitted_at
+    </select>
+
+    <update id="updateLineStatus" parameterType="map">
+        UPDATE APV_LINE
+           SET status = #{status}, comment_cn = #{commentCn}, processed_at = NOW()
+         WHERE line_id = #{lineId} AND approver_id = #{approverId} AND status = '대기'
+    </update>
+
+    <select id="selectMaxStepOrder" parameterType="long" resultType="int">
+        SELECT COALESCE(MAX(step_order), 0) FROM APV_LINE WHERE submission_id = #{value}
+    </select>
 </mapper>

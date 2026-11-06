@@ -34,4 +34,12 @@ public class ApvSubmissionDAO extends EgovAbstractMapper {
         return selectList("apvSubmissionDAO.selectEmployeeCandidates",
                 Map.of("keyword", keyword == null ? "" : keyword));
     }
+
+    public void advanceStep(Long submissionId) {
+        update("apvSubmissionDAO.advanceStep", submissionId);
+    }
+
+    public void completeSubmission(Long submissionId, String status) {
+        update("apvSubmissionDAO.completeSubmission", Map.of("submissionId", submissionId, "status", status));
+    }
 }
