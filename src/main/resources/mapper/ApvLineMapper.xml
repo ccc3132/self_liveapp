@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace 는 DAO 의 빈 이름과 같게 한다 (apvLineDAO) -->
+<mapper namespace="apvLineDAO">
+
+    <insert id="insertLine" parameterType="egovframework.egovwebpractice.apv.service.ApvLineVO">
+        INSERT INTO APV_LINE (submission_id, step_order, approver_id, approver_nm)
+        VALUES (#{submissionId}, #{stepOrder}, #{approverId}, #{approverNm})
+    </insert>
+
+    <select id="selectLinesBySubmission" parameterType="long"
+            resultType="egovframework.egovwebpractice.apv.service.ApvLineVO">
+        SELECT line_id, submission_id, step_order, approver_id, approver_nm, status, comment_cn, processed_at
+          FROM APV_LINE
+         WHERE submission_id = #{value}
+         ORDER BY step_order
+    </select>
+</mapper>

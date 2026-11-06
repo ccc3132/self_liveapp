@@ -22,6 +22,7 @@
 | 8 | 아직 확인하지 못한 것 | [docs/readme/08_todo_readme.md](docs/readme/08_todo_readme.md) |
 | 9 | 겪었던 문제 모음 | [docs/readme/09_issues_readme.md](docs/readme/09_issues_readme.md) |
 | 10 | 외부 서버에 배포하기 (Docker/Render) | [docs/readme/10_deploy_readme.md](docs/readme/10_deploy_readme.md) |
+| 11 | 디자인/UX 가이드라인 (모달/팝업 등) | [docs/readme/11_design_readme.md](docs/readme/11_design_readme.md) |
 
 모바일 앱(Expo/React Native)은 `mobile/` 폴더의 별도 프로젝트입니다 — [mobile/README.md](mobile/README.md) 참고.
 
