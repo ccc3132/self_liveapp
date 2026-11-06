@@ -29,4 +29,8 @@ public class DashboardDAO extends EgovAbstractMapper {
         Integer count = selectOne("dashboardDAO.selectUnreadNoteCount", uniqId);
         return count == null ? 0 : count;
     }
+
+    public List<Map<String, Object>> selectPopupNotices(String today) {
+        return selectList("dashboardDAO.selectPopupNotices", today);
+    }
 }

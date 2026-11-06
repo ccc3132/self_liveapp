@@ -32,4 +32,18 @@
          WHERE TRIM(RCVER_ID) = #{value}
            AND OPEN_YN = 'N'
     </select>
+
+    <!-- 로그인 시 팝업으로 띄울 공지(상단고정 공지로 등록되고, 공지기간 내인 게시물) -->
+    <select id="selectPopupNotices" resultType="map" parameterType="string">
+        SELECT a.NTT_ID AS ntt_id, a.BBS_ID AS bbs_id, a.NTT_SJ AS ntt_sj, a.NTT_CN AS ntt_cn,
+               a.FRST_REGIST_PNTTM AS frst_regist_pnttm
+          FROM COMTNBBS a
+         WHERE a.BBS_ID = 'BBSMSTR_000000000001'
+           AND a.USE_AT = 'Y'
+           AND a.NOTICE_AT = 'Y'
+           AND (a.NTCE_BGNDE IS NULL OR a.NTCE_BGNDE &lt;= #{value})
+           AND (a.NTCE_ENDDE IS NULL OR a.NTCE_ENDDE &gt;= #{value})
+         ORDER BY a.FRST_REGIST_PNTTM DESC
+         LIMIT 5
+    </select>
 </mapper>
