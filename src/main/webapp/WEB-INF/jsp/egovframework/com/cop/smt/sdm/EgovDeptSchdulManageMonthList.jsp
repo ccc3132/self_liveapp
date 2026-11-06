@@ -129,7 +129,7 @@ String sTodate = formatter.format(new java.util.Date());
 		var obj = document.getElementById("id_<%=sTodate%>");
 		//console.trace("fnEgovTodateSelect obj>"+obj);
 		if(obj != null && obj != undefined){
-			obj.setAttribute("style","background-color:#87CEFA;"); //opacity:0.5;
+			obj.setAttribute("style","background-color:#eaf2ff;box-shadow:inset 0 0 0 2px #3a6df0;"); //opacity:0.5;
 		}
 		
 	} 
