@@ -221,6 +221,10 @@ int newLine = 0;
 
 List<LeaderSchdulVO> listResult = (List<LeaderSchdulVO>)request.getAttribute("resultList");
 LeaderSchdulVO leaderSchdulVO = new LeaderSchdulVO();
+
+java.text.SimpleDateFormat sdfToday = new java.text.SimpleDateFormat("yyyyMMdd");
+String sTodate = sdfToday.format(new java.util.Date());
+
 //처음 빈공란 표시
 for(int index = 1; index < start ; index++ )
 {
@@ -242,9 +246,10 @@ for(int index = 1; index <= endDay; index++)
 	sUseDate += Integer.toString(index).length() == 1 ? "0" + Integer.toString(index) : Integer.toString(index);
 	
 	int iUseDate = Integer.parseInt(sUseDate);
+	boolean bIsToday = sUseDate.equals(sTodate);
 
-	out.println("<td>");
-%>	
+	out.println(bIsToday ? "<td class=\"today-cell\">" : "<td>");
+%>
 	<a href="JavaScript:fn_egov_regist_LeaderSchdul('<%=iUseDate%>');"><font color="<%=color%>"><%=index%></font></a>
 <%	
 	out.println("<br />");
