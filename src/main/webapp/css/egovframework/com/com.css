@@ -550,19 +550,28 @@ div, table, em, h1, h2, h3, h4, h5, h6, form, fieldset, p, th, td, input, textar
 	font-size: 13px;
 	color: #2a2d34;
 }
-body { background: #f6f7f9; }
+body { background: #f4f5f7; }
 
 a { color: #3a6df0; }
 a:hover { color: #244ea8; text-decoration: underline; }
 
+input, select, textarea, button { box-sizing: border-box; vertical-align: middle; }
+
 textarea,
 input[type="file"],
 input[type="password"],
-input[type="text"] { border: 1px solid #d7dae0; border-radius: 6px; padding: 5px 8px; transition: border-color .12s ease, box-shadow .12s ease; }
+input[type="text"],
+select {
+	border: 1px solid #d7dae0;
+	border-radius: 6px;
+	min-height: 28px;
+	padding: 4px 8px;
+	transition: border-color .12s ease, box-shadow .12s ease;
+}
 textarea:focus,
 input[type="password"]:focus,
-input[type="text"]:focus { outline: none; border-color: #3a6df0; box-shadow: 0 0 0 3px rgba(58,109,240,.15); }
-select { border-radius: 6px; }
+input[type="text"]:focus,
+select:focus { outline: none; border-color: #3a6df0; box-shadow: 0 0 0 3px rgba(58,109,240,.15); }
 
 button,
 .btn_submit,
@@ -574,6 +583,8 @@ span.btn_s, span.btn_s2,
 	border-radius: 7px !important;
 	box-shadow: 0 1px 2px rgba(20,25,40,.08);
 	transition: filter .12s ease, box-shadow .12s ease, transform .05s ease;
+	min-height: 28px;
+	line-height: 26px;
 }
 button:hover,
 .btn_submit:hover,
