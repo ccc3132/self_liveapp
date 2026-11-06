@@ -234,16 +234,20 @@ arrDateTitle[6] = "Sat";/* 토요일 */
 List<LeaderSchdulVO> listResult = (List<LeaderSchdulVO>)request.getAttribute("resultList");
 LeaderSchdulVO leaderSchdulVO = new LeaderSchdulVO();
 
+java.text.SimpleDateFormat sdfToday = new java.text.SimpleDateFormat("yyyyMMdd");
+String sTodate = sdfToday.format(new java.util.Date());
+
 for(int i=0; i < listWeek.size(); i++){
-	
+
 	String sTmpDate = (String)listWeek.get(i);
 	int iUseDate = Integer.parseInt(sTmpDate);
+	boolean bIsToday = sTmpDate.equals(sTodate);
 
 %>
-		<tr>
+		<tr<%= bIsToday ? " class=\"today-row\"" : "" %>>
 			<td>
 			    <a href="JavaScript:fn_egov_regist_LeaderSchdul('<%=iUseDate%>');">
-			    <%=sTmpDate.substring(0,4)%><spring:message code="comCopSmtLsm.leaderSchdulMonthList.year" /> <%=sTmpDate.substring(4,6)%><spring:message code="comCopSmtLsm.leaderSchdulMonthList.month" /> <%=sTmpDate.substring(6,8)%><spring:message code="comCopSmtLsm.leaderSchdulWeekList.day" />  <%=arrDateTitle[i] %></a>
+			    <%=sTmpDate.substring(0,4)%><spring:message code="comCopSmtLsm.leaderSchdulMonthList.year" /> <%=sTmpDate.substring(4,6)%><spring:message code="comCopSmtLsm.leaderSchdulMonthList.month" /> <%=sTmpDate.substring(6,8)%><spring:message code="comCopSmtLsm.leaderSchdulWeekList.day" />  <%=arrDateTitle[i] %></a><%= bIsToday ? " <span class=\"today-badge\">오늘</span>" : "" %>
 	    	</td>
 	    	<td>
 <%
