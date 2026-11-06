@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>메신저 - <c:out value="${partnerNm}"/></title>
+    <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
 </head>
 <body>
     <h1><c:out value="${partnerNm}"/> 님과의 대화</h1>
