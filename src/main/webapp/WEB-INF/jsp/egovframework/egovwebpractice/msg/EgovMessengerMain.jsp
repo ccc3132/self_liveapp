@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>메신저</title>
+    <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
 </head>
 <body>
     <h1>메신저</h1>

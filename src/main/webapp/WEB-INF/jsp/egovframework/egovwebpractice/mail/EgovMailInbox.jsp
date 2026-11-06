@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>받은편지함</title>
+    <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
 </head>
 <body>
     <h1>받은편지함</h1>

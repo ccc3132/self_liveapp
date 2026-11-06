@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>메일 수신 계정 설정</title>
+    <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
 </head>
 <body>
     <h1>메일 수신(IMAP) 계정 설정</h1>
