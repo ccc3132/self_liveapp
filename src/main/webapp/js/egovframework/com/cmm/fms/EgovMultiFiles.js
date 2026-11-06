@@ -96,14 +96,24 @@ function MultiSelector(list_target, max, file_label) {
 	 */
 	this.addListRowNew = function(element, i) {
 
+		var file = element.files[i];
+
 		// Row div
 		var new_row = document.createElement('div');
 		new_row.className = "file_add_" + i;
+		new_row.style.display = "inline-flex";
+		new_row.style.alignItems = "center";
+		new_row.style.gap = "6px";
+		new_row.style.marginRight = "10px";
+		new_row.style.marginBottom = "4px";
+
+		new_row.appendChild(EgovFilePreview.createThumbnail(file));
+
 		// 2026.07.13 KISA 보안취약점 조치: 선택한 파일명(element.files[i].name)에 HTML 태그가
 		// 포함될 수 있어 innerHTML로 직접 대입하면 DOM XSS로 이어질 수 있으므로,
 		// span 요소를 생성하고 textContent로 파일명을 안전하게 대입한다.
 		var new_row_span = document.createElement('span');
-		new_row_span.textContent = element.files[i].name;
+		new_row_span.textContent = file.name;
 		new_row.appendChild(new_row_span);
 		new_row.appendChild(document.createTextNode('  '));
 
@@ -111,6 +121,41 @@ function MultiSelector(list_target, max, file_label) {
 		this.list_target.appendChild(new_row);
 	};
 
+};
+
+/** 파일을 고르면 바로 보여줄 작은 미리보기(이미지는 썸네일, 그 외는 확장자 뱃지). */
+var EgovFilePreview = {
+	createThumbnail: function(file) {
+		var box;
+		if (file.type && file.type.indexOf('image/') === 0 && typeof FileReader !== 'undefined') {
+			box = document.createElement('img');
+			box.alt = '';
+			var reader = new FileReader();
+			reader.onload = function(e) { box.src = e.target.result; };
+			reader.readAsDataURL(file);
+		} else {
+			box = document.createElement('span');
+			box.textContent = EgovFilePreview.extLabel(file.name);
+			box.style.display = "inline-flex";
+			box.style.alignItems = "center";
+			box.style.justifyContent = "center";
+			box.style.background = "#f4f6fa";
+			box.style.color = "#656b78";
+			box.style.fontSize = "10px";
+			box.style.fontWeight = "700";
+		}
+		box.style.width = "40px";
+		box.style.height = "40px";
+		box.style.borderRadius = "6px";
+		box.style.border = "1px solid #d7dae0";
+		box.style.objectFit = "cover";
+		box.style.flex = "none";
+		return box;
+	},
+	extLabel: function(filename) {
+		var ext = EgovMultiFilesChecker.getFileExtension(filename).replace('.', '').toUpperCase();
+		return ext.length > 4 ? ext.slice(0, 4) : ext;
+	}
 };
 
 var EgovMultiFilesChecker = {
