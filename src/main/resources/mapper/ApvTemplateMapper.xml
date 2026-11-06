@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace 는 DAO 의 빈 이름과 같게 한다 (apvTemplateDAO) -->
+<mapper namespace="apvTemplateDAO">
+
+    <select id="selectTemplateList" resultType="egovframework.egovwebpractice.apv.service.ApvTemplateVO">
+        SELECT template_id, template_nm, description, field_schema, file_atch_posbl_at, use_at,
+               frst_register_id, frst_regist_pnttm, last_updusr_id, last_update_pnttm
+          FROM APV_TEMPLATE
+         ORDER BY template_id DESC
+    </select>
+
+    <select id="selectActiveTemplateList" resultType="egovframework.egovwebpractice.apv.service.ApvTemplateVO">
+        SELECT template_id, template_nm, description, field_schema, file_atch_posbl_at, use_at,
+               frst_register_id, frst_regist_pnttm, last_updusr_id, last_update_pnttm
+          FROM APV_TEMPLATE
+         WHERE use_at = 'Y'
+         ORDER BY template_id DESC
+    </select>
+
+    <select id="selectTemplate" parameterType="long"
+            resultType="egovframework.egovwebpractice.apv.service.ApvTemplateVO">
+        SELECT template_id, template_nm, description, field_schema, file_atch_posbl_at, use_at,
+               frst_register_id, frst_regist_pnttm, last_updusr_id, last_update_pnttm
+          FROM APV_TEMPLATE
+         WHERE template_id = #{value}
+    </select>
+
+    <insert id="insertTemplate" parameterType="egovframework.egovwebpractice.apv.service.ApvTemplateVO">
+        INSERT INTO APV_TEMPLATE (template_nm, description, field_schema, file_atch_posbl_at, frst_register_id)
+        VALUES (#{templateNm}, #{description}, #{fieldSchema}, #{fileAtchPosblAt}, #{frstRegisterId})
+    </insert>
+
+    <update id="updateTemplate" parameterType="egovframework.egovwebpractice.apv.service.ApvTemplateVO">
+        UPDATE APV_TEMPLATE
+           SET template_nm = #{templateNm}, description = #{description}, field_schema = #{fieldSchema},
+               file_atch_posbl_at = #{fileAtchPosblAt}, last_updusr_id = #{lastUpdusrId}, last_update_pnttm = NOW()
+         WHERE template_id = #{templateId}
+    </update>
+
+    <update id="updateTemplateUseAt" parameterType="map">
+        UPDATE APV_TEMPLATE SET use_at = #{useAt}, last_update_pnttm = NOW() WHERE template_id = #{templateId}
+    </update>
+
+    <delete id="deleteTemplate" parameterType="long">
+        DELETE FROM APV_TEMPLATE WHERE template_id = #{value}
+    </delete>
+</mapper>
