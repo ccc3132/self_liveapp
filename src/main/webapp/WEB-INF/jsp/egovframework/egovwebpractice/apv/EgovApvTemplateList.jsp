@@ -7,12 +7,14 @@
     <meta charset="UTF-8">
     <title>결재 양식 관리</title>
     <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
+    <script src="<c:url value='/js/egovframework/com/cmm/EgovIframeModal.js' />"></script>
 </head>
 <body>
     <h2>⚙결재 양식 관리</h2>
 
     <div class="search_box">
-        <a class="btn_submit" href="<c:url value='/apv/admin/EgovApvTemplateBuilder.do' />">+ 신규 양식 만들기</a>
+        <a class="btn_submit" href="<c:url value='/apv/admin/EgovApvTemplateBuilder.do' />"
+           onclick="EgovIframeModal.open({url: this.href, title: '결재 양식 - 신규 등록', doneUrlIncludes: 'EgovApvTemplateList.do'}); return false;">+ 신규 양식 만들기</a>
     </div>
 
     <table class="board_list">
@@ -33,7 +35,8 @@
             </c:if>
             <c:forEach var="t" items="${templateList}">
                 <tr>
-                    <td><a href="<c:url value='/apv/admin/EgovApvTemplateBuilder.do'><c:param name="templateId" value="${t.templateId}"/></c:url>"><c:out value="${t.templateNm}"/></a></td>
+                    <td><a href="<c:url value='/apv/admin/EgovApvTemplateBuilder.do'><c:param name="templateId" value="${t.templateId}"/></c:url>"
+                           onclick="EgovIframeModal.open({url: this.href, title: '결재 양식 - 수정', doneUrlIncludes: 'EgovApvTemplateList.do'}); return false;"><c:out value="${t.templateNm}"/></a></td>
                     <td><c:out value="${t.description}"/></td>
                     <td>${t.fileAtchPosblAt == 'Y' ? '허용' : '-'}</td>
                     <td>${t.useAt == 'Y' ? '사용' : '미사용'}</td>
