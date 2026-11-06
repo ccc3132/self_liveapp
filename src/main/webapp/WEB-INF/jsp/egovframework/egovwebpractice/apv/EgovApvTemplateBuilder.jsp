@@ -6,18 +6,27 @@
     <meta charset="UTF-8">
     <title>결재 양식 빌더</title>
     <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
+    <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/cmm/jqueryui.css' />">
+    <script src="<c:url value='/js/egovframework/com/cmm/jquery.js' />"></script>
+    <script src="<c:url value='/js/egovframework/com/cmm/jqueryui.js' />"></script>
     <style>
         .apv-builder { display: flex; gap: 20px; align-items: flex-start; }
         .apv-palette { width: 180px; flex: none; }
-        .apv-palette button { display: block; width: 100%; margin-bottom: 6px; text-align: left; }
+        .apv-palette-item { display: flex; align-items: center; width: 100%; margin-bottom: 6px; padding: 7px 10px; border-radius: 7px; background: #3a6df0; color: #fff; font-size: 13px; cursor: grab; box-shadow: 0 1px 2px rgba(20,25,40,.08); }
+        .apv-palette-item:active { cursor: grabbing; }
+        .apv-palette-item.ui-draggable-dragging { opacity: .85; z-index: 1000; }
         .apv-canvas { flex: 1; min-width: 0; }
-        .apv-canvas ul { list-style: none; padding: 0; margin: 0; }
+        .apv-canvas ul { list-style: none; padding: 0; margin: 0; min-height: 60px; }
+        .apv-canvas ul.apv-drop-hover { outline: 2px dashed #3a6df0; outline-offset: 4px; border-radius: 8px; }
         .apv-field { border: 1px solid #e7e9ee; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; background: #fff; }
         .apv-field .apv-field-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+        .apv-field .apv-drag-handle { cursor: grab; color: #9aa0ab; flex: none; font-size: 16px; }
         .apv-field .apv-type-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; background: #eaf0ff; color: #3a6df0; font-size: 11px; font-weight: 700; flex: none; }
         .apv-field input[type=text] { flex: 1; }
         .apv-field .apv-options-row { display: none; }
         .apv-field.apv-type-select .apv-options-row { display: flex; }
+        .apv-field.ui-sortable-helper { box-shadow: 0 4px 16px rgba(20,25,40,.18); }
+        .apv-placeholder { border: 2px dashed #3a6df0; border-radius: 8px; margin-bottom: 8px; background: #eaf0ff; }
         .apv-empty { color: #9aa0ab; padding: 20px; text-align: center; border: 1px dashed #d7dae0; border-radius: 8px; }
     </style>
 </head>
@@ -43,12 +52,13 @@
         <div class="apv-builder">
             <div class="apv-palette board_list" style="padding:12px;">
                 <strong>필드 추가</strong><br><br>
-                <button type="button" class="btn_s" onclick="addField('text')">+ 한 줄 텍스트</button>
-                <button type="button" class="btn_s" onclick="addField('textarea')">+ 여러 줄 텍스트</button>
-                <button type="button" class="btn_s" onclick="addField('number')">+ 숫자</button>
-                <button type="button" class="btn_s" onclick="addField('date')">+ 날짜</button>
-                <button type="button" class="btn_s" onclick="addField('daterange')">+ 기간(시작~종료)</button>
-                <button type="button" class="btn_s" onclick="addField('select')">+ 드롭다운</button>
+                <p style="font-size:11.5px; color:#9aa0ab; margin:0 0 8px;">오른쪽 캔버스로 끌어다 놓으세요.</p>
+                <div class="apv-palette-item" data-type="text">+ 한 줄 텍스트</div>
+                <div class="apv-palette-item" data-type="textarea">+ 여러 줄 텍스트</div>
+                <div class="apv-palette-item" data-type="number">+ 숫자</div>
+                <div class="apv-palette-item" data-type="date">+ 날짜</div>
+                <div class="apv-palette-item" data-type="daterange">+ 기간(시작~종료)</div>
+                <div class="apv-palette-item" data-type="select">+ 드롭다운</div>
             </div>
             <div class="apv-canvas">
                 <ul id="canvas"></ul>
@@ -72,11 +82,10 @@
             li.setAttribute('data-type', type);
             li.innerHTML =
                 '<div class="apv-field-row">' +
+                    '<span class="apv-drag-handle" title="드래그해서 순서 변경">&#9776;</span>' +
                     '<span class="apv-type-badge">' + typeLabels[type] + '</span>' +
                     '<input type="text" class="apv-label" placeholder="필드 라벨" value="' + escapeAttr(data && data.label || '') + '">' +
                     '<label style="flex:none"><input type="checkbox" class="apv-required" ' + (data && data.required ? 'checked' : '') + '> 필수</label>' +
-                    '<button type="button" class="btn_s" onclick="moveField(this,-1)">▲</button>' +
-                    '<button type="button" class="btn_s" onclick="moveField(this,1)">▼</button>' +
                     '<button type="button" class="btn_s" onclick="removeField(this)">삭제</button>' +
                 '</div>' +
                 '<div class="apv-field-row apv-options-row">' +
@@ -88,14 +97,6 @@
 
         function escapeAttr(s) {
             return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-        }
-
-        function moveField(btn, dir) {
-            var li = btn.closest('li');
-            var sibling = dir < 0 ? li.previousElementSibling : li.nextElementSibling;
-            if (!sibling) { return; }
-            if (dir < 0) { li.parentNode.insertBefore(li, sibling); }
-            else { li.parentNode.insertBefore(sibling, li); }
         }
 
         function removeField(btn) {
@@ -141,6 +142,30 @@
             } catch (e) { /* 손상된 데이터는 무시하고 빈 캔버스로 시작 */ }
             updateEmptyHint();
         })();
+
+        // 드래그앤드롭: 팔레트 → 캔버스로 끌어다 놓으면 필드 추가, 캔버스 안에서는 드래그 핸들로 순서 변경(sortable).
+        $(function () {
+            $('.apv-palette-item').draggable({
+                helper: 'clone',
+                revert: 'invalid',
+                revertDuration: 150,
+                zIndex: 1000
+            });
+            $('#canvas').droppable({
+                accept: '.apv-palette-item',
+                tolerance: 'pointer',
+                hoverClass: 'apv-drop-hover',
+                drop: function (event, ui) {
+                    addField(ui.draggable.data('type'));
+                }
+            });
+            $('#canvas').sortable({
+                handle: '.apv-drag-handle',
+                placeholder: 'apv-placeholder',
+                items: '> li.apv-field',
+                forcePlaceholderSize: true
+            });
+        });
     </script>
 </body>
 </html>
