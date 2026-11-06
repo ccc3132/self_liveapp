@@ -552,6 +552,14 @@ div, table, em, h1, h2, h3, h4, h5, h6, form, fieldset, p, th, td, input, textar
 }
 body { background: #f4f5f7; }
 
+* { scrollbar-width: thin; scrollbar-color: #c3c9d4 transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background-color: #c3c9d4; border-radius: 20px; border: 2px solid #f4f5f7; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background-color: #3a6df0; background-clip: padding-box; }
+::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+::-webkit-scrollbar-corner { background: transparent; }
+
 a { color: #3a6df0; }
 a:hover { color: #244ea8; text-decoration: underline; }
 
