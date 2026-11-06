@@ -168,6 +168,9 @@ String sTodate = formatter.format(new java.util.Date());
 		A:visited { font-size:9pt; font-family:"돋움";color:#000000; text-decoration:none; }
 		A:active { font-size:9pt; font-family:"돋움";color:red; text-decoration:none; }
 		A:hover { font-size:9pt; font-family:"돋움";color:red;text-decoration:none;}
+
+		tr.today-row td { background: #eaf2ff; border-top: 2px solid #3a6df0; border-bottom: 2px solid #3a6df0; }
+		.today-badge { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 10px; background: #3a6df0; color: #fff; font-size: 8pt; vertical-align: middle; }
 	</style>
 </HEAD>
 <BODY>
@@ -238,11 +241,12 @@ for(int i=0; i < listWeek.size(); i++){
 
 	String sTmpDate = (String)listWeek.get(i);
 	int iUseDate = Integer.parseInt(sTmpDate);
+	boolean bIsToday = sTmpDate.equals(sTodate);
 
 %>
-  <tr>
+  <tr<%= bIsToday ? " class=\"today-row\"" : "" %>>
     <td>
-		    <%=sTmpDate.substring(0,4)%>년<!-- 년 --><%=sTmpDate.substring(4,6)%>월<!-- 월 --><%=sTmpDate.substring(6,8)%>일<!-- 일 -->  <%=arrDateTitle[i] %>
+		    <%=sTmpDate.substring(0,4)%>년<!-- 년 --><%=sTmpDate.substring(4,6)%>월<!-- 월 --><%=sTmpDate.substring(6,8)%>일<!-- 일 -->  <%=arrDateTitle[i] %><%= bIsToday ? " <span class=\"today-badge\">오늘</span>" : "" %>
     </td>
     <td  valign="middle" height="50px">
     <%
