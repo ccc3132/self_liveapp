@@ -30,6 +30,7 @@ public class DashboardServiceImpl extends EgovAbstractServiceImpl implements Das
         DashboardVO vo = new DashboardVO();
         vo.setTodaySchedules(dashboardDAO.selectTodaySchedules(uniqId, today));
         vo.setRecentNotices(dashboardDAO.selectRecentNotices());
+        vo.setPopupNotices(dashboardDAO.selectPopupNotices(today));
         vo.setUnreadNoteCount(dashboardDAO.selectUnreadNoteCount(uniqId));
         vo.setActiveUsers(activeUserTracker.selectActiveUsers());
         return vo;

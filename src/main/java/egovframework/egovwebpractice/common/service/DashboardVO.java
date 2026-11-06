@@ -12,6 +12,7 @@ public class DashboardVO {
 
     private List<Map<String, Object>> todaySchedules;
     private List<Map<String, Object>> recentNotices;
+    private List<Map<String, Object>> popupNotices;
     private int unreadNoteCount;
     private List<ActiveUserVO> activeUsers;
 }
