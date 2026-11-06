@@ -80,6 +80,7 @@
             <a href="javascript:void(0)" onclick="go('/mail/EgovMailAccountSetting.do', this)"><span class="ic">&#128231;</span>메일 수신 설정</a>
 
             <div class="group-title">결재</div>
+            <a href="javascript:void(0)" onclick="go('/apv/EgovApvSubmitSelect.do', this)"><span class="ic">&#9999;</span>결재 상신</a>
             <a href="javascript:void(0)" onclick="go('/apv/admin/EgovApvTemplateList.do', this)"><span class="ic">&#128196;</span>양식 관리(관리자)</a>
 
             <div class="group-title">관리자</div>

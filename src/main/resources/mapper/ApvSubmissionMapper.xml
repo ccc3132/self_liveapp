@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace 는 DAO 의 빈 이름과 같게 한다 (apvSubmissionDAO) -->
+<mapper namespace="apvSubmissionDAO">
+
+    <insert id="insertSubmission" parameterType="egovframework.egovwebpractice.apv.service.ApvSubmissionVO"
+            useGeneratedKeys="true" keyProperty="submissionId" keyColumn="submission_id">
+        INSERT INTO APV_SUBMISSION
+            (template_id, template_nm, schema_snapshot, field_values, title, requester_id, requester_nm, atch_file_id)
+        VALUES
+            (#{templateId}, #{templateNm}, #{schemaSnapshot}, #{fieldValues}, #{title}, #{requesterId}, #{requesterNm}, #{atchFileId})
+    </insert>
+
+    <select id="selectMySubmissionList" parameterType="string"
+            resultType="egovframework.egovwebpractice.apv.service.ApvSubmissionVO">
+        SELECT submission_id, template_id, template_nm, title, requester_id, requester_nm,
+               atch_file_id, status, current_step_order, submitted_at, completed_at
+          FROM APV_SUBMISSION
+         WHERE requester_id = #{value}
+         ORDER BY submission_id DESC
+    </select>
+
+    <select id="selectSubmission" parameterType="long"
+            resultType="egovframework.egovwebpractice.apv.service.ApvSubmissionVO">
+        SELECT submission_id, template_id, template_nm, schema_snapshot, field_values, title,
+               requester_id, requester_nm, atch_file_id, status, current_step_order, submitted_at, completed_at
+          FROM APV_SUBMISSION
+         WHERE submission_id = #{value}
+    </select>
+
+    <select id="selectEmployeeCandidates" parameterType="map" resultType="map">
+        SELECT ESNTL_ID AS uniq_id, USER_NM AS emplyr_nm, ORGNZT_ID AS orgnzt_id
+          FROM COMTNEMPLYRINFO
+         WHERE EMPLYR_STTUS_CODE = 'P'
+           <if test="keyword != null and keyword != ''">
+           AND USER_NM LIKE '%' || #{keyword} || '%'
+           </if>
+         ORDER BY USER_NM
+         LIMIT 30
+    </select>
+</mapper>

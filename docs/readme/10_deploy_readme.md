@@ -1,64 +1,65 @@
-# 10. 외부 서버에 배포하기 (Docker)
+﻿# 10. ?몃? ?쒕쾭??諛고룷?섍린 (Docker)
 
-> [메인 README](../../README.md) · 이전: [9. 겪었던 문제 모음](09_issues_readme.md)
+> [硫붿씤 README](../../README.md) 쨌 ?댁쟾: [9. 寃れ뿀??臾몄젣 紐⑥쓬](09_issues_readme.md)
 
-`Dockerfile`, `docker-compose.yml`, `render.yaml` 을 추가했습니다. **이 PC에 Docker 가 설치되어 있지 않아
-실제로 이미지가 빌드되는지는 아직 확인하지 못했습니다** — 코드와 `pom.xml`을 보고 작성한 구성이니, 처음
-쓸 때는 로그를 보면서 진행하세요.
+`Dockerfile`, `docker-compose.yml`, `render.yaml` ??異붽??덉뒿?덈떎. **??PC??Docker 媛 ?ㅼ튂?섏뼱 ?덉? ?딆븘
+?ㅼ젣濡??대?吏媛 鍮뚮뱶?섎뒗吏???꾩쭅 ?뺤씤?섏? 紐삵뻽?듬땲??* ??肄붾뱶? `pom.xml`??蹂닿퀬 ?묒꽦??援ъ꽦?대땲, 泥섏쓬
+???뚮뒗 濡쒓렇瑜?蹂대㈃??吏꾪뻾?섏꽭??
 
-## 방법 A: 내 서버에서 `docker compose up` (사설 서버·VPS 등 직접 관리하는 서버용)
+## 諛⑸쾿 A: ???쒕쾭?먯꽌 `docker compose up` (?ъ꽕 ?쒕쾭쨌VPS ??吏곸젒 愿由ы븯???쒕쾭??
 
 ```shell
 git clone https://github.com/ccc3132/self_liveapp.git
 cd self_liveapp
 cp .env.example .env
-# .env 를 열어 DB_PASSWORD, APP_JWT_SECRET 을 직접 정한 값으로 바꾸세요
+# .env 瑜??댁뼱 DB_PASSWORD, APP_JWT_SECRET ??吏곸젒 ?뺥븳 媛믪쑝濡?諛붽씀?몄슂
 docker compose up -d --build
 ```
 
-- `http://서버주소:8080/` 으로 접속합니다. 포트를 바꾸려면 `.env` 의 `APP_PORT`.
-- PostgreSQL 데이터는 `db_data` 라는 Docker volume 에 남아서, 컨테이너를 내렸다 올려도 유지됩니다.
-- **HTTPS 리버스 프록시(Caddy·nginx·Cloudflare Tunnel 등)를 앞에 두는 것을 권장합니다.** 프록시 없이
-  평문 HTTP 로 바로 열면 `.env` 의 `COOKIE_SECURE=false` 를 유지해야 로그인이 됩니다(기본값). HTTPS
-  뒤에 두면 `COOKIE_SECURE=true` 로 바꾸세요.
-- 로그 확인: `docker compose logs -f app`. 중지: `docker compose down`(데이터 유지) / `docker compose down -v`(데이터까지 삭제).
+- `http://?쒕쾭二쇱냼:8080/` ?쇰줈 ?묒냽?⑸땲?? ?ы듃瑜?諛붽씀?ㅻ㈃ `.env` ??`APP_PORT`.
+- PostgreSQL ?곗씠?곕뒗 `db_data` ?쇰뒗 Docker volume ???⑥븘?? 而⑦뀒?대꼫瑜??대졇???щ젮???좎??⑸땲??
+- **HTTPS 由щ쾭???꾨줉??Caddy쨌nginx쨌Cloudflare Tunnel ??瑜??욎뿉 ?먮뒗 寃껋쓣 沅뚯옣?⑸땲??** ?꾨줉???놁씠
+  ?됰Ц HTTP 濡?諛붾줈 ?대㈃ `.env` ??`COOKIE_SECURE=false` 瑜??좎??댁빞 濡쒓렇?몄씠 ?⑸땲??湲곕낯媛?. HTTPS
+  ?ㅼ뿉 ?먮㈃ `COOKIE_SECURE=true` 濡?諛붽씀?몄슂.
+- 濡쒓렇 ?뺤씤: `docker compose logs -f app`. 以묒?: `docker compose down`(?곗씠???좎?) / `docker compose down -v`(?곗씠?곌퉴吏 ??젣).
 
-## 방법 B: Render 에 원클릭 배포 (내 서버가 없어도 됨)
+## 諛⑸쾿 B: Render ???먰겢由?諛고룷 (???쒕쾭媛 ?놁뼱????
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/ccc3132/self_liveapp)
 
-버튼을 누르면 Render 가 `render.yaml` 을 읽어서 **웹 서비스(Docker 빌드) + PostgreSQL** 을 한 번에 만듭니다.
-DB 접속정보와 `APP_JWT_SECRET` 은 Render 가 자동으로 생성해서 연결해 줍니다(`docker-entrypoint.sh` 가
-Render 의 `DATABASE_URL`, `PORT` 형식을 이 앱이 읽는 `DB_URL`, `SERVER_PORT` 형식으로 변환합니다).
+踰꾪듉???꾨Ⅴ硫?Render 媛 `render.yaml` ???쎌뼱??**???쒕퉬??Docker 鍮뚮뱶) + PostgreSQL** ????踰덉뿉 留뚮벊?덈떎.
+DB ?묒냽?뺣낫? `APP_JWT_SECRET` ? Render 媛 ?먮룞?쇰줈 ?앹꽦?댁꽌 ?곌껐??以띾땲??`docker-entrypoint.sh` 媛
+Render ??`DATABASE_URL`, `PORT` ?뺤떇?????깆씠 ?쎈뒗 `DB_URL`, `SERVER_PORT` ?뺤떇?쇰줈 蹂?섑빀?덈떎).
 
-- 무료(Free) 플랜 기준입니다. 일정 시간 요청이 없으면 서비스가 잠들고(다음 요청 때 다시 깨는 데 수십 초
-  걸릴 수 있음), 무료 PostgreSQL 은 일정 기간(가입 시점 기준 약 30일) 후 만료됩니다 — Render 정책이 바뀔
-  수 있으니 콘솔에서 확인하세요. 계속 쓰려면 유료 플랜으로 올리거나 DB 를 새로 연결하세요.
-- 빌드는 `Dockerfile` 을 그대로 씁니다(Maven 으로 war 를 빌드 → JRE 이미지에 올림). 첫 빌드는 라이브러리를
-  새로 받기 때문에 몇 분 걸립니다.
-- 배포 후 접속 → 로그인은 [2. 새 PC 에서 시작하기의 "로그인 정보"](02_setup_readme.md#3-로그인-정보)의 초기 계정으로 됩니다. **다른 사람도 볼 수 있는
-  주소가 되는 순간, 반드시 비밀번호를 바꾸거나 계정을 정리하세요.**
-- Render 외에 Railway 등 `DATABASE_URL`(postgres://user:pass@host:port/db) 환경변수로 DB 를 연결해 주는
-  다른 PaaS 에도 같은 `Dockerfile`/`docker-entrypoint.sh` 로 배포할 수 있을 것으로 보이나(동일한 변환
-  로직), 실제로 확인한 것은 아닙니다.
+- 臾대즺(Free) ?뚮옖 湲곗??낅땲?? ?쇱젙 ?쒓컙 ?붿껌???놁쑝硫??쒕퉬?ㅺ? ?좊뱾怨??ㅼ쓬 ?붿껌 ???ㅼ떆 源⑤뒗 ???섏떗 珥?
+  嫄몃┫ ???덉쓬), 臾대즺 PostgreSQL ? ?쇱젙 湲곌컙(媛???쒖젏 湲곗? ??30?? ??留뚮즺?⑸땲????Render ?뺤콉??諛붾?
+  ???덉쑝??肄섏넄?먯꽌 ?뺤씤?섏꽭?? 怨꾩냽 ?곕젮硫??좊즺 ?뚮옖?쇰줈 ?щ━嫄곕굹 DB 瑜??덈줈 ?곌껐?섏꽭??
+- 鍮뚮뱶??`Dockerfile` ??洹몃?濡??곷땲??Maven ?쇰줈 war 瑜?鍮뚮뱶 ??JRE ?대?吏???щ┝). 泥?鍮뚮뱶???쇱씠釉뚮윭由щ?
+  ?덈줈 諛쏄린 ?뚮Ц??紐?遺?嫄몃┰?덈떎.
+- 諛고룷 ???묒냽 ??濡쒓렇?몄? [2. ??PC ?먯꽌 ?쒖옉?섍린??"濡쒓렇???뺣낫"](02_setup_readme.md#3-濡쒓렇???뺣낫)??珥덇린 怨꾩젙?쇰줈 ?⑸땲?? **?ㅻⅨ ?щ엺??蹂????덈뒗
+  二쇱냼媛 ?섎뒗 ?쒓컙, 諛섎뱶??鍮꾨?踰덊샇瑜?諛붽씀嫄곕굹 怨꾩젙???뺣━?섏꽭??**
+- Render ?몄뿉 Railway ??`DATABASE_URL`(postgres://user:pass@host:port/db) ?섍꼍蹂?섎줈 DB 瑜??곌껐??二쇰뒗
+  ?ㅻⅨ PaaS ?먮룄 媛숈? `Dockerfile`/`docker-entrypoint.sh` 濡?諛고룷?????덉쓣 寃껋쑝濡?蹂댁씠???숈씪??蹂??
+  濡쒖쭅), ?ㅼ젣濡??뺤씤??寃껋? ?꾨떃?덈떎.
 
-## 구성 파일 설명
+## 援ъ꽦 ?뚯씪 ?ㅻ챸
 
-| 파일 | 역할 |
+| ?뚯씪 | ??븷 |
 |------|------|
-| `Dockerfile` | 2단계 빌드: `maven:3.9-eclipse-temurin-21` 로 war 를 빌드하고, `eclipse-temurin:21-jre-alpine` 에 war 하나만 올려서 이미지를 가볍게 유지 |
-| `docker-entrypoint.sh` | PaaS 가 주는 `DATABASE_URL`(postgres://...)을 이 앱의 `DB_URL`(jdbc:postgresql://...) 형식으로, `PORT` 를 `SERVER_PORT` 로 변환한 뒤 `java -jar` 실행. 둘 다 없으면 그대로 통과(기존 `DB_URL`/`SERVER_PORT` 방식도 계속 됨) |
-| `docker-compose.yml` | 앱 컨테이너 + PostgreSQL 컨테이너를 한 번에 띄움(`prod` 프로필) |
-| `.env.example` | `docker-compose.yml` 이 읽는 값의 틀. `cp .env.example .env` 로 복사해서 실제 값을 채움(`.env` 자체는 git에 올라가지 않음) |
-| `render.yaml` | Render 블루프린트. "Deploy to Render" 버튼이 이 파일을 읽어 서비스를 구성 |
-| `.dockerignore` | 이미지 빌드에 불필요한 것(`target/`, `data/`, `mobile/`, 문서 등) 제외 |
+| `Dockerfile` | 2?④퀎 鍮뚮뱶: `maven:3.9-eclipse-temurin-21` 濡?war 瑜?鍮뚮뱶?섍퀬, `eclipse-temurin:21-jre-alpine` ??war ?섎굹留??щ젮???대?吏瑜?媛蹂띻쾶 ?좎? |
+| `docker-entrypoint.sh` | PaaS 媛 二쇰뒗 `DATABASE_URL`(postgres://...)?????깆쓽 `DB_URL`(jdbc:postgresql://...) ?뺤떇?쇰줈, `PORT` 瑜?`SERVER_PORT` 濡?蹂?섑븳 ??`java -jar` ?ㅽ뻾. ?????놁쑝硫?洹몃?濡??듦낵(湲곗〈 `DB_URL`/`SERVER_PORT` 諛⑹떇??怨꾩냽 ?? |
+| `docker-compose.yml` | ??而⑦뀒?대꼫 + PostgreSQL 而⑦뀒?대꼫瑜???踰덉뿉 ?꾩?(`prod` ?꾨줈?? |
+| `.env.example` | `docker-compose.yml` ???쎈뒗 媛믪쓽 ?. `cp .env.example .env` 濡?蹂듭궗?댁꽌 ?ㅼ젣 媛믪쓣 梨꾩?(`.env` ?먯껜??git???щ씪媛吏 ?딆쓬) |
+| `render.yaml` | Render 釉붾（?꾨┛?? "Deploy to Render" 踰꾪듉?????뚯씪???쎌뼱 ?쒕퉬?ㅻ? 援ъ꽦 |
+| `.dockerignore` | ?대?吏 鍮뚮뱶??遺덊븘?뷀븳 寃?`target/`, `data/`, `mobile/`, 臾몄꽌 ?? ?쒖쇅 |
 
-## 아직 확인하지 못한 것 (이 장 전용)
+## ?꾩쭅 ?뺤씤?섏? 紐삵븳 寃?(?????꾩슜)
 
-- `docker build`/`docker compose up` 이 실제로 성공하는지(이 PC에 Docker 미설치)
-- Render 원클릭 배포가 실제로 끝까지 되는지(버튼을 눌러 실행해 보지 않음)
-- Railway 등 다른 PaaS 와의 호환성(형식만 맞춰 작성, 실제 배포는 안 해봄)
-- 외장 PostgreSQL 에 `prod` 프로필로 실제 접속해 본 적이 없다는 점은 [8. 아직 확인하지 못한 것](08_todo_readme.md)과 동일하게 적용됨
+- `docker build`/`docker compose up` ???ㅼ젣濡??깃났?섎뒗吏(??PC??Docker 誘몄꽕移?
+- Render ?먰겢由?諛고룷媛 ?ㅼ젣濡??앷퉴吏 ?섎뒗吏(踰꾪듉???뚮윭 ?ㅽ뻾??蹂댁? ?딆쓬)
+- Railway ???ㅻⅨ PaaS ????명솚???뺤떇留?留욎떠 ?묒꽦, ?ㅼ젣 諛고룷?????대큵)
+- ?몄옣 PostgreSQL ??`prod` ?꾨줈?꾨줈 ?ㅼ젣 ?묒냽??蹂??곸씠 ?녿떎???먯? [8. ?꾩쭅 ?뺤씤?섏? 紐삵븳 寃?(08_todo_readme.md)怨??숈씪?섍쾶 ?곸슜??
 
 ---
-[메인 README](../../README.md) · 이전: [9. 겪었던 문제 모음](09_issues_readme.md)
+[硫붿씤 README](../../README.md) 쨌 ?댁쟾: [9. 寃れ뿀??臾몄젣 紐⑥쓬](09_issues_readme.md)
+
