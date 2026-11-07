@@ -32,6 +32,7 @@
 <title>${pageTitle} <spring:message code="title.list" /></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
+<script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/EgovIframeModal.js' />"></script>
 <script type="text/javaScript" language="javascript">
 /* ********************************************************
  * 페이징 처리 함수
@@ -48,7 +49,7 @@ function fn_egov_detail_DiaryManage(diaryId){
 	var vFrom = document.listForm;
 	vFrom.diaryId.value = diaryId;
 	vFrom.action = "<c:url value='/cop/smt/dsm/EgovDiaryManageDetail.do' />";
-	vFrom.submit();
+	EgovIframeModal.open({ form: vFrom, title: '업무일지 상세', doneUrlIncludes: 'EgovDiaryManageList.do' });
 }
 
 /* ********************************************************
@@ -88,7 +89,7 @@ function fn_egov_search_DiaryManage(){
 				<li>
 					<input class="s_input" name="searchKeyword" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${searchVO.searchKeyword}"/>'  maxlength="155" >
 					<input type="submit" class="s_btn" value="<spring:message code="button.inquire" />" title="<spring:message code="title.inquire" /> <spring:message code="input.button" />" /><!-- 조회 -->
-					<span class="btn_b"><a href="<c:url value='/cop/smt/dsm/EgovDiaryManageRegist.do' />"  title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span><!-- 등록 -->
+					<span class="btn_b"><a href="<c:url value='/cop/smt/dsm/EgovDiaryManageRegist.do' />" onclick="EgovIframeModal.open({url: this.href, title: '업무일지 등록', doneUrlIncludes: 'EgovDiaryManageList.do'}); return false;" title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span><!-- 등록 -->
 				</li>
 			</ul>
 		</div>

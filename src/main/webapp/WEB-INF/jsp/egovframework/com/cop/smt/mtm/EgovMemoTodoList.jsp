@@ -30,6 +30,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title><spring:message code="comCopSmtMtm.memoTodoList.title"/></title><!-- 메모할일 목록조회 -->
 <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<c:url value="/js/egovframework/com/cmm/EgovIframeModal.js"/>"></script>
 <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/cmm/jqueryui.css' />">
 <script src="<c:url value='/js/egovframework/com/cmm/jquery.js' />"></script>
@@ -152,14 +153,14 @@
 	function fn_egov_inqire_memotodo(todoId) {
 		document.frm.todoId.value = todoId;
 		document.frm.action = "<c:url value='/cop/smt/mtm/selectMemoTodo.do'/>";
-		document.frm.submit();
+		EgovIframeModal.open({ form: document.frm, title: '메모할일 상세', doneUrlIncludes: 'selectMemoTodoList.do' });
 	}
 	/* ********************************************************
 	 * 메모할일 등록 가기
 	 ******************************************************** */
 	function fn_egov_insert_memotodo(){
 		document.frm.action = "<c:url value='/cop/smt/mtm/addMemoTodo.do'/>";
-		document.frm.submit();
+		EgovIframeModal.open({ form: document.frm, title: '메모할일 등록', doneUrlIncludes: 'insertMemoTodo.do' });
 	}
 	/* ********************************************************
 	 * 셀렉트박스 초기화 

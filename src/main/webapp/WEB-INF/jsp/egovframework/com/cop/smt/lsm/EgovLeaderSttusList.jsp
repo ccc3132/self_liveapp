@@ -27,6 +27,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link href="<c:url value='/css/egovframework/com/com.css' />" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/EgovIframeModal.js' />"></script>
 <link href="<c:url value='/css/egovframework/com/button.css' />" rel="stylesheet" type="text/css">
 <script type="text/javascript" src="<c:url value='/js/egovframework/com/sym/cal/EgovCalPopup.js' />"></script>
 <script type="text/javascript">
@@ -50,12 +51,12 @@
 	function fn_egov_inqire_leadersttus(leaderId) {
 		document.frm.leaderId.value = leaderId;
 		document.frm.action = "<c:url value='/cop/smt/lsm/mng/modifyLeaderSttus.do'/>";
-		document.frm.submit();	
+		EgovIframeModal.open({ form: document.frm, title: '간부상태 수정', doneUrlIncludes: 'updateLeaderSttus.do' });
 	}
 
-	function fn_egov_insert_leadersttus(){	
+	function fn_egov_insert_leadersttus(){
 		document.frm.action = "<c:url value='/cop/smt/lsm/mng/addLeaderSttus.do'/>";
-		document.frm.submit();
+		EgovIframeModal.open({ form: document.frm, title: '간부상태 등록', doneUrlIncludes: 'insertLeaderSttus.do' });
 	}
 </script>
 <title>간부상태관리 목록조회</title>

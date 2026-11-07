@@ -41,11 +41,13 @@ public class MemoTodoDAO extends EgovComAbstractDAO {
 		List<MemoTodoVO> resultList = selectList("MemoTodoDAO.selectMemoTodoList", memoTodoVO);
 		for(int i=0; i < resultList.size(); i++){
 			MemoTodoVO resultVO = resultList.get(i);
-			resultVO.setTodoDe(resultVO.getTodoBeginTime().substring(0,10));
-			resultVO.setTodoBeginHour(resultVO.getTodoBeginTime().substring(10,12));
-			resultVO.setTodoBeginMin(resultVO.getTodoBeginTime().substring(12,14));
-			resultVO.setTodoEndHour(resultVO.getTodoEndTime().substring(10,12));
-			resultVO.setTodoEndMin(resultVO.getTodoEndTime().substring(12,14));
+			// TODO_BEGIN_TIME/TODO_END_TIME 저장 포맷은 날짜(8)+시(2)+분(2)=12자리
+			// (EgovMemoTodoController 의 todoDe+todoBeginHour+todoBeginMin 조합과 일치시킴).
+			resultVO.setTodoDe(resultVO.getTodoBeginTime().substring(0,8));
+			resultVO.setTodoBeginHour(resultVO.getTodoBeginTime().substring(8,10));
+			resultVO.setTodoBeginMin(resultVO.getTodoBeginTime().substring(10,12));
+			resultVO.setTodoEndHour(resultVO.getTodoEndTime().substring(8,10));
+			resultVO.setTodoEndMin(resultVO.getTodoEndTime().substring(10,12));
 			resultList.set(i, resultVO);
 		}
 		return resultList;
@@ -63,11 +65,11 @@ public class MemoTodoDAO extends EgovComAbstractDAO {
 		if (resultVO == null) {
 			return null;
 		}
-		resultVO.setTodoDe(resultVO.getTodoBeginTime().substring(0,10));
-		resultVO.setTodoBeginHour(resultVO.getTodoBeginTime().substring(10,12));
-		resultVO.setTodoBeginMin(resultVO.getTodoBeginTime().substring(12,14));
-		resultVO.setTodoEndHour(resultVO.getTodoEndTime().substring(10,12));
-		resultVO.setTodoEndMin(resultVO.getTodoEndTime().substring(12,14));
+		resultVO.setTodoDe(resultVO.getTodoBeginTime().substring(0,8));
+		resultVO.setTodoBeginHour(resultVO.getTodoBeginTime().substring(8,10));
+		resultVO.setTodoBeginMin(resultVO.getTodoBeginTime().substring(10,12));
+		resultVO.setTodoEndHour(resultVO.getTodoEndTime().substring(8,10));
+		resultVO.setTodoEndMin(resultVO.getTodoEndTime().substring(10,12));
 		
 		return resultVO;
 	}
@@ -124,11 +126,13 @@ public class MemoTodoDAO extends EgovComAbstractDAO {
 		List<MemoTodoVO> resultList = selectList("MemoTodoDAO.selectMemoTodoListToday", memoTodoVO);
 		for(int i=0; i < resultList.size(); i++){
 			MemoTodoVO resultVO = resultList.get(i);
-			resultVO.setTodoDe(resultVO.getTodoBeginTime().substring(0,10));
-			resultVO.setTodoBeginHour(resultVO.getTodoBeginTime().substring(10,12));
-			resultVO.setTodoBeginMin(resultVO.getTodoBeginTime().substring(12,14));
-			resultVO.setTodoEndHour(resultVO.getTodoEndTime().substring(10,12));
-			resultVO.setTodoEndMin(resultVO.getTodoEndTime().substring(12,14));
+			// TODO_BEGIN_TIME/TODO_END_TIME 저장 포맷은 날짜(8)+시(2)+분(2)=12자리
+			// (EgovMemoTodoController 의 todoDe+todoBeginHour+todoBeginMin 조합과 일치시킴).
+			resultVO.setTodoDe(resultVO.getTodoBeginTime().substring(0,8));
+			resultVO.setTodoBeginHour(resultVO.getTodoBeginTime().substring(8,10));
+			resultVO.setTodoBeginMin(resultVO.getTodoBeginTime().substring(10,12));
+			resultVO.setTodoEndHour(resultVO.getTodoEndTime().substring(8,10));
+			resultVO.setTodoEndMin(resultVO.getTodoEndTime().substring(10,12));
 			resultList.set(i, resultVO);
 		}
 		return resultList;

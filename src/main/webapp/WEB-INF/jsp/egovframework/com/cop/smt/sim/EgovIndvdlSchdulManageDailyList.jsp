@@ -67,6 +67,7 @@ String sTodate = formatter.format(new java.util.Date());
 	<TITLE><spring:message code="comCopSmtSim.Gbn.Daily"/> <spring:message code="comCopSmtSim.title"/></TITLE>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	<link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css'/>">
+	<script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/EgovIframeModal.js' />"></script>
 	<link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/cop/smt/sdm/dept_schdule_manage.css'/>">
 	<script type="text/javaScript" language="javascript">
 
@@ -92,7 +93,7 @@ String sTodate = formatter.format(new java.util.Date());
 		gOpener.schdulBgnde.value = sDate;
 		gOpener.schdulEndde.value = sDate;
 		gOpener.action = "<c:url value='/cop/smt/sim/EgovIndvdlSchdulManageRegist.do' />";
-		gOpener.submit();
+		EgovIframeModal.open({ form: gOpener, title: '내 일정 등록', doneUrlIncludes: 'EgovIndvdlSchdulManageList.do' });
 	}
 
 
@@ -101,7 +102,7 @@ String sTodate = formatter.format(new java.util.Date());
 	******************************************************** */
 	function fn_egov_detail_DeptSchdulManage(schdulId){
 
-		location.href = "<c:url value='/cop/smt/sim/EgovIndvdlSchdulManageDetail.do' />?schdulId=" + encodeURIComponent(schdulId);
+		EgovIframeModal.open({ url: "<c:url value='/cop/smt/sim/EgovIndvdlSchdulManageDetail.do' />?schdulId=" + encodeURIComponent(schdulId), title: '내 일정 상세', doneUrlIncludes: 'EgovIndvdlSchdulManageList.do' });
 	}
 
 

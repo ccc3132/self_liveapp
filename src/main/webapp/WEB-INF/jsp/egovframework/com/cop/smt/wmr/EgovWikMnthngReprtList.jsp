@@ -32,6 +32,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title><spring:message code="copSmtWmr.wikMnthngReprtList.wikMnthngReprtList"/></title><!-- 주간/월간보고 목록조회 -->
 <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<c:url value="/js/egovframework/com/cmm/EgovIframeModal.js"/>"></script>
 <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
 <link href="<c:url value="/css/egovframework/com/cmm/jqueryui.css"/>" rel="stylesheet" type="text/css">
 <script src="<c:url value='/js/egovframework/com/cmm/jquery.js' />"></script>
@@ -93,12 +94,12 @@
 	function fn_egov_inqire_wikmnthngreprt(reprtId) {
 		document.frm.reprtId.value = reprtId;
 		document.frm.action = "<c:url value='/cop/smt/wmr/selectWikMnthngReprt.do'/>";
-		document.frm.submit();
+		EgovIframeModal.open({ form: document.frm, title: '주간/월간보고 상세', doneUrlIncludes: 'updateWikMnthngReprt.do' });
 	}
 
 	function fn_egov_insert_wikmnthngreprt(){
 		document.frm.action = "<c:url value='/cop/smt/wmr/addWikMnthngReprt.do'/>";
-		document.frm.submit();
+		EgovIframeModal.open({ form: document.frm, title: '주간/월간보고 등록', doneUrlIncludes: 'insertWikMnthngReprt.do' });
 	}
 /* ********************************************************
  * 달력
