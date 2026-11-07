@@ -27,6 +27,7 @@
 <title>${pageTitle}</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
+<script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/EgovIframeModal.js' />"></script>
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/cmm/jqueryui.css' />">
 <script src="<c:url value='/js/egovframework/com/cmm/jquery.js' />"></script>
 <script src="<c:url value='/js/egovframework/com/cmm/jqueryui.js' />"></script>
@@ -87,7 +88,7 @@ function fn_egov_detail_NoteRecptn(noteId,noteTrnsmitId,noteRecptnId){
 	document.getElementById('detailNoteTrnsmitId').value = noteTrnsmitId;
 	document.getElementById('detailNoteRecptnId').value = noteRecptnId;
 	vFrom.action = "<c:url value='/uss/ion/ntr/detailNoteRecptn.do'/>";
-	vFrom.submit();
+	EgovIframeModal.open({ form: vFrom, title: '받은 쪽지 상세', doneUrlIncludes: 'listNoteRecptn.do' });
 }
 
 /* ********************************************************
