@@ -32,6 +32,7 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
 <link href="<c:url value='${brdMstrVO.tmplatCours}' />" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/EgovIframeModal.js' />"></script>
 <c:choose>
 <c:when test="${preview == 'true'}">
 <script type="text/javascript">
@@ -95,7 +96,7 @@ function fn_egov_inquire_articledetail(bbsId, nttId) {
 	document.articleForm.bbsId.value = bbsId;
 	document.articleForm.nttId.value = nttId;
   	document.articleForm.action = "<c:url value='/cop/bbs/selectArticleDetail.do'/>";
-  	document.articleForm.submit();
+  	EgovIframeModal.open({ form: document.articleForm, title: '게시글 상세', doneUrlIncludes: 'selectArticleList.do' });
 }
 </script>
 </c:otherwise>
@@ -124,7 +125,7 @@ function fn_egov_inquire_articledetail(bbsId, nttId) {
 				<input class="s_input" name="searchWrd" type="text"  size="35" title="<spring:message code="title.search" /> <spring:message code="input.input" />" value='<c:out value="${searchVO.searchWrd}"/>'  maxlength="155" >
 				<input type="submit" class="s_btn" value="<spring:message code="button.inquire" />" title="<spring:message code="title.inquire" /> <spring:message code="input.button" />" /><!-- 조회 -->
 				<c:if test="${preview != 'true'}">
-					<span class="btn_b"><a href="javascript:void(0);" onclick="fn_egov_postNavigate('<c:url value='/cop/bbs/insertArticleView.do' />', null, document.articleForm); return false;" title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span><!-- 등록 -->
+					<span class="btn_b"><a href="javascript:void(0);" onclick="fn_egov_postNavigate('<c:url value='/cop/bbs/insertArticleView.do' />', null, document.articleForm, {title: '게시글 등록', doneUrlIncludes: 'selectArticleList.do'}); return false;" title="<spring:message code="button.create" /> <spring:message code="input.button" />"><spring:message code="button.create" /></a></span><!-- 등록 -->
 				</c:if>
 			</li>
 		</ul>
