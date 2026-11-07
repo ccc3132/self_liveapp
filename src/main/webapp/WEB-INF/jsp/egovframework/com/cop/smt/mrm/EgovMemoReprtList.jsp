@@ -31,6 +31,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title><spring:message code="comCopSmtMrm.memoReprtList.title"/></title><!--메모보고 목록조회-->
 <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<c:url value="/js/egovframework/com/cmm/EgovIframeModal.js"/>"></script>
 <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/cmm/jqueryui.css' />">
 <script src="<c:url value='/js/egovframework/com/cmm/jquery.js' />"></script>
@@ -126,14 +127,14 @@
 	function fn_egov_inqire_memoreprt(reprtId) {
 		document.frm.reprtId.value = reprtId;
 		document.frm.action = "<c:url value='/cop/smt/mrm/selectMemoReprt.do'/>";
-		document.frm.submit();
+		EgovIframeModal.open({ form: document.frm, title: '메모보고 상세', doneUrlIncludes: 'updateMemoReprt.do' });
 	}
 	/* ********************************************************
 	 * 메모보고 등록으로 가기
 	 ******************************************************** */
 	function fn_egov_insert_memoreprt(){
 		document.frm.action = "<c:url value='/cop/smt/mrm/addMemoReprt.do'/>";
-		document.frm.submit();
+		EgovIframeModal.open({ form: document.frm, title: '메모보고 등록', doneUrlIncludes: 'insertMemoReprt.do' });
 	}
 </script>
 </head>

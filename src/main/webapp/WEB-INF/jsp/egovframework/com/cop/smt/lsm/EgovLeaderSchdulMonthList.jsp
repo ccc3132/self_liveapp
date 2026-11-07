@@ -64,6 +64,7 @@ int newLine = 0;
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title><spring:message code="comCopSmtLsm.leaderSchdulMonthList.title" /></title><!-- 월별 간부일정 조회 -->
 <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<c:url value="/js/egovframework/com/cmm/EgovIframeModal.js"/>"></script>
 <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
 <script type="text/javaScript" language="javascript">
 
@@ -92,7 +93,7 @@ int newLine = 0;
 		gOpener.month.value = "<%=month%>";
 		gOpener.searchMode.value = "MONTH";
 		gOpener.action = '<c:url value="/cop/smt/lsm/mng/addLeaderSchdul.do"/>';
-		gOpener.submit();
+		EgovIframeModal.open({ form: gOpener, title: '간부 일정 등록', doneUrlIncludes: 'insertLeaderSchdul.do' });
 	}
 
 
@@ -107,7 +108,7 @@ int newLine = 0;
 		gOpener.month.value = "<%=month%>";
 		gOpener.searchMode.value = "MONTH";
 		gOpener.action = "<c:url value='/cop/smt/lsm/usr/selectLeaderSchdul.do' />";
-		gOpener.submit();
+		EgovIframeModal.open({ form: gOpener, title: '간부 일정 상세', doneUrlIncludes: 'updateLeaderSchdul.do' });
 	}
 
 	

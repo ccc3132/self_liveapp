@@ -33,6 +33,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title><spring:message code="comCopSmtDjm.deptJobList.title" /></title><!-- 부서업무 목록 -->
 <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<c:url value="/js/egovframework/com/cmm/EgovIframeModal.js"/>"></script>
 <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
 <script type="text/javascript">
 
@@ -58,15 +59,15 @@
 	function fn_egov_inqire_deptjob(deptJobId) {
 		document.frm.deptJobId.value = deptJobId;
 		document.frm.action = "<c:url value='/cop/smt/djm/selectDeptJob.do'/>";
-		document.frm.submit();	
+		EgovIframeModal.open({ form: document.frm, title: '부서업무 상세', doneUrlIncludes: 'updateDeptJob.do' });
 	}
 
 	/* ********************************************************
 	* 부서업무 등록창 가기
 	******************************************************** */
-	function fn_egov_insert_deptjob(){	
+	function fn_egov_insert_deptjob(){
 		document.frm.action = "<c:url value='/cop/smt/djm/addDeptJob.do'/>";
-		document.frm.submit();
+		EgovIframeModal.open({ form: document.frm, title: '부서업무 등록', doneUrlIncludes: 'insertDeptJob.do' });
 	}
 </script>
 

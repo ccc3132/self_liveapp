@@ -61,6 +61,7 @@ int iEndDay = cal.getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title><spring:message code="comCopSmtLsm.leaderSchdulDailyList.title" /></title>
 <link href="<c:url value="/css/egovframework/com/com.css"/>" rel="stylesheet" type="text/css">
+<script type="text/javascript" src="<c:url value="/js/egovframework/com/cmm/EgovIframeModal.js"/>"></script>
 <link href="<c:url value="/css/egovframework/com/button.css"/>" rel="stylesheet" type="text/css">
 <script type="text/javaScript" language="javascript">
 
@@ -86,7 +87,7 @@ int iEndDay = cal.getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
 		gOpener.schdulBgnDe.value = sDate;
 		gOpener.schdulEndDe.value = sDate;
 		gOpener.action = '<c:url value="/cop/smt/lsm/mng/addLeaderSchdul.do" />';
-		gOpener.submit();
+		EgovIframeModal.open({ form: gOpener, title: '간부 일정 등록', doneUrlIncludes: 'insertLeaderSchdul.do' });
 	}
 
 
@@ -102,7 +103,7 @@ int iEndDay = cal.getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
 		gOpener.day.value = "<%=iNowDay%>";
 		gOpener.searchMode.value = "DAILY";
 		gOpener.action = '<c:url value="/cop/smt/lsm/usr/selectLeaderSchdul.do" />';
-		gOpener.submit();
+		EgovIframeModal.open({ form: gOpener, title: '간부 일정 상세', doneUrlIncludes: 'updateLeaderSchdul.do' });
 	}
 
 
