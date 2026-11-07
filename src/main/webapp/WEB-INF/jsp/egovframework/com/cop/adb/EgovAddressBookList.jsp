@@ -31,6 +31,7 @@
 <title>${pageTitle} <spring:message code="title.list" /></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
+<script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/EgovIframeModal.js' />"></script>
 <script type="text/javascript">
 	function press(event) {
 		if (event.keyCode==13) {
@@ -51,7 +52,7 @@
 	}
 	
 	function fn_egov_addadbkInf(){
-		fn_egov_postNavigate("<c:url value='/cop/adb/addAdbkInf.do' />");
+		fn_egov_postNavigate("<c:url value='/cop/adb/addAdbkInf.do' />", null, null, {title: '주소록 등록', doneUrlIncludes: 'selectAdbkList.do'});
 	}
 
 	function fn_egov_deleteAdbk(adbkId){
@@ -66,7 +67,7 @@
 	function fn_egov_update_adbkInf(adbkId){
 		document.frm.adbkId.value = adbkId;
 		document.frm.action = "<c:url value='/cop/adb/updateAdbkInf.do'/>";
-		document.frm.submit();
+		EgovIframeModal.open({ form: document.frm, title: '주소록 수정', doneUrlIncludes: 'selectAdbkList.do' });
 		return true;
 	}
 </script>
