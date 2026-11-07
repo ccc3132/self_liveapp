@@ -34,6 +34,7 @@
 <title>${pageTitle} <spring:message code="title.list" /></title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/com/com.css' />">
+<script type="text/javascript" src="<c:url value='/js/egovframework/com/cmm/EgovIframeModal.js' />"></script>
 <script type="text/javaScript" language="javascript" defer="defer">
 <!--
 function fncCheckAll() {
@@ -91,12 +92,12 @@ function fnDeleteUser() {
 function fnSelectUser(id) {
     document.listForm.selectedId.value = id;
     document.listForm.action = "<c:url value='/uss/umt/EgovEmplyrSelectUpdtView.do'/>";
-    document.listForm.submit();
+    EgovIframeModal.open({ form: document.listForm, title: '업무사용자 수정', doneUrlIncludes: 'EgovEmplyrSelectUpdt.do' });
 
 }
 function fnAddUserView() {
     document.listForm.action = "<c:url value='/uss/umt/EgovEmplyrInsertView.do'/>";
-    document.listForm.submit();
+    EgovIframeModal.open({ form: document.listForm, title: '업무사용자 등록', doneUrlIncludes: 'EgovEmplyrInsert.do' });
 }
 function fnLinkPage(pageNo){
     document.listForm.pageIndex.value = pageNo;

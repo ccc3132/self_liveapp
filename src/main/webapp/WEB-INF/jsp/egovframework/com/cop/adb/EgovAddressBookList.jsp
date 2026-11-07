@@ -52,7 +52,7 @@
 	}
 	
 	function fn_egov_addadbkInf(){
-		fn_egov_postNavigate("<c:url value='/cop/adb/addAdbkInf.do' />", null, null, {title: '주소록 등록', doneUrlIncludes: 'selectAdbkList.do'});
+		fn_egov_postNavigate("<c:url value='/cop/adb/addAdbkInf.do' />", null, null, {title: '주소록 등록', doneUrlIncludes: 'RegistAdbkInf.do'});
 	}
 
 	function fn_egov_deleteAdbk(adbkId){
@@ -67,7 +67,7 @@
 	function fn_egov_update_adbkInf(adbkId){
 		document.frm.adbkId.value = adbkId;
 		document.frm.action = "<c:url value='/cop/adb/updateAdbkInf.do'/>";
-		EgovIframeModal.open({ form: document.frm, title: '주소록 수정', doneUrlIncludes: 'selectAdbkList.do' });
+		EgovIframeModal.open({ form: document.frm, title: '주소록 수정', doneUrlIncludes: 'UpdateAddressBook.do' });
 		return true;
 	}
 </script>
